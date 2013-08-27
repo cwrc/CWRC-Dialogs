@@ -17,14 +17,13 @@ The current version has a working lookup dialog that queries the solr engine for
 
 At this stage, all of the development files need to be included with the applications in the html file where the dialogs will be needed:
 
-> <!-- Dev CWRC Dialogs -->
-> <script src="js/CWRCEntityDialog.js"></script>
-> <script src="js/CWRCEntitySearchDialog.js"></script>
-> <script src="js/CWRCTemplates.js"></script>
-> <script src="js/cD-dev.js"></script>
-> <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
-> <link rel="stylesheet" type="text/css" href="css/cwrcDialogs.css">
-> <!-- End of Dev -->
++ js/CWRCEntityDialog.js
++ js/CWRCEntitySearchDialog.js
++ js/CWRCTemplates.js
++ js/cD-dev.js
++ css/bootstrap.css
++ css/cwrcDialogs.css
+
 
 Also, the dialogs depend on the following frameworks:
 
