@@ -1,0 +1,58 @@
+<html>
+	<head>
+		<script src="js/libs/jquery/jquery.js"></script>
+		<script src="js/libs/knockout.js/knockout.js "></script>
+		<script src="js/libs/bootstrap/dist/js/bootstrap.js"></script>
+
+		<!-- Dev CWRC Dialogs -->
+		<script src="js/CWRCEntityDialog.js"></script>
+		<script src="js/CWRCEntitySearchDialog.js"></script>
+		<script src="js/CWRCTemplates.js"></script>
+		<script src="js/cD-dev.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+		<link rel="stylesheet" type="text/css" href="css/cwrcDialogs.css">
+		<!-- End of Dev -->
+		<script src="js/app.js">></script>
+
+	</head>
+	<body>
+	<div id="AppContainer" class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<h1>Test application</h1>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12 text-right">
+				<button type="button" class="btn btn-primary" data-bind="click: addPerson">Add Person</button>
+				<button type="button" class="btn btn-danger" data-bind="click: clearAll">Clear all</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Id</th>
+							<th>Model</th>
+							<th>Timestamp</th>
+							<th> </th>
+						</tr>
+					</thead>
+					<tbody data-bind="foreach: people">
+						<tr>
+							<td data-bind="text: $data['dc.title']"></td>
+							<td data-bind="text: $data['id']"></td>
+							<td data-bind="text: $data['gen.has_model_substr']"></td>
+							<td data-bind="text: $data['timestamp']"></td>
+							<td> <button type="button" class="close" aria-hidden="true" data-bind="click: $root.removePerson">&times;</button> </td>
+				</tr>
+				</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	</body>
+</html>
