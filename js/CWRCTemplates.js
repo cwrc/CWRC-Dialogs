@@ -6,12 +6,7 @@ $(function() {
 											<!-- Content --> \
 											<div class="row"> \
 												<div class="col-lg-12"> \
-													<div class="input-group"> \
-														<input type="text" class="form-control" id="searchEntityInput" data-bind="{value:queryString, onKeyUp: searchEntity}"> \
-														<span class="input-group-btn"> \
-															<button class="btn btn-default" type="button" data-bind="click:$root.searchEntity">Search</button> \
-														</span> \
-													</div><!-- /input-group --> \
+														<input type="text" class="form-control" id="searchEntityInput" placeholder="Search" data-bind="{value:queryString, onKeyUp: searchEntity}"> \
 												</div><!-- /.col-lg-6 --> \
 											</div><!-- /.row --> \
 											<br> <!-- FIXME --> \
