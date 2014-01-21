@@ -195,6 +195,9 @@ $(function(){
 
 			$('head').append(entityTemplates);
 			$("#cwrcEntityModal").modal(params.modalOptions);
+			$("#cwrcEntityModal").draggable({	
+				handle: ".modal-header"
+			});
 
 			var newDialogTemplate = '' +
 			'<div id="newDialogue" class="cwrcDialog" title="">' +
@@ -1309,6 +1312,9 @@ $(function(){
 
 			ko.applyBindings(search, $("#cDSearch")[0]);
 			$("#cwrcSearchDialog").modal(params.modalOptions);
+			$("#cwrcSearchDialog").draggable({	
+				handle: ".modal-header"
+			});
 		}
 
 		search.clear = function() {
