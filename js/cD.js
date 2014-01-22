@@ -688,6 +688,7 @@ $(function(){
 			
 			var recordInfo = entity.selfWorking.createElement("recordInfo");
 			var accessCondition = entity.selfWorking.createElement("accessCondition");
+			accessCondition.setAttribute("type", "use and reproduction");
 			var originInfo = entity.selfWorking.createElement("originInfo");
 			var recordCreationDate = entity.selfWorking.createElement("recordCreationDate");
 			var type = entity.selfWorking.createElement(dialogType);
