@@ -1107,13 +1107,27 @@ $(function(){
 		}
 
 		search.processCWRCSearch = function(queryString) {
+			
+			/*
 			search.processData = cwrcApi[dialogType].getEntity;
 			var result = cwrcApi[dialogType].searchEntity(queryString);
 
 			$.each(result["response"]["objects"], function(i, doc){
 				search.linkedDataSources.cwrc.results.push(search.getResultFromCWRC(doc));
 			});
-			// search.initiateInfo();
+			*/
+
+			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
+				query : queryString,
+				success : function(result){
+					$.each(result["response"]["objects"], function(i, doc){
+						search.linkedDataSources.cwrc.results.push(search.getResultFromCWRC(doc));
+					});
+				},
+				error: function(result) {
+					console.log(result);
+				},
+			});
 
 		}
 
@@ -1258,7 +1272,7 @@ $(function(){
 			'					<!-- Content -->' +
 			'					<div class="row">' +
 			'						<div class="col-lg-12">' +
-			'								<input type="text" class="form-control" id="searchEntityInput" placeholder="Search" data-bind="{value:queryString, onKeyUp: searchEntity}">' +
+			'								<input type="text" class="form-control" id="searchEntityInput" placeholder="Search" data-bind="{value:queryString, onKeyUp: delayedSearchEntity}">' +
 			'						</div><!-- /.col-lg-6 -->' +
 			'					</div><!-- /.row -->' +
 			'					<br> <!-- FIXME -->' +
@@ -1327,6 +1341,12 @@ $(function(){
 			search.initiateInfo();
 			search.removeInfoPopOver();
 		};
+
+		// search.delayedTimeout;
+		search.delayedSearchEntity = function() {
+			clearTimeout(search.delayedTimeout);
+			search.delayedTimeout = setTimeout(search.searchEntity, 1000);
+		}
 
 		search.searchEntity = function() {
 			// TEMP
