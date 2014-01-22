@@ -771,20 +771,19 @@ $(function(){
 			return field.input;
 		};
 
+		/*
 		entity.viewModel().today = function() {
 			var date = new Date();
 			return date.getFullYear() +"-"+ date.getMonth() + "-" + date.getDay();
 		};
-
+		*/
 		entity.viewModel().paddedToday = function() {
 			var date = new Date();
 			var pad = "00";
-			var month = "" + date.getMonth();
-			var day = "" + date.getDay();
+			var month = "" + date.getMonth() + 1;
+			var day = "" + date.getDate();
 			month = pad.substring(0, pad.length - month.length) + month;
 			day = pad.substring(0, pad.length - day.length) + day;
-			
-
 			return date.getFullYear() +"-"+ month + "-" + day;
 		};
 
