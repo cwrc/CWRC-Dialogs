@@ -20,6 +20,7 @@ In order to use the CWRC Dialogs the file `cD.js` needs to be included like any 
 Also, the dialogs depend on the following frameworks and APIs:
 
 + [jQuery](http://jquery.com)
++ [jQueryUI](http://jqueryui.com) - For dragging modals
 + [Knockoutjs](http://knockoutjs.com/)
 + [Bootstrap](http://getbootstrap.com/)
 + [Bootstrap datepicker](http://www.eyecon.ro/bootstrap-datepicker/)
