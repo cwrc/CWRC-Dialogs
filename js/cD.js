@@ -60,14 +60,14 @@ $(function(){
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = []
 		entity.person = {};
-		entity.person.schemaUrl = "./schemas/entitySchema.xml";
+		entity.person.schemaUrl = "./schemas/entities.rng";
 		entity.person.schema = "";
 		entity.person.success = null;
 		entity.organization = {};
-		entity.organization.schemaUrl = "./schemas/entitySchema.xml";
+		entity.organization.schemaUrl = "./schemas/entities.rng";
 		entity.organization.schema = "";
 		entity.organization.success = null;
-		
+		entity.editing = false;
 
 		// XXX Add namespace
 
@@ -691,6 +691,7 @@ $(function(){
 			accessCondition.setAttribute("type", "use and reproduction");
 			var originInfo = entity.selfWorking.createElement("originInfo");
 			var recordCreationDate = entity.selfWorking.createElement("recordCreationDate");
+			var recordChangeDate = entity.selfWorking.createElement("recordChangeDate");
 			var type = entity.selfWorking.createElement(dialogType);
 			var selector = "entity";
 			$(xml).find(selector).append(type);
@@ -701,15 +702,24 @@ $(function(){
 			// var selector = "entity > ";
 			
 			// accessCondition.attr("type", "use and reproduction");
-			var newText = entity.selfWorking.createTextNode(accessConditionText);
+			// var newText = entity.selfWorking.createTextNode(accessConditionText);
+			$(accessCondition).html(accessConditionText);
 			$(xml).find(selector).append(accessCondition);
-			$(accessCondition).append(newText);
+			// $(accessCondition).append(newText);
 
 			$(xml).find(selector).append(originInfo);
 			selector = "entity > " + dialogType + " > recordInfo > originInfo";
 			var todayText = entity.viewModel().paddedToday();
-			$(recordCreationDate).append(todayText);
+			var creationText = "";
+			// XXX Change when editing
+			if(!entity.editing) {
+				creationText = todayText;
+			}
+			
+			$(recordCreationDate).append(creationText);
+			$(recordChangeDate).append(todayText);
 			$(xml).find(selector).append(recordCreationDate);
+			$(xml).find(selector).append(recordChangeDate);
 			
 		};
 
@@ -1499,7 +1509,7 @@ $(function(){
 		var popSearchPerson = function(opts) {
 			search.clear();
 			dialogType = "person";
-			$("#cwrcSearchDialog").modal({show: true});
+			$("#cwrcSearchDialog").modal("show");
 			// search.buttons = opts.buttons ? opts.buttons : [];
 			// search.buttons = opts.buttons;
 			search.buttons.removeAll();
