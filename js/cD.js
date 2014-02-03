@@ -1392,13 +1392,15 @@ $(function(){
 			// var mainEl = $('mainHeadingEl', specs).first();
 			// alert($('subfield[code="a"]', mainEl).text());
 			var i = index + 2
-			var nameSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:mainHeadings ns"+i+"\\:text";
-			
-			that.name = $(specs).find(nameSelector).text();
+			// XXX Chrome has a bug which does not find elements with namesapces, to avoid this problem we define the selector twice
+			var nameSelector = "recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings >  ns"+i+"\\:data >  ns"+i+"\\:text , recordData > VIAFCluster > mainHeadings > data >  text";
 
-			var idSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID";
-			that.id = $(specs).find(idSelector).text();;
-			// that.data = "missing";
+			// nameSelector = "recordData *\\:VIAFCluster *\\:mainHeadings *\\:text";
+			var idSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID, recordData VIAFCluster viafID";
+			
+			that.name =  $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
+			that.id = $(specs).find(idSelector).first().text();
+			// that.data = "";
 
 			// alert($(specs).children("mainHeadingEl").first().children())
 			// var mainEl = $('mainHeadingEl', specs).first();
