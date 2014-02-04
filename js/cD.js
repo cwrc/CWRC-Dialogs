@@ -193,11 +193,7 @@ $(function(){
 			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
 			'		</script>';
 
-			$('head').append(entityTemplates);
-			$("#cwrcEntityModal").modal(params.modalOptions);
-			$("#cwrcEntityModal").draggable({	
-				handle: ".modal-header"
-			});
+
 
 			var newDialogTemplate = '' +
 			'<div id="newDialogue" class="cwrcDialog" title="">' +
@@ -222,7 +218,13 @@ $(function(){
 			'</div>' +
 			'</div>';
 
+			$('head').append(entityTemplates);
 			$('body').append(newDialogTemplate);
+			$("#cwrcEntityModal").modal(params.modalOptions);
+			$("#cwrcEntityModal").draggable({	
+				handle: ".modal-header"
+			});
+
 			ko.applyBindings(entity.viewModel, $("#newDialogue")[0]);
 
 		}
