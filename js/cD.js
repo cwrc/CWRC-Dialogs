@@ -1274,7 +1274,7 @@ $(function(){
 			var searchTemplates = '' +
 			'<div id="cDSearch">' +
 			'	<div class="modal fade" id="cwrcSearchDialog">' +
-			'		<div class="modal-dialog">' +
+			'		<div class="modal-dialog" id="search-modal">' +
 			'			<div class="modal-content">' +
 			'				<div class="modal-header">' +
 			'					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
@@ -1372,9 +1372,19 @@ $(function(){
 		
 		search.result = function(specs) {
 			var that = {
+				// processed initially
 				name : "",
-				data : "",
 				id : "",
+				// processed for result
+				data : "",
+				// processed for pop over
+				preferredName : "",
+				birthday : "",
+				death : "",
+				gender : "",
+				nationality : "",
+				link : "",
+				// helper
 				selected : ko.observable(false)
 			}
 			return that;
@@ -1472,7 +1482,7 @@ $(function(){
 		};
 
 		search.initiateInfo = function() {			
-			$(".modal-dialog").popover({
+			$("#search-modal").popover({
 				title : function(){return search.selectedData.name;},
 				content : function(){
 					var result = "";
@@ -1487,18 +1497,18 @@ $(function(){
 			});
 		}
 
-		search.scrapeInformation = function(doc) {
-			return doc.id;
+		search.scrapeInformation = function(data) {
+			return data.id;
 		}
 
 		search.showInfoPopOver = function(clicked) {
 			search.selectResult(clicked);
-			$(".modal-dialog").popover("show");
+			$("#search-modal").popover("show");
 		}
 
 
 		search.removeInfoPopOver = function() {			
-			$(".modal-dialog").popover("hide");
+			$("#search-modal").popover("hide");
 		}
 
 		search.returnAndHide = function() {
