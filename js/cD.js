@@ -1341,6 +1341,17 @@ $(function(){
 			$("#cwrcSearchDialog").draggable({	
 				handle: ".modal-header"
 			});
+			$("#cwrcSearchDialog").on('hidden.bs.modal', function () {
+  				// stop ajax call if exists
+				for(var key in search.linkedDataSources) {
+					var lds = search.linkedDataSources[key];
+					if (lds.ajaxRequest) {
+						lds.ajaxRequest.abort();							
+					}
+				}
+				search.clear();
+			});
+
 		}
 
 		search.clear = function() {
