@@ -485,15 +485,12 @@ $(function(){
 						newInput.label = $(e).children('label').first().text();
 						newInput.help = $(e).children('help-text').first().text();
 						var lastContainer = last(entity[dialogType].workingContainers);
-						if (lastContainer.isInterleave()) {
-							// lastContainer.interfaceFields.push(newInput);
-							lastContainer.seed.interfaceFields.push(newInput);
-						} else {
-							if (lastContainer.isOneOrMore()) {
-								newInput.nodeMessage("Required value");
-							}
-							lastContainer.seed.interfaceFields.push(newInput);
+						
+						if (lastContainer.isRequired()) {
+							newInput.nodeMessage("Required value");
 						}
+						lastContainer.seed.interfaceFields.push(newInput);
+
 					}
 				}
 			});
@@ -618,7 +615,7 @@ $(function(){
 				if (node.input == "quantifier") {
 					var minItems = node.minItems;
 					var maxItems = node.maxItems;
-					if (node.isOneOrMore()) {
+					if (node.isRequired()) {
 						entity[dialogType].shouldValidate.push(true);
 					} else {
 						entity[dialogType].shouldValidate.push(false);
@@ -632,6 +629,9 @@ $(function(){
 				}
 			} else if (node.input != "label") {
 				// CREATE NODE
+				// if (node.input == "datePicker") {
+				// 	alert("picker!!! ");
+				// }
 				var validate = last(entity[dialogType].shouldValidate);
 				if (validate && $.trim(node.value()) === ""){
 					// node.nodeMessage("Required value");
@@ -1120,8 +1120,8 @@ $(function(){
 
 		search.processCWRCSearch = function(queryString) {
 			
+			
 			/*
-			search.processData = cwrcApi[dialogType].getEntity;
 			var result = cwrcApi[dialogType].searchEntity(queryString);
 
 			$.each(result["response"]["objects"], function(i, doc){
@@ -1129,6 +1129,7 @@ $(function(){
 			});
 			*/
 
+			search.processData = cwrcApi[dialogType].getEntity;
 			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
 				query : queryString,
 				success : function(result){
@@ -1389,12 +1390,12 @@ $(function(){
 				// processed for result
 				data : "",
 				// processed for pop over
-				preferredName : "",
-				birthday : "",
-				death : "",
+				// preferredName : "",
+				birthDeath : "",
+				// death : "",
 				gender : "",
 				nationality : "",
-				link : "",
+				url : "",
 				// helper
 				selected : ko.observable(false)
 			}
@@ -1406,23 +1407,55 @@ $(function(){
 			var that = search.result();
 			that.name = specs["solr_doc"]["fgs.label"];
 			that.id = specs["PID"];
+			// XXX Fill in rest of data
 			// that.data = cwrcApi[dialogType].getEntity(specs["PID"]);
 			return that;
 		}
 
 		search.getResultFromVIAF = function(specs, index) {
+
+			var selectorHelper = function(originalSelector) {
+				var pattern = /ns\d+\\:/g;
+				var newSelector = originalSelector.replace(pattern, "");
+				var result = originalSelector + " , " + newSelector;
+				return result;
+			}
+
 			var that = search.result();
 			// var mainEl = $('mainHeadingEl', specs).first();
 			// alert($('subfield[code="a"]', mainEl).text());
 			var i = index + 2
 			// XXX Chrome has a bug which does not find elements with namesapces, to avoid this problem we define the selector twice
-			var nameSelector = "recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings >  ns"+i+"\\:data >  ns"+i+"\\:text , recordData > VIAFCluster > mainHeadings > data >  text";
 
-			// nameSelector = "recordData *\\:VIAFCluster *\\:mainHeadings *\\:text";
-			var idSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID, recordData VIAFCluster viafID";
+			// var nameSelector = "recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings >  ns"+i+"\\:data >  ns"+i+"\\:text , recordData > VIAFCluster > mainHeadings > data >  text";
+			// var idSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID, recordData VIAFCluster viafID";
+			// var nameSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:data >  ns"+i+"\\:text");
+			var nameSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='a']"); //code attribute a
+			var idSelector = selectorHelper("recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID");
 			
+
 			that.name =  $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
 			that.id = $(specs).find(idSelector).first().text();
+			
+			// Extra
+			var birthDeathSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='d']");
+			var genderSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:fixed > ns"+i+"\\:gender");
+			var urlSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:Document");
+
+			that.birthDeath = $(specs).find(birthDeathSelector).first().text();
+			var genderCode = $(specs).find(genderSelector).first().text();
+			switch (genderCode) {
+				case 'a':
+					that.gender = 'Female';
+					break;
+				case 'b':
+					that.gender = 'Male';
+					break;
+				default:
+					that.gender = 'Unspecified';
+			}
+			that.url = $(specs).find(urlSelector).first().attr("about");
+
 			// that.data = "";
 
 			// alert($(specs).children("mainHeadingEl").first().children())
@@ -1509,7 +1542,24 @@ $(function(){
 		}
 
 		search.scrapeInformation = function(data) {
-			return data.id;
+			// return data.id;
+			var result = "";
+
+			result += "<div><ul>";
+			if (data.nationality != "") {
+				result += "<li>Nationality: "+ data.nationality +"</li>";	
+			}
+			if (data.birthDeath != "") {
+				result += "<li>Birth - Death: "+ data.birthDeath +"</li>";	
+			}
+			if (data.gender != "") {
+				result += "<li>Gender: "+ data.gender +"</li>";	
+			}
+			if (data.url != "") {
+				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			}
+			result += "</ul></div>";
+			return result;
 		}
 
 		search.showInfoPopOver = function(clicked) {

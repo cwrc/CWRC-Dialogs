@@ -24,7 +24,7 @@ function CwrcEntity(type, url, jq) {
                         },
                         success : function(data) {
                                 result = data === "" ? {} : JSON.parse(data);
-                                
+
                                 searchObject.success(result);
                         },
                         error : function(error) {
@@ -32,7 +32,7 @@ function CwrcEntity(type, url, jq) {
                         }
                 });
         }
-        
+
         this.getEntity = function(pid) {
                 var result = result;
 
@@ -115,7 +115,7 @@ function CwrcEntity(type, url, jq) {
 
                 return jq.parseJSON(result);
         }
-        
+
         this.listEntity = function(totalPerPage, page){
                 alert("Page " + page);
         }
