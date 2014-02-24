@@ -353,18 +353,18 @@ $(function(){
 			// var workingPath = currentPath;
 			// XXX TESTING
 			var len = currentPath.length;
-			if (currentPath[len-1].indexOf('@') != -1) {
+			if (currentPath[len-1].indexOf('@') !== -1) {
 				// workingPath.pop();
 				len = len - 1;
 			}
-			if (len != entity.elementPath.length) {
+			if (len !== entity.elementPath.length) {
 				return false;
 			}
 			for (var i=0; i<len; ++i) {
 				var orPaths = currentPath[i].split('|');
 				var same = false;
 				for (var j=0; j< orPaths.length; ++j) {
-					if (entity.elementPath[i] == orPaths[j]) {
+					if (entity.elementPath[i] === orPaths[j]) {
 						same = true;
 						break;
 					}
@@ -479,7 +479,7 @@ $(function(){
 						newInput.path = entity.elementPath + "";
 						// check if it should be stored as an attribute
 						var parent = $(node).parent()[0];
-						if (parent.nodeName == 'attribute') {
+						if (parent.nodeName === 'attribute') {
 							newInput.attributeName = $(parent).attr('name') + "";
 						}
 						newInput.label = $(e).children('label').first().text();
@@ -586,7 +586,7 @@ $(function(){
 				lastContainer.label = lastContainer.seed.interfaceFields()[0].label;
 				lastContainer.seed.interfaceFields()[0].label = "";
 				
-				if (lastContainer.minItems == 1) {
+				if (lastContainer.minItems === 1) {
 					lastContainer.interfaceFields.push(lastContainer.seed.clone());
 				}
 				entity[dialogType].workingContainers.pop();
@@ -611,23 +611,27 @@ $(function(){
 		};
 
 		var visitStringifyResult = function(node) {
-			if (node.input == "quantifier" || node.input == "seed") {
-				if (node.input == "quantifier") {
+			if (node.input === "quantifier" || node.input === "seed") {
+				if (node.input === "quantifier") {
 					var minItems = node.minItems;
 					var maxItems = node.maxItems;
+					entity[dialogType].shouldValidate.push(node.isRequired());
+					/*
 					if (node.isRequired()) {
 						entity[dialogType].shouldValidate.push(true);
 					} else {
 						entity[dialogType].shouldValidate.push(false);
 					}
+					*/
+				
 				}
 				$.each(node.interfaceFields(), function(index, node) {
 					visitStringifyResult(node);
 				});
-				if (node.input == "quantifier") {
+				if (node.input === "quantifier") {
 					entity[dialogType].shouldValidate.pop();
 				}
-			} else if (node.input != "label") {
+			} else if (node.input !== "label") {
 				// CREATE NODE
 				// if (node.input == "datePicker") {
 				// 	alert("picker!!! ");
@@ -819,7 +823,7 @@ $(function(){
 			// 1 INF One or more
 			// 0 INF Zero or more
 			that.isGrowable = function() {
-				if (that.minItems == 1 && that.maxItems == 1) {
+				if (that.minItems === 1 && that.maxItems === 1) {
 					return false;
 				}
 				return true;
@@ -1192,7 +1196,7 @@ $(function(){
 					});
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
-					if (ajaxOptions != "abort") {
+					if (ajaxOptions !== "abort") {
 						console.log("Error " + ajaxOptions);	
 					}					
 				}
@@ -1546,16 +1550,16 @@ $(function(){
 			var result = "";
 
 			result += "<div><ul>";
-			if (data.nationality != "") {
+			if (data.nationality !== "") {
 				result += "<li>Nationality: "+ data.nationality +"</li>";	
 			}
-			if (data.birthDeath != "") {
+			if (data.birthDeath !== "") {
 				result += "<li>Birth - Death: "+ data.birthDeath +"</li>";	
 			}
-			if (data.gender != "") {
+			if (data.gender !== "") {
 				result += "<li>Gender: "+ data.gender +"</li>";	
 			}
-			if (data.url != "") {
+			if (data.url !== "") {
 				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
 			}
 			result += "</ul></div>";
