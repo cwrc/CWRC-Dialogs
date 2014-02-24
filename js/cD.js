@@ -369,7 +369,9 @@ $(function(){
 						break;
 					}
 				}
-				if (!same) return false;
+				if (!same) {
+					return false;
+				}
 			}
 			return true;
 		};
@@ -661,7 +663,8 @@ $(function(){
 			if (node.attributeName !== "") {
 				--maxDepth;
 			}
-			
+			// alert(pathString);
+			// VVVV
 			for (var i=0; i< maxDepth; i++) {
 				path = pathString.split(',');
 				thisPathString = path.splice(0, i+1) + "";
@@ -673,7 +676,7 @@ $(function(){
 					thisPathString = path.splice(0, i) + "";
 					selector = thisPathString.replace(/,/g, " > ");
 					newElement = entity.selfWorking.createElement(fullPath[i]);
-					$(entity.selfWorking).find(selector).append(newElement);
+					$(entity.selfWorking).find(selector).last().append(newElement);
 				}
 			}
 			// set value
@@ -681,12 +684,14 @@ $(function(){
 				// set attribute value
 				thisPathString = path.splice(0, i) + "";
 				selector = thisPathString.replace(/,/g, " > ");
-				$(entity.selfWorking).find(selector).attr(node.attributeName, node.value());
+				$(entity.selfWorking).find(selector).last().attr(node.attributeName, node.value());
 			} else {
 				// set text value
 				var newText = entity.selfWorking.createTextNode(node.value());
 				$(newElement).append(newText);
 			}
+
+			// ^^^^
 		};
 
 		var addRecordInfo = function(xml) {
