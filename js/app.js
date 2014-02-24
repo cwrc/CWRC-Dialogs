@@ -62,16 +62,7 @@ $(function(){
 	$("#searchPerson").click(function(){
 		$("#resultHeader").text("Entity ");
 		$("#entityXMLContainer").text("");
-		// var opts = {
-		// 	success: function(result) {
-		// 		$("#resultHeader").text("Added");
-		// 		$("#entityXMLContainer").text(JSON.stringify(result));
-		// 	},
-		// 	error : function(errorThrown) {
-		// 		$("#entityXMLContainer").text("");
-		// 		$("#resultHeader").text("Entity ");
-		// 	}
-		// };
+
 		var customAction = function(data) {
 			alert("custom 1");
 		};
@@ -102,6 +93,25 @@ $(function(){
 		}
 
 		cD.popSearchPerson(opts);
+	});
+
+
+	$("#searchOrganization").click(function(){
+		$("#resultHeader").text("Organization ");
+		$("#entityXMLContainer").text("");
+
+		var opts = {
+			success: function(result) {
+				$("#resultHeader").text("Added");
+				$("#entityXMLContainer").text(JSON.stringify(result));
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			}
+		}
+
+		cD.popSearchOrganization(opts);
 	});
 
 	$("#clear-button").click(function(){

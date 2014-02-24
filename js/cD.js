@@ -663,8 +663,7 @@ $(function(){
 			if (node.attributeName !== "") {
 				--maxDepth;
 			}
-			// alert(pathString);
-			// VVVV
+			
 			for (var i=0; i< maxDepth; i++) {
 				path = pathString.split(',');
 				thisPathString = path.splice(0, i+1) + "";
@@ -691,7 +690,6 @@ $(function(){
 				$(newElement).append(newText);
 			}
 
-			// ^^^^
 		};
 
 		var addRecordInfo = function(xml) {
@@ -1182,6 +1180,7 @@ $(function(){
 				viafPrefix = "local.personalNames+all+";
 				break;
 				case "organization": // XXX
+				viafPrefix = "local.corporateNames+all+";
 				break
 			}
 
@@ -1590,15 +1589,11 @@ $(function(){
 		// cD search interface
 		///////////////////////////////////////////////////////////////////////
 
-		var popSearchPerson = function(opts) {
-			search.clear();
-			dialogType = "person";
+		var completeSearchDialog = function(opts) {
 			$("#cwrcSearchDialog").modal("show");
-			// search.buttons = opts.buttons ? opts.buttons : [];
-			// search.buttons = opts.buttons;
 			search.buttons.removeAll();
 			// search.buttons(opts.buttons);
-			if (typeof opts.buttons !== undefined ) {
+			if (opts.buttons) {
 				for (var i = 0; i< opts.buttons.length; ++i) {
 					var button = opts.buttons[i];
 					if (typeof(button.label) === 'string' && 
@@ -1611,13 +1606,32 @@ $(function(){
 			// alert(search.buttons[0].label)
 			search.success = typeof opts.success === undefined ? function(){} : opts.success;
 			search.error = typeof opts.error === undefined ? function(){} : opts.error;
+		}
+
+		var popSearchPerson = function(opts) {
+			search.clear();
+			dialogType = "person";
+			
+			// search.buttons = opts.buttons ? opts.buttons : [];
+			// search.buttons = opts.buttons;
+			completeSearchDialog(opts);
 
 		};
 
 		cD.popSearchPerson = popSearchPerson;
 
+		var popSearchOrganization = function(opts) {
+			search.clear();
+			dialogType = "organization";
+			completeSearchDialog(opts);
+
+		}
+
+		cD.popSearchOrganization = popSearchOrganization;
+
 		var popSearch = {
 			person: popSearchPerson,
+			organization : popSearchOrganization
 		};
 
 		cD.popSearch = popSearch;
