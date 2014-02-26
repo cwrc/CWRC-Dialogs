@@ -1106,11 +1106,10 @@ $(function(){
 		// Search
 		///////////////////////////////////////////////////////////////////////
 		
-		// search
+		
 		var search = {};
 		search.buttons = ko.observableArray([]);
 		search.infoTitle = ko.observable("");
-		search.infoConte = ko.observable("");
 		
 		search.getLinkedDataSource = function(specs) {
 
@@ -1119,23 +1118,14 @@ $(function(){
 				results : ko.observableArray([]),
 				ajaxRequest : null,
 				name : specs.name === null ? "" : specs.name,
-				processSearch : specs.processSearch === null ? function(queryString){} : specs.processSearch
+				processSearch : specs.processSearch === null ? function(queryString){} : specs.processSearch,
+				scrape : specs.scrape
 			}
 
 			return that;
 		}
 
 		search.processCWRCSearch = function(queryString) {
-			
-			
-			/*
-			var result = cwrcApi[dialogType].searchEntity(queryString);
-
-			$.each(result["response"]["objects"], function(i, doc){
-				search.linkedDataSources.cwrc.results.push(search.getResultFromCWRC(doc));
-			});
-			*/
-
 			search.processData = cwrcApi[dialogType].getEntity;
 			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
 				query : queryString,
@@ -1152,7 +1142,6 @@ $(function(){
 		}
 
 		search.processViafData = function(id) {
-			// http://www.viaf.org/viaf/306236550/viaf.xml
 			var url = "http://apps.testing.cwrc.ca/services/viaf/" + id + "/viaf.xml";
 			var result = "";
 			$.ajax({
@@ -1179,7 +1168,7 @@ $(function(){
 				case "person" :
 				viafPrefix = "local.personalNames+all+";
 				break;
-				case "organization": // XXX
+				case "organization": 
 				viafPrefix = "local.corporateNames+all+";
 				break
 			}
@@ -1188,10 +1177,6 @@ $(function(){
 				url: viafUrl,
 				// dataType : 'json',
 				dataType : "xml",
-				// data : {
-				// 	query : viafPrefix + queryString,
-				// 	httpAccept : 'text/xml'
-				// },
 				processData : false,
 				data : "query=" + viafPrefix + queryString + "&httpAccept=text/xml",
 				success: function(response) {
@@ -1207,13 +1192,97 @@ $(function(){
 			});
 		}
 
+		// Scraping functions 
+		search.scrapeCWRCPerson = function(){
+			var result = "",
+			data = search.selectedData;
+
+			search.selectedData.data = cwrcApi[dialogType].getEntity(data.id);
+			
+			// alert(search.selectedData.data);
+			// nationality
+			// birthDeath
+			// gender
+			// url
+
+			result += "<div><ul>";
+
+			result += "</ul></div>";
+			return result;
+
+		};
+
+		search.scrapeCWRCOrganization = function(){
+
+		};
+		
+		search.scrapeCWRCTitle = function(){
+
+		};
+
+		search.scrapeVIAFPerson = function(){
+			var result = "",
+			data = search.selectedData;
+
+			result += "<div><ul>";
+			if (data.nationality && data.nationality !== "") {
+				result += "<li>Nationality: "+ data.nationality +"</li>";	
+			}
+			if (data.birthDeath && data.birthDeath !== "") {
+				result += "<li>Birth - Death: "+ data.birthDeath +"</li>";	
+			}
+			if (data.gender && data.gender !== "") {
+				result += "<li>Gender: "+ data.gender +"</li>";	
+			}
+			if (data.url && data.url !== "") {
+				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			}
+			result += "</ul></div>";
+			return result;
+
+		};
+
+		search.scrapeVIAFOrganization = function(){
+			var result = "",
+			data = search.selectedData;
+
+			result += "<div><ul>";		
+			if (data.url !== "") {
+				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			}
+			result += "</ul></div>";
+			return result;
+		};
+
+		search.scrapeVIAFTitle = function(){
+			var result = "",
+			data = search.selectedData;
+
+			result += "<div><ul>";		
+			if (data.url !== "") {
+				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			}
+			result += "</ul></div>";
+			return result;
+		};
+
 		search.linkedDataSources = {
-			cwrc: search.getLinkedDataSource({name:"CWRC", processSearch: search.processCWRCSearch}),
-			viaf: search.getLinkedDataSource({name:"VIAF", processSearch: search.processVIAFSearch})
+			"cwrc": search.getLinkedDataSource({
+				"name": "CWRC", 
+				"processSearch": search.processCWRCSearch,
+			}),
+			"viaf": search.getLinkedDataSource({
+				"name": "VIAF", 
+				"processSearch": search.processVIAFSearch,
+			})
 		}
+
+	
 
 		search.selectedLinkedDataSource = "cwrc";
 		search.queryString = ko.observable("");
+
+		// templates
 
 		search.getLinkedDataSourceTemplates = function() {
 			var result = "";
@@ -1363,6 +1432,8 @@ $(function(){
 
 		}
 
+		// search functionality
+
 		search.clear = function() {
 			search.selectedData = null;
 			for (var key in search.linkedDataSources) {
@@ -1397,13 +1468,7 @@ $(function(){
 				id : "",
 				// processed for result
 				data : "",
-				// processed for pop over
-				// preferredName : "",
-				birthDeath : "",
-				// death : "",
-				gender : "",
-				nationality : "",
-				url : "",
+				scrape : function() {return "";}, // defined for each linked data source
 				// helper
 				selected : ko.observable(false)
 			}
@@ -1415,43 +1480,81 @@ $(function(){
 			var that = search.result();
 			that.name = specs["solr_doc"]["fgs.label"];
 			that.id = specs["PID"];
-			// XXX Fill in rest of data
-			// that.data = cwrcApi[dialogType].getEntity(specs["PID"]);
+
+			
+			switch (dialogType) {
+				case "person":
+				that.scrape = search.scrapeCWRCPerson;
+				break;
+				case "organization":
+				that.scrape = search.scrapeCWRCOrganization;
+				break;
+				case "title":
+				that.scrape = search.scrapeCWRCTitle;
+				break;
+			}
+			
 			return that;
 		}
 
+		search.viafSelectorHelper = function(originalSelector) {
+			var pattern = /ns\d+\\:/g;
+			var newSelector = originalSelector.replace(pattern, "");
+			var result = originalSelector + " , " + newSelector;
+			return result;
+		}
+
 		search.getResultFromVIAF = function(specs, index) {
-
-			var selectorHelper = function(originalSelector) {
-				var pattern = /ns\d+\\:/g;
-				var newSelector = originalSelector.replace(pattern, "");
-				var result = originalSelector + " , " + newSelector;
-				return result;
-			}
-
 			var that = search.result();
-			// var mainEl = $('mainHeadingEl', specs).first();
-			// alert($('subfield[code="a"]', mainEl).text());
 			var i = index + 2
-			// XXX Chrome has a bug which does not find elements with namesapces, to avoid this problem we define the selector twice
-
-			// var nameSelector = "recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings >  ns"+i+"\\:data >  ns"+i+"\\:text , recordData > VIAFCluster > mainHeadings > data >  text";
-			// var idSelector = "recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID, recordData VIAFCluster viafID";
-			// var nameSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:data >  ns"+i+"\\:text");
-			var nameSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='a']"); //code attribute a
-			var idSelector = selectorHelper("recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID");
+			// Chrome has a bug which does not find elements with namesapces, to avoid this problem we define the selector twice
+			// VIAF returns all of the required information on the list call so there is no need to request again on second call
+			var nameSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='a']"); //code attribute a
+			var idSelector = search.viafSelectorHelper("recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID");
 			
 
 			that.name =  $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
 			that.id = $(specs).find(idSelector).first().text();
 			
 			// Extra
-			var birthDeathSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='d']");
-			var genderSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:fixed > ns"+i+"\\:gender");
-			var urlSelector = selectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:Document");
+			var urlSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:Document");
+			that.url = $(specs).find(urlSelector).first().attr("about");
+			
+			switch(dialogType) {
+				case "person":
+					search.completeViafPersonResult(that, specs, i);
+				break;
+				case "organization":
+					search.completeViafOrganizationResult(that, specs, i);
+				break;
+				case "title":
+					search.completeViafTitleResult(that, specs, i);
+				break;
+			}	
+
+			switch (dialogType) {
+				case "person":
+				that.scrape = search.scrapeVIAFPerson;
+				break;
+				case "organization":
+				that.scrape = search.scrapeVIAFOrganization;
+				break;
+				case "title":
+				that.scrape = search.scrapeVIAFTitle;
+				break;
+			}
+
+			return that;
+		}
+
+		// CompleteVIAFXXXResult extends the result object with specifics of each entity
+
+		search.completeViafPersonResult = function(that, specs, i) {
+			var birthDeathSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='d']");
+			var genderSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:fixed > ns"+i+"\\:gender");
+			var genderCode = $(specs).find(genderSelector).first().text();
 
 			that.birthDeath = $(specs).find(birthDeathSelector).first().text();
-			var genderCode = $(specs).find(genderSelector).first().text();
 			switch (genderCode) {
 				case 'a':
 					that.gender = 'Female';
@@ -1462,31 +1565,15 @@ $(function(){
 				default:
 					that.gender = 'Unspecified';
 			}
-			that.url = $(specs).find(urlSelector).first().attr("about");
-
-			// that.data = "";
-
-			// alert($(specs).children("mainHeadingEl").first().children())
-			// var mainEl = $('mainHeadingEl', specs).first();
-
-			// var name = $('subfield[code="a"]', mainEl).text();
-			// var date = $('subfield[code="d"]', mainEl).text();
-			// var gender = $('gender', specs).text();
-			// switch (gender) {
-			// 	case 'a':
-			// 		gender = 'f';
-			// 	break;
-			// 	case 'b':
-			// 		gender = 'm';
-			// 	break;
-			// 	default:
-			// 		gender = 'u';
-			// }
-			// alert(name);
-			// that.name = name;
-			return that;
 		}
 
+		search.completeViafOrganizationResult = function(that, specs, i) {
+			
+		}
+		
+		search.completeViafTitleResult = function(that, specs, i) {
+			
+		}
 
 		search.selectResult = function(result) {
 			$.each(search.linkedDataSources[search.selectedLinkedDataSource].results(), function(i, entry){
@@ -1539,7 +1626,10 @@ $(function(){
 				content : function(){
 					var result = "";
 					result += "<div>";
-					result += search.scrapeInformation(search.selectedData);
+					// result += search.scrapeInformation(search.selectedData);
+					var selectedDataSource = search.linkedDataSources[search.selectedLinkedDataSource];
+					// result += selectedDataSource.scrape[dialogType]();
+					result += search.selectedData.scrape();
 					result += "</div>";
 					return result;
 				},
@@ -1547,27 +1637,6 @@ $(function(){
 
 				trigger: "manual"
 			});
-		}
-
-		search.scrapeInformation = function(data) {
-			// return data.id;
-			var result = "";
-
-			result += "<div><ul>";
-			if (data.nationality !== "") {
-				result += "<li>Nationality: "+ data.nationality +"</li>";	
-			}
-			if (data.birthDeath !== "") {
-				result += "<li>Birth - Death: "+ data.birthDeath +"</li>";	
-			}
-			if (data.gender !== "") {
-				result += "<li>Gender: "+ data.gender +"</li>";	
-			}
-			if (data.url !== "") {
-				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
-			}
-			result += "</ul></div>";
-			return result;
 		}
 
 		search.showInfoPopOver = function(clicked) {
