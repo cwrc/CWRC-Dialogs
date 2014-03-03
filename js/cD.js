@@ -292,7 +292,7 @@ $(function(){
 					visitChildren = false;
 					break;
 				case 'choice':
-					visitChildren = false;
+					visitChildren = true;
 					break;
 				case 'oneormore':
 				case 'zeroormore':

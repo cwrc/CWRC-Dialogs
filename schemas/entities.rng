@@ -7,7 +7,7 @@
      from the interface annotation code; and allowed text content to be written to the <note> element text node.
      * Removed three "hidden" interface annotation code elements: the <accessCondition>, <recordChangeDate>, and
      <recordCreationDate> elements.
-     MRB: Thu 16-Jan-2014: Added an originInfo/recordOrigin element
+     MRB: Thu 16-Jan-2014: Added an originInfo/recordOrigin elem/ent
      MRB: Tue 07-Jan-2014: Revised and added to place entity section
      MRB: Mon 06-Jan-2014: Revised the <recordCreationDate> and <recordChangeDate> elements
      MRB: Fri 27-Dec-2013: Revised and added to place entity section
@@ -703,19 +703,24 @@
             <optional>
                 <ref name="type-attribute"/>
             </optional>
+            
+            <zeroOrMore>    
+                <ref name="personRef-element"/>
+            </zeroOrMore>
+                    <!-- mpo: revise to only include identity -->
             <zeroOrMore>
-                <choice>
-                    <ref name="personRef-element"/>
+                <ref name="organizationRef-element"/>
+            </zeroOrMore>
                     <!-- mpo: revise to only include identity -->
-                    <ref name="organizationRef-element"/>
-                    <!-- mpo: revise to only include identity -->
-                    <ref name="placeRef-element"/>
-                </choice>
+            <zeroOrMore>        
+                <ref name="placeRef-element"/>
+            </zeroOrMore>
+                
                 <!--<ref name="personRef-element"/>
                     <ref name="organizationRef-element"/>
                     <ref name="titleRef-element"/>
                     <ref name="eventRef-element"/>-->
-            </zeroOrMore>
+            
         </element>
     </define>
 
@@ -772,7 +777,7 @@
             <xs:annotation>
                 <xs:appinfo>
 
-                    <interface-field path="entity/person/relations/relation/personRef|organizationRef|placeRef/name">
+                    <interface-field path="entity/person|organization/relations/relation/personRef/name">
                         <help-text xml:lang="en">Name of a linked resource that is associated with the described entity</help-text>
                         <label xml:lang="en">Name</label>
                         <input>textField</input>
@@ -794,7 +799,7 @@
 
                     <interface-field path="entity/person/relations/relation/personRef|organizationRef|placeRef/uri">
                         <help-text xml:lang="en">URI of a linked resource that is associated with the described entity</help-text>
-                        <label xml:lang="en">Name</label>
+                        <label xml:lang="en">URI</label>
                         <input>textField</input>
                     </interface-field>
 
@@ -2126,19 +2131,17 @@
 
     <define name="date-pattern">
         <interleave>
-            
+            <choice>
                 <ref name="standardDate-element"/>
-            
-            <optional>
                 <ref name="textDate-element"/>
-            </optional>
-            <optional>
-                <ref name="dateType-element"/>
-            </optional>
-            <optional>
-                <ref name="note-element"/>
-            </optional>
+            </choice>
         </interleave>
+        <optional>
+            <ref name="dateType-element"/>
+        </optional>
+        <optional>
+            <ref name="note-element"/>
+        </optional>
         <optional>
             <ref name="cert-attribute"/>
         </optional>
@@ -2155,6 +2158,7 @@
                     <interface-field path="entity/person|organization|place/description/existDates/dateSingle/standardDate">
                         <help-text xml:lang="en">Select a date from date picker or enter a date in
                             the format yyyy-mm-dd, yyyy-mm, or yyyy.</help-text>
+                        <label xml:lang="en">Date</label>
                         <input>datePicker</input>
                     </interface-field>
 
