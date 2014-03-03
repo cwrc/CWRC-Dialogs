@@ -1629,7 +1629,7 @@ $(function(){
 			if (search.selectedData) {
 				result.id = search.selectedData.id;
 				result.name = search.selectedData.name;
-				result.repo = search.selectedLinkedDataSource;
+				result.repository = search.selectedLinkedDataSource;
 				result.data= search.selectedData.data;	
 			}
 			custom.action(result);
