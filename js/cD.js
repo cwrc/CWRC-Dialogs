@@ -1623,21 +1623,26 @@ $(function(){
 			return "";
 		}
 
-		search.runCustomAction = function(custom) {
+		search.GetResult = function() {
 			var result = {};
-			search.scrapeResult();
 			if (search.selectedData) {
 				result.id = search.selectedData.id;
 				result.name = search.selectedData.name;
 				result.repository = search.selectedLinkedDataSource;
 				result.data= search.selectedData.data;	
 			}
-			custom.action(result);
+			return result;
+		}
+
+		search.runCustomAction = function(custom) {			
+			search.scrapeResult();
+			custom.action(search.GetResult());
+			search.clear();
 		}
 
 		search.returnSelected = function() {
-			search.selectedData.data = search.processData(search.selectedData["id"]);
-			search.success(search.selectedData);
+			search.scrapeResult();
+			search.success(search.GetResult());
 			search.clear();
 		};
 
