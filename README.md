@@ -48,8 +48,55 @@ When opening the search dialog on can pass different options to the call functio
 + error - a function to call when an error occurs
 + buttons - this array defines custom butons with ther actions, each entry in the array takes the form of an object with a `label` string and an `action` in the form of the function to be run on click.
 
+An example follows
+
+```
+	var customAction = function(data) {
+
+		var result = "";
+		for (var i in data) {
+			if (data.hasOwnProperty(i)) {
+				result += i + " : " + data[i] + "	";
+			}
+		}
+
+		$("#resultHeader").text("Result");
+		$("#entityXMLContainer").text(result);
+	};
+
+	var opts = {
+		success: function(result) {
+			$("#resultHeader").text("Added");
+			$("#entityXMLContainer").text(JSON.stringify(result));
+		},
+		error : function(errorThrown) {
+			$("#entityXMLContainer").text("");
+			$("#resultHeader").text("Entity ");
+		},
+		buttons : [
+			{
+				label : "Show response",
+				action : customAction
+			}
+		]
+	}
+
+	cD.popSearchPerson(opts);
+```
+
 The data return has the following format:
 
 + name - name of entry as defined in the repository
 + id - id corresponding to the entry in the repository
++ repository - repository from where the entry was obtained
 + data - raw data of the entry in text format as provided by the repository
+
+The following is an example of a resulting object:
+
+```
+id : cwrc:640cbd44-fcfe-4d0a-b964-d10ae5bf68cb 
+name : Austin 
+repo : cwrc 
+data : <?xml version="1.0" encoding="UTF-8"?> <?xml-model href="http://cwrc.ca/schema/person.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?> <entity> <person> <recordInfo> <originInfo> <projectId>eccji</projectId> </originInfo> <accessCondition type="use and reproduction">Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.</accessCondition> <personTypes> <personType>creator</personType> </personTypes> </recordInfo> <identity> <preferredForm> <namePart partType="surname">Austin</namePart> <namePart partType="forename">Prof.</namePart> </preferredForm> </identity> </person> </entity> 
+
+```

@@ -1119,7 +1119,8 @@ $(function(){
 				ajaxRequest : null,
 				name : specs.name === null ? "" : specs.name,
 				processSearch : specs.processSearch === null ? function(queryString){} : specs.processSearch,
-				scrape : specs.scrape
+				// scrape : specs.scrape,
+				htmlify : specs.htmlify
 			}
 
 			return that;
@@ -1193,11 +1194,18 @@ $(function(){
 		}
 
 		// Scraping functions 
-		search.scrapeCWRCPerson = function(){
-			var result = "",
-			data = search.selectedData;
 
-			search.selectedData.data = cwrcApi[dialogType].getEntity(data.id);
+		search.scrapeResult = function() {
+			if (search.selectedData) {
+				search.selectedData.data = search.processData(search.selectedData.id);	
+			}
+		}		
+
+		search.htmlifyCWRCPerson = function(){
+			var result = "";
+			// data = search.selectedData;
+
+			
 			
 			// alert(search.selectedData.data);
 			// nationality
@@ -1212,17 +1220,9 @@ $(function(){
 
 		};
 
-		search.scrapeCWRCOrganization = function(){
-
-		};
-		
-		search.scrapeCWRCTitle = function(){
-
-		};
-
-		search.scrapeVIAFPerson = function(){
-			var result = "",
-			data = search.selectedData;
+		search.htmlifyVIAFPerson = function(){
+			var result = "";
+			var data = search.selectedData;
 
 			result += "<div><ul>";
 			if (data.nationality && data.nationality !== "") {
@@ -1242,9 +1242,11 @@ $(function(){
 
 		};
 
-		search.scrapeVIAFOrganization = function(){
-			var result = "",
-			data = search.selectedData;
+		
+
+		search.htmlifyVIAFOrganization = function(){
+			var result = "";
+			var data = search.selectedData;
 
 			result += "<div><ul>";		
 			if (data.url !== "") {
@@ -1254,9 +1256,10 @@ $(function(){
 			return result;
 		};
 
-		search.scrapeVIAFTitle = function(){
-			var result = "",
-			data = search.selectedData;
+
+		search.htmlifyVIAFTitle = function(){
+			var result = "";
+			var data = search.selectedData;
 
 			result += "<div><ul>";		
 			if (data.url !== "") {
@@ -1390,7 +1393,7 @@ $(function(){
 			'				<div class="modal-footer">' +
 			'					<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
 			'					<!-- ko foreach: buttons -->' +
-			'					<button type="button" class="btn btn-default" data-dismiss="modal" data-bind="text:label, click: action"></button>' +
+			'					<button type="button" class="btn btn-default" data-dismiss="modal" data-bind="text:label, click: $root.runCustomAction"></button>' +
 			'					<!-- /ko -->' +
 			// '					<button type="button" class="btn btn-default" data-bind="click: createEntity">Add New</button>' +
 			'					<button type="button" class="btn btn-primary" data-dismiss="modal" data-bind="click: returnSelected">Select</button>' +
@@ -1468,7 +1471,7 @@ $(function(){
 				id : "",
 				// processed for result
 				data : "",
-				scrape : function() {return "";}, // defined for each linked data source
+				// scrape : function() {return "";}, // defined for each linked data source
 				// helper
 				selected : ko.observable(false)
 			}
@@ -1484,13 +1487,16 @@ $(function(){
 			
 			switch (dialogType) {
 				case "person":
-				that.scrape = search.scrapeCWRCPerson;
+				// that.scrape = search.scrapeCWRCPerson;
+				that.htmlify = search.htmlifyCWRCPerson;
 				break;
 				case "organization":
-				that.scrape = search.scrapeCWRCOrganization;
+				// that.scrape = search.scrapeCWRCOrganization;
+				that.htmlify = search.htmlifyCWRCOrganization;
 				break;
 				case "title":
-				that.scrape = search.scrapeCWRCTitle;
+				// that.scrape = search.scrapeCWRCTitle;
+				that.htmlify = search.htmlifyCWRCTitle;
 				break;
 			}
 			
@@ -1534,13 +1540,16 @@ $(function(){
 
 			switch (dialogType) {
 				case "person":
-				that.scrape = search.scrapeVIAFPerson;
+				// that.scrape = search.scrapeVIAFPerson;
+				that.htmlify = search.htmlifyVIAFPerson;
 				break;
 				case "organization":
-				that.scrape = search.scrapeVIAFOrganization;
+				// that.scrape = search.scrapeVIAFOrganization;
+				that.htmlify = search.htmlifyVIAFOrganization;
 				break;
 				case "title":
-				that.scrape = search.scrapeVIAFTitle;
+				// that.scrape = search.scrapeVIAFTitle;
+				that.htmlify = search.htmlifyVIAFTitle;
 				break;
 			}
 
@@ -1614,6 +1623,18 @@ $(function(){
 			return "";
 		}
 
+		search.runCustomAction = function(custom) {
+			var result = {};
+			search.scrapeResult();
+			if (search.selectedData) {
+				result.id = search.selectedData.id;
+				result.name = search.selectedData.name;
+				result.repo = search.selectedLinkedDataSource;
+				result.data= search.selectedData.data;	
+			}
+			custom.action(result);
+		}
+
 		search.returnSelected = function() {
 			search.selectedData.data = search.processData(search.selectedData["id"]);
 			search.success(search.selectedData);
@@ -1629,7 +1650,8 @@ $(function(){
 					// result += search.scrapeInformation(search.selectedData);
 					var selectedDataSource = search.linkedDataSources[search.selectedLinkedDataSource];
 					// result += selectedDataSource.scrape[dialogType]();
-					result += search.selectedData.scrape();
+					search.scrapeResult();
+					result += search.selectedData.htmlify();
 					result += "</div>";
 					return result;
 				},

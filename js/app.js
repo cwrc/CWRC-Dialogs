@@ -64,11 +64,16 @@ $(function(){
 		$("#entityXMLContainer").text("");
 
 		var customAction = function(data) {
-			alert("custom 1");
-		};
 
-		var customAction2 = function(data) {
-			alert("custom 2");
+			var result = "";
+			for (var i in data) {
+				if (data.hasOwnProperty(i)) {
+					result += i + " : " + data[i] + "	";
+				}
+			}
+	
+			$("#resultHeader").text("Result");
+			$("#entityXMLContainer").text(result);
 		};
 
 		var opts = {
@@ -82,13 +87,9 @@ $(function(){
 			},
 			buttons : [
 				{
-					label : "Custom action",
+					label : "Show response",
 					action : customAction
-				},
-				{
-					label : "Custom action 2",
-					action : customAction2
-				},
+				}
 			]
 		}
 
