@@ -9,28 +9,28 @@
 	overflow: auto;
 }*/
 
-.interfaceFieldsContainer {
+.bootstrap-scope .interfaceFieldsContainer {
 	padding: 10px 0 0 20px;
 }
 
-textarea{
+.bootstrap-scope textarea{
 	resize:none
 }
 
-.modal-body-area {
+.bootstrap-scope .modal-body-area {
 	max-height: 500px;
 	overflow: auto;
 }
 
-.cwrc-result-area {
+.bootstrap-scope .cwrc-result-area {
 	max-height: 500px;
 	overflow: auto;	
 }
 
-.cwrc-help {
+.bootstrap-scope .cwrc-help {
 	cursor: pointer;
 }
 
-.popover {
+.bootstrap-scope .popover {
 	min-width: 300px;
 }
