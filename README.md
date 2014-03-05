@@ -26,6 +26,25 @@ Also, the dialogs depend on the following frameworks and APIs:
 + [Bootstrap datepicker](http://www.eyecon.ro/bootstrap-datepicker/)
 + [CWRC API](https://github.com/cwrc/CWRC-ccm-rest-api)
 
+The following is an example of all the files that need to be included:
+
+```
+	<script src="js/jquery-1.11.0.js"></script>
+	<script src="js/jquery-ui-1.10.4.custom.js"></script>		
+	<script src="js/knockout-2.3.0.js"></script>
+	<script src="js/bootstrap.js"></script>
+	<script src="js/bootstrap-datepicker.js"></script>
+	<script src="js/cwrc-api.js"></script>
+	<script src="js/cD.js"></script>
+	<script src="js/app.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+	<link rel="stylesheet" type="text/css" href="css/datepicker.css">
+	<link rel="stylesheet" type="text/css" href="css/cD.css">
+```		
+
+* Note: the "fonts" directory inlcuding the glyphicons needs to be available as well.
+
 A test application is included with the code. This application can be reached by opening the `index.html` file. The test application queries the solr engine and adds entries to a list. The application logic is located on the `app.js` file.
 
 From the `app.js` file you can see that the CWRC dialogs need to be initialized for the cwrc api to work. You can initialize it with the `initializeWithLogin` or `initializeWithCookie` methods.
