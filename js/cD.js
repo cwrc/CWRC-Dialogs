@@ -196,7 +196,7 @@ $(function(){
 
 
 			var newDialogTemplate = '' +
-			'<div id="newDialogue" class="cwrcDialog" title="">' +
+			'<div id="newDialogue" class="bootstrap-scope cwrcDialog" title="">' +
 			'<div class="modal fade" id="cwrcEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
 			'	<div class="modal-dialog">' +
 			'		<div class="modal-content">' +
@@ -1353,7 +1353,7 @@ $(function(){
 			// $('head').append(queryResultsTemplate);
 
 			var searchTemplates = '' +
-			'<div id="cDSearch">' +
+			'<div id="cDSearch" class="bootstrap-scope">' +
 			'	<div class="modal fade" id="cwrcSearchDialog">' +
 			'		<div class="modal-dialog" id="search-modal">' +
 			'			<div class="modal-content">' +
