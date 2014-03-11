@@ -196,7 +196,7 @@ $(function(){
 
 
 			var newDialogTemplate = '' +
-			'<div id="newDialogue" class="bootstrap-scope cwrcDialog" title="">' +
+			'<div id="newDialogue" class="cwrcDialog" title="">' +
 			'<div class="modal fade" id="cwrcEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
 			'	<div class="modal-dialog">' +
 			'		<div class="modal-content">' +
@@ -1201,21 +1201,29 @@ $(function(){
 			}
 		}		
 
-		search.populateCWRCPersonResult = function() {
-			// get data through xpaths
-		}
+		search.htmlifyCWRCPerson = function(){
+			var result = "";
+			// data = search.selectedData;
 
-		search.htmlifyCWRCPerson = function(){			
-			search.populateCWRCPersonResult();			
-			return search.completeHtmlifyPerson(search.selectedData);
+			
+			
+			// alert(search.selectedData.data);
+			// nationality
+			// birthDeath
+			// gender
+			// url
+
+			result += "<div><ul>";
+
+			result += "</ul></div>";
+			return result;
+
 		};
 
 		search.htmlifyVIAFPerson = function(){
-			return search.completeHtmlifyPerson(search.selectedData);
-		};
-
-		search.completeHtmlifyPerson = function(data) {
 			var result = "";
+			var data = search.selectedData;
+
 			result += "<div><ul>";
 			if (data.nationality && data.nationality !== "") {
 				result += "<li>Nationality: "+ data.nationality +"</li>";	
@@ -1231,7 +1239,10 @@ $(function(){
 			}
 			result += "</ul></div>";
 			return result;
-		}
+
+		};
+
+		
 
 		search.htmlifyVIAFOrganization = function(){
 			var result = "";
@@ -1342,7 +1353,7 @@ $(function(){
 			// $('head').append(queryResultsTemplate);
 
 			var searchTemplates = '' +
-			'<div id="cDSearch" class="bootstrap-scope">' +
+			'<div id="cDSearch">' +
 			'	<div class="modal fade" id="cwrcSearchDialog">' +
 			'		<div class="modal-dialog" id="search-modal">' +
 			'			<div class="modal-content">' +
