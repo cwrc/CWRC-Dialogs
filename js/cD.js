@@ -60,31 +60,57 @@ $(function(){
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = []
 		entity.person = {};
-		entity.person.schemaUrl = "./schemas/entities.rng";
+		// entity.person.schemaUrl = "./schemas/entities.rng";
 		entity.person.schema = "";
 		entity.person.success = null;
 		entity.organization = {};
-		entity.organization.schemaUrl = "./schemas/entities.rng";
+		// entity.organization.schemaUrl = "./schemas/entities.rng";
 		entity.organization.schema = "";
 		entity.organization.success = null;
 		entity.editing = false;
 
 		// XXX Add namespace
 
-		entity.initialize = function() {
+		entity.setPersonSchema = function(url) {
 			$.ajax({
 				type: "GET",
 				async: false,
-				url: entity.person.schemaUrl,
+				url: url,
 				dataType: "xml",
 				success: function(xml) {
 					entity.person.schema = xml;
+				}
+			});
+		}
+
+		cD.setPersonSchema = entity.setPersonSchema;
+
+		entity.setOrganizationSchema = function(url) {
+			$.ajax({
+				type: "GET",
+				async: false,
+				url: url,
+				dataType: "xml",
+				success: function(xml) {
 					entity.organization.schema = xml;
 				}
 			});
+		}
+
+		cD.setOrganizationSchema = entity.setOrganizationSchema;
+
+		cD.setSchema = {
+			person : cD.setPersonSchema,
+			organization : cD.setOrganizationSchema
+		};
+
+		entity.initialize = function() {
+					
+			// entity.setPersonSchema("./schemas/entities.rng");
+			// entity.setOrganizationSchema("./schemas/entities.rng");
 
 			var entityTemplates = '' +
-			'		<script type="text/html" id="quantifier">' +
+			'		<script type="text/htmlify" id="quantifier">' +
 			'			<div class="quantifier">' +
 			'			<div>' +
 			'				<span data-bind="text: label"></span>' +
@@ -1202,29 +1228,42 @@ $(function(){
 		}		
 
 		search.htmlifyCWRCPerson = function(){
-			var result = "";
-			// data = search.selectedData;
-
 			
+			var data = search.selectedData;
+			var workingXML = $.parseXML(data.data);
 			
-			// alert(search.selectedData.data);
 			// nationality
+			// var nationalitySelector = "";
+			// data.nationality = $(workingXML).find(nationalitySelector).first().text();
+
 			// birthDeath
+			var birthSelector = "";
+			var deathSelector = "";
+			var birthValue = $(workingXML).find(birthSelector).first().text();
+			var deathValue = $(workingXML).find(deathSelector).first().text();
+			if (birthValue !== "" && deathValue !== "") {
+				data.birthDeath = birthValue + "-" + deathValue;	
+			}
+			
 			// gender
+			var genderSelector = "entity > person > description > genders > gender";
+			data.gender = $(workingXML).find(genderSelector).first().text();
+
 			// url
-
-			result += "<div><ul>";
-
-			result += "</ul></div>";
-			return result;
+			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			
+			return search.completeHtmlifyPerson(data);
 
 		};
 
-		search.htmlifyVIAFPerson = function(){
-			var result = "";
+		search.htmlifyVIAFPerson = function(){			
 			var data = search.selectedData;
+			return search.completeHtmlifyPerson(data);
+		};
 
-			result += "<div><ul>";
+		search.completeHtmlifyPerson = function(data) {
+			var result = "<div><ul>";
+
 			if (data.nationality && data.nationality !== "") {
 				result += "<li>Nationality: "+ data.nationality +"</li>";	
 			}
@@ -1239,8 +1278,7 @@ $(function(){
 			}
 			result += "</ul></div>";
 			return result;
-
-		};
+		}
 
 		
 

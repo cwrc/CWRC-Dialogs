@@ -13,7 +13,8 @@ $(function(){
 	// cD.popOrganizationDialog(opts);
 
 	cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
-
+	cD.setPersonSchema("./schemas/entities.rng");
+	cD.setOrganizationSchema("./schemas/entities.rng");
 	
 	$("#addPerson").click(function(){
 		$("#entityXMLContainer").text("");
