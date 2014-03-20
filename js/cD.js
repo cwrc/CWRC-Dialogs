@@ -17,6 +17,12 @@ $(function(){
 		}
 		var dialogType = "";
 
+		// fix conflicts with jquery ui
+		var datepicker = $.fn.datepicker.noConflict();
+		$.fn.bsDatepicker = datepicker;
+		var button = $.fn.button.noConflict();
+		$.fn.bsButton = button;
+		
 		///////////////////////////////////////////////////////////////////////
 		// Helpers
 		///////////////////////////////////////////////////////////////////////
@@ -37,9 +43,9 @@ $(function(){
 				trigger: 'click',
 				delay: { show: 100, hide: 100 },
 			});
-			// $('.dpYears').datepicker();
+			// $('.dpYears').bsDatepicker();
 
-			$('.input-append.date').datepicker({
+			$('.input-append.date').bsDatepicker({
 				format: "yyyy-mm-dd",
 				startView: 2,
 				autoclose: true
