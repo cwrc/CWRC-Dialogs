@@ -67,14 +67,19 @@ $(function(){
 		entity.viewModel().validated = ko.observable(true);
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = []
+		
 		entity.person = {};
-		// entity.person.schemaUrl = "./schemas/entities.rng";
 		entity.person.schema = "";
 		entity.person.success = null;
+
 		entity.organization = {};
-		// entity.organization.schemaUrl = "./schemas/entities.rng";
 		entity.organization.schema = "";
 		entity.organization.success = null;
+		
+		entity.place = {};
+		entity.place.schema = "";
+		entity.place.success = null;
+
 		entity.editing = false;
 
 		// XXX Add namespace
@@ -107,9 +112,24 @@ $(function(){
 
 		cD.setOrganizationSchema = entity.setOrganizationSchema;
 
+		entity.setPlaceSchema = function(url) {
+			$.ajax({
+				type: "GET",
+				async: false,
+				url: url,
+				dataType: "xml",
+				success: function(xml) {
+					entity.place.schema = xml;
+				}
+			});
+		}
+
+		cD.setPlaceSchema = entity.setPlaceSchema;
+
 		cD.setSchema = {
 			person : cD.setPersonSchema,
-			organization : cD.setOrganizationSchema
+			organization : cD.setOrganizationSchema,
+			place : cD.setPlaceSchema
 		};
 
 		entity.initialize = function() {
@@ -1129,9 +1149,24 @@ $(function(){
 
 		cD.popCreateOrganization = popCreateOrganization;
 
+		var popCreatePlace = function(opts) {
+			dialogType = "place";
+			entity.viewModel().dialogTitle("Add Place");
+			completeDialog(opts);
+			$('#cwrcEntityModal').modal('show');
+			// hackish
+			setTimeout(function(){
+				$(".modal-body-area").scrollTop(0);
+			},5);
+			
+		};
+
+		cD.popCreatePlace = popCreatePlace;
+
 		var popCreate = {
 			person: popCreatePerson,
 			organization : popCreateOrganization,
+			place : popCreatePlace
 		};
 
 		cD.popCreate = popCreate;

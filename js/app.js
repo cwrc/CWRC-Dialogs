@@ -15,6 +15,7 @@ $(function(){
 	cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
 	cD.setPersonSchema("./schemas/entities.rng");
 	cD.setOrganizationSchema("./schemas/entities.rng");
+	cD.setPlaceSchema("./schemas/entities.rng");
 	
 	$("#addPerson").click(function(){
 		$("#entityXMLContainer").text("");
@@ -57,6 +58,27 @@ $(function(){
 			}
 		};
 		cD.popCreateOrganization(opts);
+	});
+
+	$("#addPlace").click(function(){
+		$("#resultHeader").text("Entity ");
+		$("#entityXMLContainer").text("");
+		var opts = {
+			success: function(result) {
+				if(result.response.error){
+					alert(result.response.error);
+					$("#entityXMLContainer").text("");
+				}else{
+					$("#resultHeader").text("Place entity " + result.response.pid);
+					$("#entityXMLContainer").text(result.data);
+				}
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			}
+		};
+		cD.popCreatePlace(opts);
 	});
 
 
