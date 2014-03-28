@@ -141,31 +141,14 @@ $(function(){
 			'		<script type="text/htmlify" id="quantifier">' +
 			'			<div class="quantifier">' +
 			'			<div>' +
+			// '				<h2><span data-bind="text: header"></span></h2>' +
 			'				<span data-bind="text: label"></span>' +
 			'				<span  data-bind="if: isGrowable()">' +
 			'					<span data-bind="if: showAddButton()">' +
 			'						<button data-bind="click: addGroup" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"</span></button>' +
 			'					</span>' +
-			'					<!--' +
-			'					<span data-bind="if: showDelButton()">' +
-			'						<button data-bind="click: delGroup" class="btn btn-default btn-xs">-</button>' +
-			'					</span>' +
-			'					-->' +
 			'				</span>' +
 			'			</div>' +
-			'			<div data-bind="if: isInterleave()">' +
-			'				<!--isInterleave-->' +
-			'			</div>' +
-			'			<div data-bind="if: isOptional()">' +
-			'				<!--isOptional-->' +
-			'			</div>' +
-			'			<div data-bind="if: isOneOrMore()">' +
-			'				<!--isOneOrMore-->' +
-			'			</div>' +
-			'			<div data-bind="if: isZeroOrMore()">' +
-			'				<!--isZeroOrMore-->' +
-			'			</div>' +
-			'			' +
 			'			<div class="interfaceFieldsContainer" data-bind="template:{name: $root.displayMode, foreach: interfaceFields}"> ' +
 			'			</div>' +
 			'			</div>' +
@@ -188,9 +171,16 @@ $(function(){
 			'				<input data-bind="value: value" /> ' +
 			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
 			'				<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
-			'' +
 			'			</span>' +
 			'		</script>' +
+			
+			'		<script type="text/html" id="header">' +
+			'			<!--header-->' +
+			'			<span>' +
+			'				<h4><span data-bind="text: label"></span></h4>' +
+			'			</span>' +
+			'		</script>' +
+
 			'		<script type="text/html" id="datePicker">' +
 			'			<!-- datePicker -->' +
 			'			<span>' +
@@ -524,6 +514,15 @@ $(function(){
 						case "datePicker" :
 							newInput = datePickerInputModel();
 							break;
+						case "header" :
+							newInput = headerInputModel();
+							break;
+							// var lastContainer = last(entity[dialogType].workingContainers);
+							// var header = $(e).children('label').first().text();
+							// lastContainer.header = header;
+							// alert(header);
+
+							break;
 						case "" : // Label
 							var quantifierLabel = $(e).children('label').first().text();
 							setQuantifierLabel(quantifierLabel);
@@ -587,6 +586,7 @@ $(function(){
 				case 'slider':
 				case 'dialogue':
 				case 'datePicker':
+				case 'header':
 				case '':
 					return true;
 			}
@@ -871,6 +871,7 @@ $(function(){
 			that.input = "quantifier";
 			that.elements = [];
 			that.label = "";
+			that.header = "";
 			that.minItems = 0;
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
@@ -967,6 +968,7 @@ $(function(){
 				result.maxItems = this.maxItems;
 				result.seed = this.seed.clone();
 				result.label = this.label;
+				result.header = this.header;
 				result.elements = this.elements;
 				// take label
 				// result.label = result.seed.interfaceFields()[0].label;
@@ -1070,6 +1072,13 @@ $(function(){
 			return that;
 		};
 		
+		var headerInputModel = function() {
+			var that = inputModel();
+			that.input = "header";
+			that.constructor = headerInputModel;
+			return that;
+		}
+
 		var dialogueInputModel = function() {
 			var that = inputModel();
 			that.input = "dialogue";
