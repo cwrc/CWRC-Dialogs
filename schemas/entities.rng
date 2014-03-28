@@ -223,6 +223,15 @@
             <a:documentation>Captures record-level information. Components of this element are kept
                 to a minimum given that administrative and object-level metadata is captured in
                 other FOXML datastreams.</a:documentation>
+
+            <xs:annotation>
+                <xs:appinfo>
+                    <interface-field path="entity/person/recordInfo">             
+                        <label xml:lang="en">Record information</label>
+                        <input>header</input>
+                    </interface-field>
+                </xs:appinfo>
+            </xs:annotation>                
             <optional>
                 <ref name="id-attribute"/>
             </optional>
@@ -317,6 +326,15 @@
         <element name="identity">
             <a:documentation>A container element grouping data for identification of a CWRC entity
                 instance</a:documentation>
+
+            <xs:annotation>
+                <xs:appinfo>
+                    <interface-field path="entity/person/identity">             
+                        <label xml:lang="en">Identity</label>
+                        <input>header</input>
+                    </interface-field>
+                </xs:appinfo>
+            </xs:annotation>        
             <optional>
                 <ref name="id-attribute"/>
             </optional>
@@ -374,6 +392,14 @@
     <define name="personDescription-element">
         <element name="description">
             <a:documentation>This section captures descriptive data about a CWRC entity record</a:documentation>
+            <xs:annotation>
+                <xs:appinfo>
+                    <interface-field path="entity/person/description">             
+                        <label xml:lang="en">Person description</label>
+                        <input>header</input>
+                    </interface-field>
+                </xs:appinfo>
+            </xs:annotation>                
             <optional>
                 <ref name="id-attribute"/>
             </optional>
@@ -686,6 +712,15 @@
         <element name="relations">
             <a:documentation>A group of relations between a given entity and other entities. Equivalent to EAC-CPF\'s
                 relation element, used as a wrapper for grouping one or more specific relations.</a:documentation>
+
+            <xs:annotation>
+                <xs:appinfo>
+                    <interface-field path="entity/person/relations">             
+                        <label xml:lang="en">Relations</label>
+                        <input>header</input>
+                    </interface-field>
+                </xs:appinfo>
+            </xs:annotation>                 
             <optional>
                 <ref name="id-attribute"/>
             </optional>
