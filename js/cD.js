@@ -4,6 +4,7 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// parameters
 
@@ -1571,7 +1572,7 @@ $(function(){
 		search.getResultFromCWRC = function(specs) {
 			// specs has data and source
 			var that = search.result();
-			that.name = specs["solr_doc"]["fgs.label"];
+			that.name = specs["solr_doc"]["fgs_label_s"];
 			that.id = specs["PID"];
 
 			
@@ -1814,6 +1815,14 @@ $(function(){
 		}
 
 		cD.popSearchOrganization = popSearchOrganization;
+		
+		var popSearchPlace = function(opts) {
+			search.clear();
+			dialogType = "place";
+			completeSearchDialog(opts);
+		}
+		
+		cD.popSearchPlace = popSearchPlace;
 
 		var popSearch = {
 			person: popSearchPerson,

@@ -137,6 +137,24 @@ $(function(){
 
 		cD.popSearchOrganization(opts);
 	});
+	
+	$("#searchPlace").click(function(){
+		$("#resultHeader").text("Place ");
+		$("#entityXMLContainer").text("");
+
+		var opts = {
+			success: function(result) {
+				$("#resultHeader").text("Added");
+				$("#entityXMLContainer").text(JSON.stringify(result));
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			}
+		}
+
+		cD.popSearchPlace(opts);
+	});
 
 	$("#clear-button").click(function(){
 		$("#entityXMLContainer").text("");
