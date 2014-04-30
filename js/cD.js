@@ -855,7 +855,8 @@ $(function(){
 		entity.viewModel().paddedToday = function() {
 			var date = new Date();
 			var pad = "00";
-			var month = "" + date.getMonth() + 1;
+			var month = "" + (date.getMonth() + 1);
+			alert(month);
 			var day = "" + date.getDate();
 			month = pad.substring(0, pad.length - month.length) + month;
 			day = pad.substring(0, pad.length - day.length) + day;
@@ -1188,8 +1189,9 @@ $(function(){
 		
 		var search = {};
 		search.buttons = ko.observableArray([]);
-		search.infoTitle = ko.observable("");
-		
+		// search.infoTitle = ko.observable("");
+		search.dialogTitle = ko.observable("");
+
 		search.getLinkedDataSource = function(specs) {
 
 
@@ -1450,7 +1452,8 @@ $(function(){
 			'			<div class="modal-content">' +
 			'				<div class="modal-header">' +
 			'					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-			'					<h4 class="modal-title"><span>Title</span></h4>' +
+			// '					<h4 class="modal-title"><span>Search XXX</span></h4>' +
+			'						<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'				</div>' +
 			'				<div class="modal-body">' +
 			'					<!-- Content -->' +
@@ -1797,6 +1800,7 @@ $(function(){
 
 		var popSearchPerson = function(opts) {
 			search.clear();
+			search.dialogTitle("Search Person");
 			dialogType = "person";
 			
 			// search.buttons = opts.buttons ? opts.buttons : [];
@@ -1809,6 +1813,7 @@ $(function(){
 
 		var popSearchOrganization = function(opts) {
 			search.clear();
+			search.dialogTitle("Search Organization");
 			dialogType = "organization";
 			completeSearchDialog(opts);
 
@@ -1818,6 +1823,7 @@ $(function(){
 		
 		var popSearchPlace = function(opts) {
 			search.clear();
+			search.dialogTitle("Search Place");
 			dialogType = "place";
 			completeSearchDialog(opts);
 		}
