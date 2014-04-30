@@ -688,7 +688,7 @@ $(function(){
 				if (node.input === "quantifier") {
 					entity[dialogType].shouldValidate.pop();
 				}
-			} else if (node.input !== "label") {
+			} else if (node.input !== "label" && node.input !== "header") {
 				// CREATE NODE
 				// if (node.input == "datePicker") {
 				// 	alert("picker!!! ");
@@ -856,7 +856,6 @@ $(function(){
 			var date = new Date();
 			var pad = "00";
 			var month = "" + (date.getMonth() + 1);
-			alert(month);
 			var day = "" + date.getDate();
 			month = pad.substring(0, pad.length - month.length) + month;
 			day = pad.substring(0, pad.length - day.length) + day;
