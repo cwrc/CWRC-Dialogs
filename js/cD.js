@@ -1762,6 +1762,7 @@ $(function(){
 		search.showInfoPopOver = function(clicked) {
 			search.selectResult(clicked);
 			$("#search-modal").popover("show");
+			$(".popover").find(".arrow").removeClass("arrow");
 		}
 
 
