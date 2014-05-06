@@ -1253,13 +1253,13 @@ $(function(){
 				viafPrefix = "local.corporateNames+all+";
 				break
 			}
-
+			var quotedQueryString = '"' + queryString + '"';
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
 				url: viafUrl,
 				// dataType : 'json',
 				dataType : "xml",
 				processData : false,
-				data : "query=" + viafPrefix + queryString + "&httpAccept=text/xml",
+				data : "query=" + viafPrefix + quotedQueryString + "&httpAccept=text/xml",
 				success: function(response) {
 					$('searchRetrieveResponse record', response).each(function(index, spec) {
 						search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
