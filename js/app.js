@@ -112,7 +112,12 @@ $(function(){
 				{
 					label : "Show response",
 					action : customAction
-				}
+				},
+				{
+					label : "Edit",
+					action : cD.popEditPerson
+				},
+					
 			]
 		}
 
@@ -154,6 +159,24 @@ $(function(){
 		}
 
 		cD.popSearchPlace(opts);
+	});
+
+	$("#searchTitle").click(function(){
+		$("#resultHeader").text("Title ");
+		$("#entityXMLContainer").text("");
+
+		var opts = {
+			success: function(result) {
+				$("#resultHeader").text("Added");
+				$("#entityXMLContainer").text(JSON.stringify(result));
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			}
+		}
+
+		cD.popSearchTitle(opts);
 	});
 
 	$("#clear-button").click(function(){

@@ -1132,6 +1132,60 @@ $(function(){
 
 		cD.initializeWithLogin = initializeWithLogin;
 
+		// population functions
+
+		var populateDialog = function(opts) {
+			
+			// change this to object
+			switch (dialogType) {
+				case "person" :
+					switch (opts.repository) {
+						case "cwrc":
+						populatePersonCWRC(opts);
+					}
+			}
+			
+
+		}
+
+		var populatePersonCWRC = function(opts) {
+			// cwrc
+			console.log(opts.data);
+			var workingXML = $.parseXML(opts.data);
+			
+			children = workingXML.childNodes;
+			var path = [];
+			for (var i=0; i< children.length; ++i) {
+				visitNodeCWRCPopulate(children[i], path);
+			}
+		}
+
+		var visitNodeCWRCPopulate = function (node, path) {
+			path.push(node.nodeName);
+			var parentPath = path.slice(0, path.length-2);
+			// console.log(path);
+			// console.log("nodetype: " + node.nodetype);	
+			var nodeValue = $.trim(node.nodeValue);
+			if (node.nodeType === 3 && nodeValue !== "") {
+				console.log("Nodename: " + node.nodeName);
+				console.log("nodetype: " + node.nodeType);	
+				console.log("value: " + nodeValue);
+				console.log("parentPath: "+ parentPath.toString());
+			}
+			
+
+			var children = node.childNodes;	
+			for (var i=0; i< children.length; ++i) {		
+				var currentNode = children[i];
+				visitNodeCWRCPopulate(currentNode, path);
+			}
+
+			path.pop();
+		}
+
+
+		// pop create		
+
 		var popCreatePerson = function(opts) {
 			dialogType = "person";
 			entity.viewModel().dialogTitle("Add Person");
@@ -1181,6 +1235,28 @@ $(function(){
 
 		cD.popCreate = popCreate;
 		
+		// pop edit
+
+		var popEditPerson = function(opts) {
+			entity.editing = true;
+			cD.popCreatePerson(opts);
+			populateDialog(opts);
+		};
+
+		cD.popEditPerson = popEditPerson;
+
+		var popEditOrganization = function(opts) {
+
+		};
+
+		cD.popEditOrganization = popEditOrganization;
+
+		var popEditPlace = function(opts) {
+
+		}
+
+		cD.popEditPlace = popEditPlace;
+
 		///////////////////////////////////////////////////////////////////////
 		// Search
 		///////////////////////////////////////////////////////////////////////
@@ -1251,7 +1327,13 @@ $(function(){
 				break;
 				case "organization": 
 				viafPrefix = "local.corporateNames+all+";
-				break
+				break;
+				case "place": 
+				viafPrefix = "local.geographicNames+all+";
+				break;
+				case "title": 
+				viafPrefix = "local.title+all+"; // local.uniformTitleWorks
+				break; 
 			}
 			var quotedQueryString = '"' + queryString + '"';
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
@@ -1830,9 +1912,20 @@ $(function(){
 		
 		cD.popSearchPlace = popSearchPlace;
 
+		var popSearchTitle = function(opts) {
+			search.clear();
+			search.dialogTitle("Search Title");
+			dialogType = "title";
+			completeSearchDialog(opts);	
+		}
+
+		cD.popSearchTitle = popSearchTitle;
+
 		var popSearch = {
 			person: popSearchPerson,
-			organization : popSearchOrganization
+			organization : popSearchOrganization,
+			place : popSearchPlace,
+			title: popSearchTitle
 		};
 
 		cD.popSearch = popSearch;
