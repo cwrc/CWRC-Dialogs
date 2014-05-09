@@ -1332,7 +1332,7 @@ $(function(){
 				viafPrefix = "local.geographicNames+all+";
 				break;
 				case "title": 
-				viafPrefix = "local.title+all+"; // local.uniformTitleWorks
+				viafPrefix = "local.uniformTitleWorks+="; 
 				break; 
 			}
 			var quotedQueryString = '"' + queryString + '"';
@@ -1690,7 +1690,18 @@ $(function(){
 			var i = index + 2
 			// Chrome has a bug which does not find elements with namesapces, to avoid this problem we define the selector twice
 			// VIAF returns all of the required information on the list call so there is no need to request again on second call
-			var nameSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='a']"); //code attribute a
+			var codeSelector = "a";
+			switch(dialogType) {
+				case "person":
+				case "organization":
+					codeSelector = "a";
+					break;
+				case "title":
+					codeSelector = "t";
+
+			}
+
+			var nameSelector = search.viafSelectorHelper("recordData >  ns"+i+"\\:VIAFCluster >  ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='"+codeSelector+"']"); //code attribute a
 			var idSelector = search.viafSelectorHelper("recordData ns"+i+"\\:VIAFCluster ns"+i+"\\:viafID");
 			
 
