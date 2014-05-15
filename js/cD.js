@@ -280,6 +280,7 @@ $(function(){
 			entity[dialogType].shouldValidate = [];
 			entity.viewModel().interfaceFields([]);
 			var startingInterleave = interleaveModel();
+			startingInterleave.path = "entity";
 			entity.viewModel().interfaceFields.push(startingInterleave);
 			entity[dialogType].workingContainers.push(startingInterleave);
 			entity.viewModel().validated(true);
@@ -367,7 +368,7 @@ $(function(){
 					postprocessQuantifier();
 					break;
 				case 'interleave':
-					postProcessInterleave();
+					postprocessInterleave();
 					break;
 			}
 		};
@@ -532,7 +533,7 @@ $(function(){
 						newInput = textInputModel();
 					}
 					if (newInput) {
-						newInput.path = entity.elementPath + "";
+						newInput.path = entity.elementPath.toString();
 						// check if it should be stored as an attribute
 						var parent = $(node).parent()[0];
 						if (parent.nodeName === 'attribute') {
@@ -570,6 +571,13 @@ $(function(){
 					newQuantifier = interleaveModel();
 				break;
 			}
+
+			///////////////
+
+			newQuantifier.path = entity.elementPath.toString();
+			
+			///////////////
+
 			// add to latestWorking quantifier
 			last(entity[dialogType].workingContainers).seed.interfaceFields.push(newQuantifier);
 			// add to quantifier list
@@ -594,19 +602,19 @@ $(function(){
 			return false;
 		};
 
-		var postProcessInterleave = function(node) {
+		var postprocessInterleave = function(node) {
 			var lastContainer = last(entity[dialogType].workingContainers);
 
 			if (lastContainer.seed.interfaceFields().length >= 1) {
 				lastContainer.hasInterface = true;
 
-				$.each(lastContainer.seed.interfaceFields(), function(index, item){
-					var path = item.path;
-					if (item.attributeName !== "") {
-						path += "," + item.attributeName;
-					}
-					lastContainer.elements.push(path);
-				});
+				// $.each(lastContainer.seed.interfaceFields(), function(index, item){
+				// 	var path = item.path;
+				// 	if (item.attributeName !== "") {
+				// 		path += "," + item.attributeName;
+				// 	}
+				// 	lastContainer.elements.push(path);
+				// });
 			}
 
 			if (lastContainer.hasInterface) {
@@ -628,12 +636,12 @@ $(function(){
 				if (isInterfaceIsPresent(item)) {
 					lastContainer.hasInterface = true;
 					
-					var path = item.path;
-					if (item.attributeName !== "") {
-						path += "," + item.attributeName;
-					}
+					// var path = item.path;
+					// if (item.attributeName !== "") {
+					// 	path += "," + item.attributeName;
+					// }
 				
-					lastContainer.elements.push(path);
+					// lastContainer.elements.push(path);
 					
 				}
 			});
@@ -664,6 +672,8 @@ $(function(){
 			if (to.label === "") {
 				to.label = from.label;
 			}
+			// alert(to.path + " + " + from.path)
+			// to.path = from.path
 			to.seed.interfaceFields.remove(from);
 		};
 
@@ -870,7 +880,8 @@ $(function(){
 			// var self = this;
 			var that = {};
 			that.input = "quantifier";
-			that.elements = [];
+			// that.elements = [];
+			that.path = "";
 			that.label = "";
 			that.header = "";
 			that.minItems = 0;
@@ -968,9 +979,10 @@ $(function(){
 				result.minItems = this.minItems;
 				result.maxItems = this.maxItems;
 				result.seed = this.seed.clone();
+				result.path = this.path;
 				result.label = this.label;
 				result.header = this.header;
-				result.elements = this.elements;
+				// result.elements = this.elements;
 				// take label
 				// result.label = result.seed.interfaceFields()[0].label;
 				if (result.minItems === 1) {
@@ -1022,6 +1034,7 @@ $(function(){
 				$.each(that.interfaceFields(), function(index, field){
 					result.interfaceFields.push(field.clone());
 				});
+				
 				return result;
 			};
 			return that;
@@ -1162,27 +1175,126 @@ $(function(){
 
 		var visitNodeCWRCPopulate = function (node, path) {
 			path.push(node.nodeName);
-			var parentPath = path.slice(0, path.length-2);
+			var parentPath = path.slice(0, path.length-1);
 			// console.log(path);
 			// console.log("nodetype: " + node.nodetype);	
 			var nodeValue = $.trim(node.nodeValue);
 			if (node.nodeType === 3 && nodeValue !== "") {
-				console.log("Nodename: " + node.nodeName);
-				console.log("nodetype: " + node.nodeType);	
-				console.log("value: " + nodeValue);
-				console.log("parentPath: "+ parentPath.toString());
-			}
+
+				// console.log("Nodename: " + node.nodeName);
+				// console.log("nodetype: " + node.nodeType);	
+				// console.log("value: " + nodeValue);
+				// console.log("parentPath: "+ parentPath.toString());
+
+				// XXX populate field
+				// it exits, find it
+				
+
+				// alert(entity.viewModel().interfaceFields());
+				// alert(entity.viewModel().interfaceFields().input)
+				// for (var i =0; i < entity.viewModel().interfaceFields().length; ++i) {
+				// 	alert(i)
+				// 	var currentField = entity.viewModel().interfaceFields[i];
+				// 	if(foundAndFilled(nodeValue, parentPath, currentField)) {
+				//  		// return false; // break out of loop
+				//  		i = entity.viewModel().interfaceFields().length;
+				//  	}
+				// }
+
+
+				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
+
+				// $.each(entity.viewModel().interfaceFields(), function(i, currentField) {
+				// 	alert(typeof currentField + " << " + i)
+				// 	if(foundAndFilled(nodeValue, parentPath, currentField)) {
+				// 		return false; // break out of loop
+				// 	}
+				// });
+			} 
 			
 
 			var children = node.childNodes;	
 			for (var i=0; i< children.length; ++i) {		
-				var currentNode = children[i];
+				var currentNode = children[i]
 				visitNodeCWRCPopulate(currentNode, path);
 			}
 
 			path.pop();
 		}
 
+		var foundOnSeed = function(field, parentPath) {
+			var result = false;
+			$.each(field.seed.interfaceFields(), function(i, currentField) {
+				if (parentPath.toString().indexOf(currentField.path) === 0) {
+					result = true;
+					return false;
+				}
+			});
+			return result;
+		}
+
+		var foundAndFilled = function(nodeValue, parentPath, field) {
+
+			if (field.input === "quantifier") {
+				// check path if sub continue
+
+
+				// if (parentPath.toString().indexOf(field.path) > -1) {
+				if (parentPath.toString().indexOf(field.path) === 0) {
+					var foundOnFields = false;
+					// alert(field.interfaceFields().length)
+					$.each(field.interfaceFields(), function(i, currentField) {
+						if(foundAndFilled(nodeValue, parentPath, currentField)) {
+							console.log("FOUNMD ONM FIELDS")
+							foundOnFields = true;
+							return false; // break out of loop
+						}
+					});
+					if (foundOnFields) {
+						console.log("HERE")
+						return true;
+					}
+					if (!foundOnFields) {
+						// alert("not found on fields")
+
+						if (foundOnSeed(field, parentPath)) {
+							console.log(field.input + " " + field.path + " <> " + parentPath)
+							// alert("adding group")
+							field.addGroup();
+							// field.interfaceFields.push(field.seed.clone());
+							var lastfield = last(field.interfaceFields()) ; 					
+							return foundAndFilled(nodeValue, parentPath, lastfield);
+						}
+					}
+					
+				}
+
+
+			} else if(field.input === "seed") {
+				var foundOnSeedCheck = false;
+				$.each(field.interfaceFields(), function(i, currentField) {
+					if(foundAndFilled(nodeValue, parentPath, currentField)) {
+						foundOnSeedCheck = true;
+						return false; // break out of loop
+					}
+				});
+
+				if(foundOnSeedCheck) {
+					return true;
+				}
+
+			}else if (field.input !== " header") {
+				// check path if same fill
+				// inputs dont have path
+				// fill now ?
+				// alert(">>>>>> " + field.input + " <> [" + field.path + "] [" + parentPath + "] " + nodeValue)
+				if (field.path == parentPath) {
+					field.value(nodeValue);
+					return true;
+				}
+				// return true;
+			}
+		}
 
 		// pop create		
 
