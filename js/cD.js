@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// parameters
 
@@ -67,7 +67,41 @@ $(function(){
 		entity.viewModel().dialogTitle = ko.observable("");
 		entity.viewModel().validated = ko.observable(true);
 		entity.selfWorking = $.parseXML('<entity></entity>');
-		entity.elementPath = []
+		entity.elementPath = [];
+		
+		entity.viewModel().modsFields = ko.observable({
+			modsTypes: [
+			{name:'Audio'},
+			{name:'Book (part)'},
+			{name:'Book (whole)'},
+			{name:'Correspondence'},
+			{name:'Journal (part)'},
+			{name:'Journal (whole)'},
+			{name:'Manuscript'},
+			{name:'Video'},
+			{name:'Web resource'},
+			],
+			modsType: ko.observable("Audio"),
+			title: ko.observable(),
+			author: ko.observableArray([
+			]),
+			date: ko.observable(),
+			project: ko.observable(),
+			validation: {
+				title: ko.observable(true),
+				date: ko.observable(true)
+			},
+			addNewAuthor: function(){
+				entity.viewModel().modsFields().author.push(
+					{
+						name: ko.observable("")
+					}
+				);
+			},
+			removeThisAuthor: function(author){
+				entity.viewModel().modsFields().author.remove(author);
+			}
+		}); // Added to create mods entries
 		
 		entity.person = {};
 		entity.person.schema = "";
@@ -80,6 +114,10 @@ $(function(){
 		entity.place = {};
 		entity.place.schema = "";
 		entity.place.success = null;
+		
+		entity.title = {};
+		entity.title.schema = "";
+		entity.title.success = null;
 
 		entity.editing = false;
 
@@ -262,16 +300,113 @@ $(function(){
 			'	</div>' +
 			'</div>' +
 			'</div>';
+			
+			var newTitleDialogTemplate = '' +
+			'<div id="newTitleDialogue" class="bootstrap-scope cwrcDialog" title="">' +
+			'<div class="modal fade" id="cwrcTitleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+			'	<div class="modal-dialog">' +
+			'		<div class="modal-content">' +
+			'			<div class="modal-header">' +
+			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
+			'			</div>' +
+			'			<div class="modal-body modal-body-area" data-bind="with: modsFields">' +
+			//Type of Resource
+			'				<div class="quantifier">' +
+			'					<div>' +
+			'						<span>Type of resource</span>' +
+			'					</div>' +
+			'					<div class="interfaceFieldsContainer"> ' +
+			'						<select data-bind="options: modsTypes, optionsText: \'name\', optionsValue: \'name\', value: modsType">' +
+			'						</select>' +
+			'					</div>' +
+			'				</div>' +
+			//Title
+			'				<div class="quantifier">' +
+			'					<div>' +
+			'						<span>Title</span>' +
+			'					</div>' +
+			'					<div class="interfaceFieldsContainer"> ' +
+			'						<input data-bind="value: title">' +	
+			'						<div class="label label-info" data-bind="if:validation.title">Required value</div>' +
+			'						<div class="label label-danger" data-bind="ifnot:validation.title">Required value</div>' +
+			'					</div>' +
+			'				</div>' +
+			//Authors
+			'				<div class="quantifier">' +
+			'					<div>' +
+			'						<span>Author</span>' +
+			'							<span>' +
+			'								<span>' +
+			'									<button data-bind="click: addNewAuthor" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"</span></button>' +
+			'								</span>' +
+			'							</span>' +
+			'						</div>' +
+			'					<div class="interfaceFieldsContainer" data-bind="foreach: author"> ' +
+			'						<div>' +
+			'							<span>' +
+			'								<input data-bind="value: name" /> ' +
+			'								<!--<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>-->' +
+			'							</span>' +
+			'							<span data-bind="if: $index">' +
+			'								<button data-bind="click: $parent.removeThisAuthor" class="btn btn-default btn-xs">' +
+			'									<span class="glyphicon glyphicon-minus"></span>' +
+			'								</button>' +
+			'							</span>' +
+			'						</div>' +	
+			'					</div>' +
+			'				</div>' +
+			//Date
+			'				<div class="quantifier">' +
+			'					<div>' +
+			'						<span>Date</span>' +
+			'					</div>' +
+			'					<div class="interfaceFieldsContainer"> ' +
+			//'						<div class="input-append date">' +
+			'							<input placeholder="YYYY-MM-DD" type="text" class="span2" data-bind="value: date">' +
+			//'							<button class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
+			'							<span class="cwrc-help glyphicon glyphicon-question-sign" title="Date must be in the form of YYYY, YYYY-MM or YYYY-MM-DD."></span>'+
+			//'						</div>' +
+			'						<div class="label label-danger" data-bind="ifnot:validation.date">Invalid date</div>' +
+			'					</div>' +
+			'				</div>' +
+			
+			//Project
+			'				<div class="quantifier">' +
+			'					<div>' +
+			'						<span>Project</span>' +
+			'					</div>' +
+			'					<div class="interfaceFieldsContainer"> ' +
+			'						<input data-bind="value: project">' +	
+			'						<!--<div class="label label-info" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}">Required value</div>-->' +
+			'					</div>' +
+			'				</div>' +
+			
+			'			</div>' +
+			'			<div class="modal-footer">' +
+			'				<div class="label label-danger" data-bind="ifnot: validated"> Form is not valid</div>' +
+			'				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
+			'				<button type="button" class="btn btn-primary" onclick="cD.processCallback();">Ok</button>' +
+			'			</div>' +
+			'		</div>' +
+			'	</div>' +
+			'</div>' +
+			'</div>';
 
 			$('head').append(entityTemplates);
 			$('body').append(newDialogTemplate);
+			$('body').append(newTitleDialogTemplate);
 			$("#cwrcEntityModal").modal(params.modalOptions);
 			$("#cwrcEntityModal").draggable({	
 				handle: ".modal-header"
 			});
+			$("#cwrcTitleModal").modal(params.modalOptions);
+			$("#cwrcTitleModal").draggable({	
+				handle: ".modal-header"
+			});
 
 			ko.applyBindings(entity.viewModel, $("#newDialogue")[0]);
-
+			ko.applyBindings(entity.viewModel, $("#newTitleDialogue")[0]);
 		}
 
 		var initializeQuantifiers = function() {
@@ -285,6 +420,27 @@ $(function(){
 			entity[dialogType].workingContainers.push(startingInterleave);
 			entity.viewModel().validated(true);
 		};
+		
+		var completeTitleDialog = function(opts) {
+			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
+			entity[dialogType].error = typeof opts.error === undefined ? function(){} : opts.error;
+			newTitleDialog();
+			setHelp();
+		};
+		
+		var newTitleDialog = function() {
+			initializeQuantifiers();
+			entity.viewModel().modsFields().modsType("Audio");
+			entity.viewModel().modsFields().title("");
+			entity.viewModel().modsFields().author([]);
+			entity.viewModel().modsFields().date("");
+			entity.viewModel().modsFields().project("");
+			
+			entity.viewModel().modsFields().validation.title(true);
+			entity.viewModel().modsFields().validation.date(true);
+			
+			entity.viewModel().modsFields().addNewAuthor();
+		}
 
 		var completeDialog = function(opts) {
 			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
@@ -756,6 +912,136 @@ $(function(){
 			}
 
 		};
+		
+		var validateModsInfo = function(xml){
+			var modsFields = entity.viewModel().modsFields();
+			
+			if(modsFields.title().trim().length < 1){
+				modsFields.validation.title(false);
+				entity.viewModel().validated(false);
+			}else{
+				modsFields.validation.title(true);
+			}
+			
+			var testDate = modsFields.date().trim();
+			var rx = /^\d{1,4}(-(0[1-9]|1[012])(-(0[1-9]|[12][0-9]|3[01]))?)?$/; //Tests that the date can be eirther YYYY, YYYY-MM, or YYYY-MM-DD
+			if(testDate.length > 0 && !rx.test(testDate)){
+				modsFields.validation.date(false);
+				entity.viewModel().validated(false);
+			}else{
+				modsFields.validation.date(true);
+			}
+			modsFields.date(testDate);
+		};
+		
+		var addModsInfo = function(xml){
+			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.';
+			var mods = $(xml).find("mods");
+			var modsFields = entity.viewModel().modsFields();
+			
+			// Create the title element
+			var titleInfo = entity.selfWorking.createElement("titleInfo");
+			var title = entity.selfWorking.createElement("title");
+			title.appendChild(entity.selfWorking.createTextNode(modsFields.title()));
+			$(titleInfo).append(title);
+			mods.append(titleInfo);
+			
+			// Create the author names
+			modsFields.author().forEach(function(author){
+				if(author.name().trim().length > 0){
+					var name = entity.selfWorking.createElement("name");
+					name.setAttribute("type", "personal");
+					var namePart = entity.selfWorking.createElement("namePart");
+					namePart.appendChild(entity.selfWorking.createTextNode(author.name()));
+					$(name).append(namePart);
+				
+					var role = entity.selfWorking.createElement("role");
+					var roleTerm = entity.selfWorking.createElement("roleTerm");
+					roleTerm.setAttribute("type", "text");
+					roleTerm.setAttribute("marcrealtor");
+					roleTerm.appendChild(entity.selfWorking.createTextNode("Author"));
+					$(role).append(roleTerm);
+				
+					$(name).append(roleTerm);
+					mods.append(name);
+				}
+			});
+			
+			// Create genre element
+			var genre = entity.selfWorking.createElement("genre");
+			genre.setAttribute("type", "formatType");
+			genre.appendChild(entity.selfWorking.createTextNode(modsFields.modsType()));
+			mods.append(genre);
+			 
+			// create origin info or related item info
+			if(modsFields.date().trim().length > 0){
+				var relatedItem = entity.selfWorking.createElement("relatedItem");
+				var originInfo = entity.selfWorking.createElement("originInfo");
+			
+				var dateIssued = entity.selfWorking.createElement("dateIssued");
+				dateIssued.setAttribute("encoding", "w3cdtf");
+				dateIssued.setAttribute("keyDate", "yes");
+				dateIssued.appendChild(entity.selfWorking.createTextNode(modsFields.date()));
+				$(originInfo).append(dateIssued);
+			
+				switch(modsFields.modsType()){
+					case 'Audio':
+					case 'Book (whole)':
+					case 'Correspondence':
+					case 'Journal (whole)':
+					case 'Manuscript':
+					case 'Video':
+					case 'Web resource':
+						mods.append(originInfo);
+						break;
+					
+					case 'Book (part)':
+						$(relatedItem).append(originInfo);
+						mods.append(relatedItem);
+						break;
+					
+					case 'Journal (part)':
+						var part = entity.selfWorking.createElement("part");
+						
+						var date = entity.selfWorking.createElement("date");
+						date.setAttribute("encoding", "w3cdtf");
+						date.appendChild(entity.selfWorking.createTextNode(modsFields.date()));
+						$(part).append(date);
+						
+						$(relatedItem).append(part);
+						mods.append(relatedItem);
+						break;
+				}
+			}
+			
+			// create access condition
+			var accessCondition = entity.selfWorking.createElement("accessCondition");
+			accessCondition.setAttribute("type", "use and reproduction");
+			accessCondition.appendChild(entity.selfWorking.createTextNode(accessConditionText));
+			mods.append(accessCondition);
+			
+			// create record info
+			var now = new Date();
+			var recordInfo = entity.selfWorking.createElement("recordInfo");
+			
+			if(modsFields.project().trim().length > 0){
+				var recordContentSource = entity.selfWorking.createElement("recordContentSource");
+				recordContentSource.appendChild(entity.selfWorking.createTextNode(modsFields.project()));
+				$(recordInfo).append(recordContentSource);
+			}
+			
+			var recordCreationDate = entity.selfWorking.createElement("recordCreationDate");
+			recordCreationDate.setAttribute("encoding", "w3cdtf");
+			recordCreationDate.appendChild(entity.selfWorking.createTextNode(now.toISOString().substring(0, 10)));
+			$(recordInfo).append(recordCreationDate);
+			
+			var recordChangeDate = entity.selfWorking.createElement("recordChangeDate");
+			recordChangeDate.setAttribute("encoding", "w3cdtf");
+			recordChangeDate.appendChild(entity.selfWorking.createTextNode(now.toISOString().substring(0, 10)));
+			$(recordInfo).append(recordChangeDate);
+			
+			mods.append(recordInfo);
+		}
 
 		var addRecordInfo = function(xml) {
 			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.';
@@ -815,9 +1101,16 @@ $(function(){
 					break;
 			}
 
-			entity.selfWorking = $.parseXML(startingXML + '<entity></entity>');
-			addRecordInfo(entity.selfWorking);
-			visitStringifyResult(entity[dialogType].workingContainers[0]);
+			if(dialogType == 'title'){
+				entity.selfWorking = $.parseXML(startingXML + "</mods>");
+				validateModsInfo();
+				addModsInfo(entity.selfWorking);
+			}else{
+				entity.selfWorking = $.parseXML(startingXML + '<entity></entity>');
+				addRecordInfo(entity.selfWorking);
+				visitStringifyResult(entity[dialogType].workingContainers[0]);
+			}
+			
 			var result = xmlToString(entity.selfWorking);
 			return result;
 		};
@@ -833,8 +1126,12 @@ $(function(){
 				};
 
 				entity[dialogType].success(result);
-				$('#cwrcEntityModal').modal('hide');
 				
+				if(dialogType === 'title'){
+					$('#cwrcTitleModal').modal('hide');
+				}else{
+					$('#cwrcEntityModal').modal('hide');
+				}
 			} else {
 				entity[dialogType].error("Form not valid");
 			}
@@ -1338,11 +1635,26 @@ $(function(){
 		};
 
 		cD.popCreatePlace = popCreatePlace;
+		
+		var popCreateTitle = function(opts) {
+			dialogType = "title";
+			entity.viewModel().dialogTitle("Add Title");
+			completeTitleDialog(opts);
+			$('#cwrcTitleModal').modal('show');
+			// hackish
+			setTimeout(function(){
+				$(".modal-body-area").scrollTop(0);
+			},5);
+			
+		};
 
+		cD.popCreateTitle = popCreateTitle;
+		
 		var popCreate = {
 			person: popCreatePerson,
 			organization : popCreateOrganization,
-			place : popCreatePlace
+			place : popCreatePlace,
+			title : popCreateTitle
 		};
 
 		cD.popCreate = popCreate;

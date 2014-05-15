@@ -80,6 +80,27 @@ $(function(){
 		};
 		cD.popCreatePlace(opts);
 	});
+	
+	$("#addTitle").click(function(){
+		$("#resultHeader").text("Entity ");
+		$("#entityXMLContainer").text("");
+		var opts = {
+			success: function(result) {
+				if(result.response.error){
+					alert(result.response.error);
+					$("#entityXMLContainer").text("");
+				}else{
+					$("#resultHeader").text("Title entity " + result.response.pid);
+					$("#entityXMLContainer").text(result.data);
+				}
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			}
+		};
+		cD.popCreateTitle(opts);
+	});
 
 
 	$("#searchPerson").click(function(){
