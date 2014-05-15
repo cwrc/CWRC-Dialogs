@@ -92,11 +92,13 @@ $(function(){
 				date: ko.observable(true)
 			},
 			addNewAuthor: function(){
-				entity.viewModel().modsFields().author.push(
-					{
-						name: ko.observable("")
-					}
-				);
+				var author = {
+					name: ko.observable("")
+				};
+				
+				entity.viewModel().modsFields().author.push(author);
+				
+				return author;
 			},
 			removeThisAuthor: function(author){
 				entity.viewModel().modsFields().author.remove(author);
@@ -421,25 +423,45 @@ $(function(){
 			entity.viewModel().validated(true);
 		};
 		
-		var completeTitleDialog = function(opts) {
+		var completeTitleDialog = function(opts, data) {
 			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
 			entity[dialogType].error = typeof opts.error === undefined ? function(){} : opts.error;
-			newTitleDialog();
+			newTitleDialog(data);
 			setHelp();
 		};
 		
-		var newTitleDialog = function() {
+		var newTitleDialog = function(data) {
 			initializeQuantifiers();
-			entity.viewModel().modsFields().modsType("Audio");
-			entity.viewModel().modsFields().title("");
-			entity.viewModel().modsFields().author([]);
-			entity.viewModel().modsFields().date("");
-			entity.viewModel().modsFields().project("");
 			
-			entity.viewModel().modsFields().validation.title(true);
-			entity.viewModel().modsFields().validation.date(true);
+			var modsFields = entity.viewModel().modsFields();
+			if(data && data != null){
+				modsFields.modsType(data.modsType);
+				modsFields.title(data.title);
+				modsFields.date(data.date ? data.date : "");
+				modsFields.project(data.project ? data.project : "");
+				modsFields.author([])
+				
+				if(data.author && data.author != null && data.author.length > 0){
+					data.author.forEach(function(author){
+						var a = modsFields.addNewAuthor();
+						a.name(author.name);
+					})
+				}else{
+					modsFields.addNewAuthor();
+				}
+			}else{
+				modsFields.modsType("Audio");
+				modsFields.title("");
+				modsFields.author([]);
+				modsFields.date("");
+				modsFields.project("");
+				
+				modsFields.addNewAuthor();
+			}
 			
-			entity.viewModel().modsFields().addNewAuthor();
+			
+			modsFields.validation.title(true);
+			modsFields.validation.date(true);
 		}
 
 		var completeDialog = function(opts) {
@@ -1636,10 +1658,10 @@ $(function(){
 
 		cD.popCreatePlace = popCreatePlace;
 		
-		var popCreateTitle = function(opts) {
+		var popCreateTitle = function(opts, data) {
 			dialogType = "title";
 			entity.viewModel().dialogTitle("Add Title");
-			completeTitleDialog(opts);
+			completeTitleDialog(opts, data);
 			$('#cwrcTitleModal').modal('show');
 			// hackish
 			setTimeout(function(){
