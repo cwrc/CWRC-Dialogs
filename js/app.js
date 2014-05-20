@@ -194,7 +194,14 @@ $(function(){
 			error : function(errorThrown) {
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
-			}
+			},
+			buttons : [
+				{
+					label : "Edit",
+					action : cD.popEditTitle
+				},
+					
+			]
 		}
 
 		cD.popSearchTitle(opts);
