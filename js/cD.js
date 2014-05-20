@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// parameters
 
@@ -1499,6 +1499,55 @@ $(function(){
 				visitNodeCWRCPopulate(children[i], path);
 			}
 		}
+		
+		var extractTitleMODS = function(opts){
+			var mods = $(opts.data);
+			var modsFields = entity.viewModel().modsFields();
+			var element = null;
+			var result = {
+				author: []
+			};
+			
+			// Create the title element
+			element = mods.find("titleInfo>title");
+			result.title = element.text();
+			
+			// Create the author names
+			mods.find("name>namePart").each(function(){
+				result.author.push({
+						name: $(this).text()
+					});
+			});
+			
+			// Create genre element
+			var genre = mods.find("genre").text();
+			result.modsType = genre;
+			 
+			// create origin info or related item info
+			switch(genre){
+				case 'Book (part)':
+					element = mods.find("relatedItem > originInfo > dateIssued");
+					break;
+					
+				case 'Journal (part)':
+					element = mods.find("relatedItem > part > date");
+					break;
+					
+				default:
+					element = mods.find("originInfo > dateIssued");
+					break;
+			}
+			if(element.length > 0){
+				result.date = element.text();
+			}
+			
+			element = mods.find("recordInfo > recordContentSource");
+			if(element.length > 0){
+				result.project = element.text();
+			}
+			
+			return result;
+		}
 
 		// var checkAttribute = function(attr, path, field) {
 		// 	console.log(field.input);//
@@ -1663,7 +1712,7 @@ $(function(){
 		
 		var popCreateTitle = function(opts, data) {
 			dialogType = "title";
-			entity.viewModel().dialogTitle("Add Title");
+			entity.viewModel().dialogTitle(entity.editing ? "Edit " + data.title : "Add Title");
 			completeTitleDialog(opts, data);
 			$('#cwrcTitleModal').modal('show');
 			// hackish
@@ -1706,6 +1755,13 @@ $(function(){
 		}
 
 		cD.popEditPlace = popEditPlace;
+		
+		var popEditTitle = function(opts) {
+			entity.editing = true;
+			cD.popCreateTitle(opts, extractTitleMODS(opts));
+		}
+
+		cD.popEditTitle = popEditTitle;
 
 		///////////////////////////////////////////////////////////////////////
 		// Search
