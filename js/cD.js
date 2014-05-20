@@ -4,7 +4,7 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		// var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		 //var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// parameters
 
@@ -981,7 +981,7 @@ $(function(){
 					var role = entity.selfWorking.createElement("role");
 					var roleTerm = entity.selfWorking.createElement("roleTerm");
 					roleTerm.setAttribute("type", "text");
-					roleTerm.setAttribute("marcrealtor");
+					roleTerm.setAttribute("authority", "marcrealtor");
 					roleTerm.appendChild(entity.selfWorking.createTextNode("Author"));
 					$(role).append(roleTerm);
 				
@@ -1124,17 +1124,23 @@ $(function(){
 					break;
 			}
 
+			var result = null;
+			
 			if(dialogType == 'title'){
 				entity.selfWorking = $.parseXML(startingXML + "</mods>");
 				validateModsInfo();
 				addModsInfo(entity.selfWorking);
+				
+				var result = xmlToString(entity.selfWorking);
+				
+				result = result.replace(/xmlns=""/g, "");
 			}else{
 				entity.selfWorking = $.parseXML(startingXML + '<entity></entity>');
 				addRecordInfo(entity.selfWorking);
 				visitStringifyResult(entity[dialogType].workingContainers[0]);
+				var result = xmlToString(entity.selfWorking);
 			}
 			
-			var result = xmlToString(entity.selfWorking);
 			return result;
 		};
 
@@ -1553,7 +1559,7 @@ $(function(){
 		// 	console.log(field.input);//
 		// }
 
-		var visitNodeCWRCPopulate = function (node, path, parentNode = null) {
+		var visitNodeCWRCPopulate = function (node, path, parentNode) {
 			path.push(node.nodeName);
 			
 			// console.log(path);
