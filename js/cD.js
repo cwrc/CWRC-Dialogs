@@ -1142,6 +1142,7 @@ $(function(){
 		cD.processCallback = function() {
 			entity.viewModel().validated(true);
 			var xml = getWorkingXML();
+			console.log(xml);
 			if (entity.viewModel().validated()) {
 				var response;
 				if (entity.editing) {
@@ -1481,7 +1482,14 @@ $(function(){
 					switch (opts.repository) {
 						case "cwrc":
 						populatePersonCWRC(opts);
+						break;
 					}
+				break;
+				case "organization":
+				break;
+				case "place":
+				break;
+
 			}
 			
 
@@ -1642,7 +1650,13 @@ $(function(){
 
 			}else if (field.input !== " header") {				
 				if (field.path == parentPath) {
-					field.value(nodeValue);	
+					// console.log(field.input + " " + nodeValue);
+					if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
+						field.value(nodeValue.split(","));
+					} else {
+						field.value(nodeValue);		
+					}
+					
 					
 					// XXX need to add another group in previous container
 					return true;
