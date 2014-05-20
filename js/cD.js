@@ -466,8 +466,8 @@ $(function(){
 		}
 
 		var completeDialog = function(opts) {
-			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
-			entity[dialogType].error = typeof opts.error === undefined ? function(){} : opts.error;
+			entity[dialogType].success = opts.success ? opts.success : function(){};
+			entity[dialogType].error = opts.error ? opts.error : function(){};
 			newDialog();
 			setHelp();
 		};
@@ -1153,9 +1153,7 @@ $(function(){
 					data : xml
 				};
 
-				if(entity[dialogType].success) {
-					entity[dialogType].success(result);	
-				}
+				entity[dialogType].success(result);	
 				
 				if(dialogType === 'title'){
 					$('#cwrcTitleModal').modal('hide');
@@ -1496,7 +1494,7 @@ $(function(){
 			children = workingXML.childNodes;
 			var path = [];
 			for (var i=0; i< children.length; ++i) {
-				visitNodeCWRCPopulate(children[i], path);
+				visitNodeCWRCPopulate(children[i], path, null);
 			}
 		}
 		
@@ -1553,7 +1551,7 @@ $(function(){
 		// 	console.log(field.input);//
 		// }
 
-		var visitNodeCWRCPopulate = function (node, path, parentNode = null) {
+		var visitNodeCWRCPopulate = function (node, path, parentNode) {
 			path.push(node.nodeName);
 			
 			// console.log(path);
