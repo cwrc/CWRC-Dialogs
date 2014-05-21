@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		 var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		 //var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// parameters
 
@@ -986,7 +986,7 @@ $(function(){
 					roleTerm.appendChild(entity.selfWorking.createTextNode("Author"));
 					$(role).append(roleTerm);
 				
-					$(name).append(roleTerm);
+					$(name).append(role);
 					mods.append(name);
 				}
 			});
