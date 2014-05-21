@@ -4,7 +4,7 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		 var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		 
 		 var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
@@ -1874,7 +1874,6 @@ $(function(){
 		
 		search.processGeoNameSearch = function(queryString) {
 			search.processData = search.processGeoNameData;
-			geonameUrl = "http://api.geonames.org/search"
 			
 			var quotedQueryString = encodeURI(queryString);
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
@@ -1882,7 +1881,7 @@ $(function(){
 				// dataType : 'json',
 				dataType : "xml",
 				processData : false,
-				data : "name_equals=" + quotedQueryString + "&type=XML&username=geocwrc",
+				data : "query=" + quotedQueryString,
 				success: function(response) {
 					search.linkedDataSources.geonames.response = [];
 					$('geonames geoname', response).each(function(index, spec) {
@@ -2017,7 +2016,7 @@ $(function(){
 			for (var key in search.linkedDataSources) {
 				var lds = search.linkedDataSources[key];
 				result +=
-				'										<div class="panel panel-default">' +
+				'										<div class="panel panel-default" data-bind="visible: $root.linkedDataSources.' + key+ '.showPanel">' +
 				'											<div data-name="'+key+'" class="panel-heading panel-title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+key+'" data-bind="{click:$root.selectLinkedDataSource}">' +
 				'														' + lds.name +
 				'											</div>' +
