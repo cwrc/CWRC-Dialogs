@@ -1950,6 +1950,141 @@ $(function(){
 
 		};
 
+		search.htmlifyCWRCOrganization = function() {
+			
+			var data = search.selectedData;
+			var workingXML = $.parseXML(data.data);
+			// url
+			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			return search.completeHtmlifyOrganization(data);
+			
+		}
+
+		search.completeHtmlifyOrganization = function(data) {
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			
+			// for (var i =0 ; i< data.variantNames.length; ++i) {
+			var listItem = $("<li></li>");
+			var anchor = $("<a></a>");
+			anchor.attr("href", data.url);
+			anchor.append("URL:" + data.url);
+			listItem.append(anchor);	
+			list.append(listItem);
+			// }
+					
+			head.append(list);
+			
+			return xmlToString(head[0]);
+		}
+
+		search.htmlifyCWRCTitle = function() {
+			
+			var data = search.selectedData;
+			var workingXML = $.parseXML(data.data);
+			// author, 
+			data.authors = [];//"Author";
+			var authorSelector = "mods > name"; // 
+
+			var authors = $(workingXML).find(authorSelector).filter(function(){ return $(this).attr("type") === 'personal'; });
+			$(authors).children("namePart").each(function(i, namePart){
+				data.authors.push($(namePart).text());
+			});
+		
+			//date, 
+
+			var dateSelector = "mods > originInfo > dateIssued";
+			data.date = $(workingXML).find(dateSelector).first().text();
+			//URL
+			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+
+			return search.completeHtmlifyTitle(data);
+		}
+
+		search.completeHtmlifyTitle = function(data) {
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			//author
+			var listItem;
+			for (var i=0 ;i<data.authors.length; ++i) {
+				listItem = $("<li></li>");
+				listItem.append("Author: " + data.authors[i]);
+				list.append(listItem);	
+			}
+			
+			// date
+			listItem = $("<li></li>");
+			listItem.append("Date: " + data.date);
+			list.append(listItem);
+			// url
+			listItem = $("<li></li>");
+			var anchor = $("<a></a>");
+			anchor.attr("href", data.url);
+			anchor.append("URL:" + data.url);
+			listItem.append(anchor);	
+			list.append(listItem);
+			
+
+			head.append(list);
+			return xmlToString(head[0]);
+		}
+
+		search.htmlifyCWRCPlace = function() {
+			var data = search.selectedData;
+			var workingXML = $.parseXML(data.data);
+
+			// First administrative division, country (displayed in line, separated by commas - if possible), 
+			var firstSelector = "entity > place > description > firstAdministrativeDivision";
+			var countrySelector = "entity > place > description > countryName";
+
+			var first = $(workingXML).find(firstSelector).first().text();
+			var country = $(workingXML).find(countrySelector).first().text();
+
+
+			data.first = first + ", " + country;
+
+			var latSelector = "entity > place > description > latitude";
+
+			data.lat = $(workingXML).find(latSelector).first().text();
+			var longSelector = "entity > place > description > longitude";
+			data.long = $(workingXML).find(longSelector).first().text();
+
+
+			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+
+			return search.completeHtmlifyPlace(data);
+		}
+
+		search.completeHtmlifyPlace = function(data) {
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			var listItem;
+
+			// first
+			listItem = $("<li></li>");
+			listItem.append("Name: " + data.first);
+			list.append(listItem);
+			// lat
+			listItem = $("<li></li>");
+			listItem.append("Latitude: " + data.lat);
+			list.append(listItem);
+			// long
+			listItem = $("<li></li>");
+			listItem.append("Longitude: " + data.long);
+			list.append(listItem);
+			// url
+			listItem = $("<li></li>");
+			var anchor = $("<a></a>");
+			anchor.attr("href", data.url);
+			anchor.append("URL:" + data.url);
+			listItem.append(anchor);	
+			list.append(listItem);
+			
+
+			head.append(list);
+			return xmlToString(head[0]);
+		}
+
 		search.htmlifyVIAFPerson = function(){			
 			var data = search.selectedData;
 			return search.completeHtmlifyPerson(data);
@@ -2271,6 +2406,10 @@ $(function(){
 				case "title":
 				// that.scrape = search.scrapeCWRCTitle;
 				that.htmlify = search.htmlifyCWRCTitle;
+				break;
+				case "place":
+				// that.scrape = search.scrapeCWRCTitle;
+				that.htmlify = search.htmlifyCWRCPlace;
 				break;
 			}
 			
