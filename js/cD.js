@@ -1882,12 +1882,27 @@ $(function(){
 			// data.nationality = $(workingXML).find(nationalitySelector).first().text();
 
 			// birthDeath
-			var birthSelector = "";
-			var deathSelector = "";
-			var birthValue = $(workingXML).find(birthSelector).first().text();
-			var deathValue = $(workingXML).find(deathSelector).first().text();
-			if (birthValue !== "" && deathValue !== "") {
-				data.birthDeath = birthValue + "-" + deathValue;	
+			var dateTypeSelector = "entity > person > description > existDates > dateSingle > dateType";
+			
+			var birthNode = $(workingXML).find(dateTypeSelector).filter(function(){ return $(this).text() == 'birth'; });
+			var deathNode = $(workingXML).find(dateTypeSelector).filter(function(){ return $(this).text() == 'death'; });
+			var birthValue = birthNode.siblings("standardDate").text();
+			var deathValue = deathNode.siblings("standardDate").text()
+			// if (birthValue !== "" && deathValue !== "") {
+			// 	data.birthDeath = birthValue + "-" + deathValue;	
+			// }
+			data.birthDeath = "";
+
+			if (birthValue !== "") {
+				data.birthDeath += birthValue;
+			}
+			data.birthDeath += " - ";
+			if (deathValue !== "") {
+				data.birthDeath += deathValue;
+			}
+
+			if (data.birthDeath === " - ") {
+				data.birthDeath = "";
 			}
 			
 			// gender
