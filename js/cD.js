@@ -4,9 +4,13 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+<<<<<<< HEAD
 		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+=======
+		// var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+>>>>>>> 366ad075bc9090508da5532c3d1b2622d4ec9353
 		 
-		 var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
+		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
 		// parameters
 
@@ -1915,12 +1919,27 @@ $(function(){
 			// data.nationality = $(workingXML).find(nationalitySelector).first().text();
 
 			// birthDeath
-			var birthSelector = "";
-			var deathSelector = "";
-			var birthValue = $(workingXML).find(birthSelector).first().text();
-			var deathValue = $(workingXML).find(deathSelector).first().text();
-			if (birthValue !== "" && deathValue !== "") {
-				data.birthDeath = birthValue + "-" + deathValue;	
+			var dateTypeSelector = "entity > person > description > existDates > dateSingle > dateType";
+			
+			var birthNode = $(workingXML).find(dateTypeSelector).filter(function(){ return $(this).text() == 'birth'; });
+			var deathNode = $(workingXML).find(dateTypeSelector).filter(function(){ return $(this).text() == 'death'; });
+			var birthValue = birthNode.siblings("standardDate").text();
+			var deathValue = deathNode.siblings("standardDate").text()
+			// if (birthValue !== "" && deathValue !== "") {
+			// 	data.birthDeath = birthValue + "-" + deathValue;	
+			// }
+			data.birthDeath = "";
+
+			if (birthValue !== "") {
+				data.birthDeath += birthValue;
+			}
+			data.birthDeath += " - ";
+			if (deathValue !== "") {
+				data.birthDeath += deathValue;
+			}
+
+			if (data.birthDeath === " - ") {
+				data.birthDeath = "";
 			}
 			
 			// gender
