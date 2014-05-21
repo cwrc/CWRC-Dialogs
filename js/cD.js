@@ -4,7 +4,9 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		 //var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		 var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		 
+		 var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
 		// parameters
 
@@ -1785,7 +1787,8 @@ $(function(){
 				name : specs.name === null ? "" : specs.name,
 				processSearch : specs.processSearch === null ? function(queryString){} : specs.processSearch,
 				// scrape : specs.scrape,
-				htmlify : specs.htmlify
+				htmlify : specs.htmlify,
+				datatype: specs.datatype
 			}
 
 			return that;
@@ -1805,6 +1808,10 @@ $(function(){
 				},
 			});
 
+		}
+		
+		search.processGeoNameData = function(id) {
+			return xmlToString(search.linkedDataSources.geonames.response[id]);
 		}
 
 		search.processViafData = function(id) {
@@ -1854,6 +1861,32 @@ $(function(){
 				success: function(response) {
 					$('searchRetrieveResponse record', response).each(function(index, spec) {
 						search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
+					});
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					if (ajaxOptions !== "abort") {
+						console.log("Error " + ajaxOptions);	
+					}					
+				}
+			});
+		}
+		
+		search.processGeoNameSearch = function(queryString) {
+			search.processData = search.processGeoNameData;
+			geonameUrl = "http://api.geonames.org/search"
+			
+			var quotedQueryString = encodeURI(queryString);
+			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
+				url: geonameUrl,
+				// dataType : 'json',
+				dataType : "xml",
+				processData : false,
+				data : "name_equals=" + quotedQueryString + "&type=XML&username=geocwrc",
+				success: function(response) {
+					search.linkedDataSources.geonames.response = [];
+					$('geonames geoname', response).each(function(index, spec) {
+						search.linkedDataSources.geonames.results.push(search.getResultFromGeoName(spec, index));
+						search.linkedDataSources.geonames.response.push(spec);
 					});
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
@@ -1956,10 +1989,17 @@ $(function(){
 			"cwrc": search.getLinkedDataSource({
 				"name": "CWRC", 
 				"processSearch": search.processCWRCSearch,
+				"datatype": ["person", "place", "organization", "title"]
 			}),
 			"viaf": search.getLinkedDataSource({
 				"name": "VIAF", 
 				"processSearch": search.processVIAFSearch,
+				"datatype": ["person", "organization", "title"]
+			}),
+			"geonames": search.getLinkedDataSource({
+				"name": "GeoName",
+				"processSearch": search.processGeoNameSearch,
+				"datatype": ["place"]
 			})
 		}
 
@@ -2159,6 +2199,40 @@ $(function(){
 				// helper
 				selected : ko.observable(false)
 			}
+			return that;
+		}
+		
+		search.htmlifyGeoNamePlace = function(name, countryName, latitude, longitude){
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			
+			var listItem = $("<li></li>");
+			listItem.append("Latitude: " + latitude);
+			list.append(listItem);
+			
+			listItem = $("<li></li>");
+			listItem.append("Longitude: " + longitude);
+			list.append(listItem);
+			
+			head.append(list);
+			
+			return xmlToString(head[0]);
+		}
+		
+		search.getResultFromGeoName = function(specs, index) {
+			// specs has data and source
+			var that = search.result();
+			that.id = index;
+			that.name = $(specs).find("name").text() + ", " + $(specs).find("countryName").text();
+
+			
+			that.htmlify = function(){
+				return search.htmlifyGeoNamePlace($(specs).find("name").text(),
+				 $(specs).find("countryName").text(),
+				 $(specs).find("lat").text(),
+				 $(specs).find("lng").text())
+				 };
+			
 			return that;
 		}
 
