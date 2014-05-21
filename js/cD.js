@@ -1788,7 +1788,8 @@ $(function(){
 				processSearch : specs.processSearch === null ? function(queryString){} : specs.processSearch,
 				// scrape : specs.scrape,
 				htmlify : specs.htmlify,
-				datatype: specs.datatype
+				datatype: specs.datatype,
+				showPanel: ko.observable(true)
 			}
 
 			return that;
@@ -2467,6 +2468,13 @@ $(function(){
 						search.buttons.push(button);	
 					}
 				}
+			}
+			
+			// define panels to be shown
+			var dataId = "";
+			for(dataId in search.linkedDataSources){
+				var dataSource = search.linkedDataSources[dataId];
+				dataSource.showPanel(dataSource.datatype.indexOf(dialogType) > -1);
 			}
 		
 			// alert(search.buttons[0].label)
