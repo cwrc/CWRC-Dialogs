@@ -4,11 +4,7 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-<<<<<<< HEAD
 		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
-=======
-		// var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
->>>>>>> 366ad075bc9090508da5532c3d1b2622d4ec9353
 		 
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
@@ -2225,7 +2221,12 @@ $(function(){
 			var head = $("<div></div>");
 			var list = $("<ul></ul>");
 			
+			
 			var listItem = $("<li></li>");
+			listItem.append("Country: " + countryName);
+			list.append(listItem);
+			
+			listItem = $("<li></li>");
 			listItem.append("Latitude: " + latitude);
 			list.append(listItem);
 			
