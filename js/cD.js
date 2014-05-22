@@ -2386,7 +2386,7 @@ $(function(){
 			
 			var url = "http://www.geonames.org/" + id;
 			listItem = $("<li></li>");
-			listItem.append("<a href='" + url + "' target='_blank'>" + url + "</a>");
+			listItem.append("URL:&nbsp;<a href='" + url + "' target='_blank'>" + url + "</a>");
 			list.append(listItem);
 			
 			head.append(list);
