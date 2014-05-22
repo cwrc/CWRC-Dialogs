@@ -1976,8 +1976,8 @@ $(function(){
 		search.getAnchor = function(url) {
 			var anchor = $("<a></a>");
 			anchor.attr("target", "_blank");
-			anchor.attr("href", data.url);
-			anchor.append("URL:" + data.url);
+			anchor.attr("href", url);
+			anchor.append("URL:" + url);
 
 			return anchor;
 		}
@@ -2092,7 +2092,6 @@ $(function(){
 			// url
 			listItem = $("<li></li>");
 			listItem.append(search.getAnchor(data.url));
-			listItem.append(anchor);	
 			list.append(listItem);
 			
 
