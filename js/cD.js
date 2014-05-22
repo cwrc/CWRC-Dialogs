@@ -2384,7 +2384,7 @@ $(function(){
 			listItem.append("Longitude: " + longitude);
 			list.append(listItem);
 			
-			var url = "http://ws.geonames.org/get?geonameId=" + id + "&style=full&username=geocwrc";
+			var url = "http://www.geonames.org/" + id;
 			listItem = $("<li></li>");
 			listItem.append("<a href='" + url + "'>" + url + "</a>");
 			list.append(listItem);
