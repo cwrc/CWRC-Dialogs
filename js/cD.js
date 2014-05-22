@@ -33,7 +33,7 @@ $(function(){
 		// Helpers
 		///////////////////////////////////////////////////////////////////////
 
-		var last = function(array) {
+		var last = function(array) {	
 			return array[array.length-1];
 		};
 		
@@ -1486,11 +1486,12 @@ $(function(){
 		var populateDialog = function(opts) {
 			
 			// change this to object
+			/*
 			switch (dialogType) {
 				case "person" :
 					switch (opts.repository) {
 						case "cwrc":
-						populatePersonCWRC(opts);
+						populateCWRC(opts);
 						break;
 					}
 				break;
@@ -1500,11 +1501,18 @@ $(function(){
 				break;
 
 			}
+			*/
+
+			switch (opts.repository) {
+				case "cwrc":
+					populateCWRC(opts);
+				break;
+			}
 			
 
 		}
 
-		var populatePersonCWRC = function(opts) {
+		var populateCWRC = function(opts) {
 			// cwrc
 			
 			var workingXML = $.parseXML(opts.data);
@@ -1751,13 +1759,19 @@ $(function(){
 		cD.popEditPerson = popEditPerson;
 
 		var popEditOrganization = function(opts) {
-
+			entity.editing = true;
+			entity.editingPID = opts.id;
+			cD.popCreateOrganization(opts);
+			populateDialog(opts);
 		};
 
 		cD.popEditOrganization = popEditOrganization;
 
 		var popEditPlace = function(opts) {
-
+			entity.editing = true;
+			entity.editingPID = opts.id;
+			cD.popCreatePlace(opts);
+			populateDialog(opts);
 		}
 
 		cD.popEditPlace = popEditPlace;
