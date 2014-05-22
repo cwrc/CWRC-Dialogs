@@ -1960,16 +1960,23 @@ $(function(){
 			
 		}
 
+		search.getAnchor = function(url) {
+			var anchor = $("<a></a>");
+			anchor.attr("target", "_blank");
+			anchor.attr("href", data.url);
+			anchor.append("URL:" + data.url);
+
+			return anchor;
+		}
+
 		search.completeHtmlifyOrganization = function(data) {
 			var head = $("<div></div>");
 			var list = $("<ul></ul>");
 			
 			// for (var i =0 ; i< data.variantNames.length; ++i) {
 			var listItem = $("<li></li>");
-			var anchor = $("<a></a>");
-			anchor.attr("href", data.url);
-			anchor.append("URL:" + data.url);
-			listItem.append(anchor);	
+			
+			listItem.append(search.getAnchor(data.url));
 			list.append(listItem);
 			// }
 					
@@ -2018,10 +2025,7 @@ $(function(){
 			list.append(listItem);
 			// url
 			listItem = $("<li></li>");
-			var anchor = $("<a></a>");
-			anchor.attr("href", data.url);
-			anchor.append("URL:" + data.url);
-			listItem.append(anchor);	
+			listItem.append(search.getAnchor(data.url));
 			list.append(listItem);
 			
 
@@ -2062,7 +2066,7 @@ $(function(){
 
 			// first
 			listItem = $("<li></li>");
-			listItem.append("Name: " + data.first);
+			listItem.append(data.first);
 			list.append(listItem);
 			// lat
 			listItem = $("<li></li>");
@@ -2074,9 +2078,7 @@ $(function(){
 			list.append(listItem);
 			// url
 			listItem = $("<li></li>");
-			var anchor = $("<a></a>");
-			anchor.attr("href", data.url);
-			anchor.append("URL:" + data.url);
+			listItem.append(search.getAnchor(data.url));
 			listItem.append(anchor);	
 			list.append(listItem);
 			
@@ -2099,11 +2101,11 @@ $(function(){
 			if (data.birthDeath && data.birthDeath !== "") {
 				result += "<li>Birth - Death: "+ data.birthDeath +"</li>";	
 			}
-			if (data.gender && data.gender !== "") {
-				result += "<li>Gender: "+ data.gender +"</li>";	
-			}
+			// if (data.gender && data.gender !== "") {
+			// 	result += "<li>Gender: "+ data.gender +"</li>";	
+			// }
 			if (data.url && data.url !== "") {
-				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+				result += "<li>URL: <a target='_blank' href='" + data.url + "'>" + data.url +"</a></li>";
 			}
 			result += "</ul></div>";
 			return result;
