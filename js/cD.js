@@ -2367,7 +2367,7 @@ $(function(){
 			return that;
 		}
 		
-		search.htmlifyGeoNamePlace = function(name, countryName, latitude, longitude){
+		search.htmlifyGeoNamePlace = function(name, countryName, latitude, longitude, id){
 			var head = $("<div></div>");
 			var list = $("<ul></ul>");
 			
@@ -2382,6 +2382,11 @@ $(function(){
 			
 			listItem = $("<li></li>");
 			listItem.append("Longitude: " + longitude);
+			list.append(listItem);
+			
+			var url = "http://ws.geonames.org/get?geonameId=" + id + "&style=full&username=geocwrc";
+			listItem = $("<li></li>");
+			listItem.append("<a href='" + url + "'>" + url + "</a>");
 			list.append(listItem);
 			
 			head.append(list);
@@ -2400,7 +2405,8 @@ $(function(){
 				return search.htmlifyGeoNamePlace($(specs).find("name").text(),
 				 $(specs).find("countryName").text(),
 				 $(specs).find("lat").text(),
-				 $(specs).find("lng").text())
+				 $(specs).find("lng").text()),
+				 $(specs).find("geonameId").text()
 				 };
 			
 			return that;
