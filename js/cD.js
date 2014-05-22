@@ -2406,7 +2406,7 @@ $(function(){
 				 $(specs).find("countryName").text(),
 				 $(specs).find("lat").text(),
 				 $(specs).find("lng").text()),
-				 $(specs).find("geonameId").text()
+				 $(specs).find("geonameid").text()
 				 };
 			
 			return that;
