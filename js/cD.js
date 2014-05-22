@@ -2405,8 +2405,8 @@ $(function(){
 				return search.htmlifyGeoNamePlace($(specs).find("name").text(),
 				 $(specs).find("countryName").text(),
 				 $(specs).find("lat").text(),
-				 $(specs).find("lng").text()),
-				 $(specs).find("geonameid").text()
+				 $(specs).find("lng").text(),
+				 $(specs).find("geonameid").text())
 				 };
 			
 			return that;
