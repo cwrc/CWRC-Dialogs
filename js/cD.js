@@ -4,12 +4,7 @@ $(function(){
 	cD = {};
 	(function(){
 		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-<<<<<<< HEAD
 		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
-=======
-		// var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
-
->>>>>>> 905ee17d0efaf9f8ce1e9dba174835094bb6849e
 		 
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
