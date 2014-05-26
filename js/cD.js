@@ -1150,7 +1150,7 @@ $(function(){
 		cD.processCallback = function() {
 			entity.viewModel().validated(true);
 			var xml = getWorkingXML();
-			console.log(xml);
+			// console.log(xml);
 			if (entity.viewModel().validated()) {
 				var response;
 				if (entity.editing) {
@@ -1388,6 +1388,7 @@ $(function(){
 			that.nodeMessage = ko.observable("");
 			that.nodeMessageClass = ko.observable("label label-info");
 			that.options = [];
+			that.isSet = false;
 			that.clone = function() {
 				var result = that.constructor();
 				result.label = that.label;
@@ -1398,6 +1399,7 @@ $(function(){
 				result.defaultValue = that.defaultValue;
 				result.nodeMessage = ko.observable(that.nodeMessage());
 				result.nodeMessageClass = ko.observable(that.nodeMessageClass());
+				result.isSet = that.isSet;
 				if (result.defaultValue) {
 					result.value(that.value());
 				}
@@ -1665,11 +1667,17 @@ $(function(){
 
 			}else if (field.input !== " header") {				
 				if (field.path == parentPath) {
-					// console.log(field.input + " " + nodeValue);
-					if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
-						field.value(nodeValue.split(","));
+					// console.log(field.input + " " + field.value() + " " + nodeValue);
+					// XXX working
+					if (! field.isSet) {
+						field.isSet = true;
+						if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
+							field.value(nodeValue.split(","));
+						} else {
+							field.value(nodeValue);		
+						}
 					} else {
-						field.value(nodeValue);		
+						// console.log("need to add seed for " + nodeValue)
 					}
 					
 					
@@ -2225,12 +2233,6 @@ $(function(){
 			'												<div class="panel-body">' +
 			// content
 			'									<div class="list-group cwrc-result-area">' +
-			// '										<!-- ko foreach: results.cwrc -->' +
-			// '										<a href="#" class="list-group-item" data-bind="{click:$root.selectResult, css: {active: selected}}" >' +
-			// '											<h5 class="list-group-item-heading"> <span data-bind="text:data[\'dc.title\']"></span> - <span data-bind="text:source"></span></h5>' +
-			// '											<p class="list-group-item-text"><span data-bind="text:data.id"></span></p>' +
-			// '										</a>' +
-			// '										<!-- /ko -->' +
 			'									</div>' +
 			// end of content
 			'												</div>' +
@@ -2538,6 +2540,11 @@ $(function(){
 				entry.selected(false) ;
 			});
 			result.selected(true);
+
+			if (search.selectedData != undefined && search.selectedData != null && search.selectedData != result) {
+				search.removeInfoPopOver();
+			}
+
 			search.selectedData = result;
 		};
 
@@ -2616,7 +2623,8 @@ $(function(){
 		}
 
 		search.showInfoPopOver = function(clicked) {
-			search.selectResult(clicked);
+			// search.selectResult(clicked);
+			search.selectedData = clicked;
 			$("#search-modal").popover("show");
 			$(".popover").find(".arrow").removeClass("arrow");
 		}
