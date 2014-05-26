@@ -882,16 +882,14 @@ $(function(){
 				}
 			} else if (node.input !== "label" && node.input !== "header") {
 				// CREATE NODE
-				// if (node.input == "datePicker") {
-				// 	alert("picker!!! ");
-				// }
+				
 				var validate = last(entity[dialogType].shouldValidate);
 				if (validate && $.trim(node.value()) === ""){
-					// node.nodeMessage("Required value");
+			
 					node.nodeMessageClass("label label-danger");
 					entity.viewModel().validated(false);
 				} else {
-					// node.nodeMessage("");
+					
 					node.nodeMessageClass("label label-info");
 				}
 				createNode(node);
@@ -906,7 +904,13 @@ $(function(){
 				thisPathString,
 				selectior,
 				newElement;
-				
+			
+			if (node.attributeName !== "") {
+				fullPath.pop();
+				pathString = fullPath.toString();
+				maxDepth = fullPath.length;
+			}
+
 			if (node.attributeName !== "") {
 				--maxDepth;
 			}
