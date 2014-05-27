@@ -2167,15 +2167,41 @@ $(function(){
 
 
 		search.htmlifyVIAFTitle = function(){
-			var result = "";
-			var data = search.selectedData;
+			// var result = "";
+			// var data = search.selectedData;
 
-			result += "<div><ul>";		
-			if (data.url !== "") {
-				result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			// result += "<div><ul>";		
+			// if (data.url !== "") {
+			// 	result += "<li>URL: <a href='" + data.url + "'>" + data.url +"</a></li>";
+			// }
+			// result += "</ul></div>";
+			// return result;
+			var data = search.selectedData;
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			var listItem;
+			
+			if (data.authors) {
+				listItem = $("<li></li>");	
+				listItem.append("Author: " + data.authors[0]);
+				list.append(listItem);
 			}
-			result += "</ul></div>";
-			return result;
+
+			if (data.date) {
+				listItem = $("<li></li>");	
+				listItem.append("Date: " + data.date);
+				list.append(listItem);
+			}
+
+			if (data.url) {
+				listItem = $("<li></li>");	
+				listItem.append(search.getAnchor(data.url));
+				list.append(listItem);
+			}
+			
+			head.append(list);
+			
+			return xmlToString(head[0]);
 		};
 
 		search.linkedDataSources = {
@@ -2552,6 +2578,15 @@ $(function(){
 		}
 		
 		search.completeViafTitleResult = function(that, specs, i) {
+			var authorSelector = search.viafSelectorHelper("recordData > ns"+i+"\\:VIAFCluster > ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='a']");
+			var dateSelector = search.viafSelectorHelper("recordData > ns"+i+"\\:VIAFCluster > ns"+i+"\\:mainHeadings > ns"+i+"\\:mainHeadingEl > ns"+i+"\\:datafield > ns"+i+"\\:subfield[code='d']");
+			
+			var date = $(specs).find(dateSelector).first().text();
+			that.date = date;
+			
+			var authors = [];
+			authors.push($(specs).find(authorSelector).first().text());			
+			that.authors = authors;
 			
 		}
 
