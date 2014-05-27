@@ -1950,20 +1950,36 @@ $(function(){
 			// if (birthValue !== "" && deathValue !== "") {
 			// 	data.birthDeath = birthValue + "-" + deathValue;	
 			// }
-			data.birthDeath = "";
 
-			if (birthValue !== "") {
-				data.birthDeath += birthValue;
-			}
-			data.birthDeath += " - ";
-			if (deathValue !== "") {
-				data.birthDeath += deathValue;
-			}
-
-			if (data.birthDeath === " - ") {
-				data.birthDeath = "";
-			}
+			var dateSpacer = '...';
 			
+			birthValue = birthValue === "" ? dateSpacer : birthValue;
+			deathValue = deathValue === "" ? dateSpacer : deathValue;
+
+			if(birthValue == dateSpacer && deathValue == dateSpacer) {
+				data.birthDeath = '';
+			} else {
+				data.birthDeath = birthValue + " - " + deathValue;				
+			}
+
+			// data.birthDeath = birthValue + " - " + deathValue;
+			// data.birthdeath = data.birthDeath === "... - ..." ?  : data.birthDeath;
+			
+			// data.birthDeath = "";
+
+			// if (birthValue !== "") {
+			// 	data.birthDeath += birthValue;
+			// }
+			// data.birthDeath += " - ";
+			// if (deathValue !== "") {
+			// 	data.birthDeath += deathValue;
+			// }
+
+			// if (data.birthDeath === " - ") {
+			// 	data.birthDeath = "";
+			// }
+			
+
 			// gender
 			var genderSelector = "entity > person > description > genders > gender";
 			data.gender = $(workingXML).find(genderSelector).first().text();
