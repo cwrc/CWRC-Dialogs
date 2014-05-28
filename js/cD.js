@@ -21,8 +21,8 @@ $(function(){
 		var dialogType = "";
 
 		// fix conflicts with jquery ui
-		var datepicker = $.fn.datepicker.noConflict();
-		$.fn.bsDatepicker = datepicker;
+		// var datepicker = $.fn.datepicker.noConflict();
+		// $.fn.bsDatepicker = datepicker;
 		var button = $.fn.button.noConflict();
 		$.fn.bsButton = button;
 		var tooltip = $.fn.tooltip.noConflict();
@@ -50,9 +50,9 @@ $(function(){
 			});
 			// $('.dpYears').bsDatepicker();
 
-			$('.input-append.date').bsDatepicker({
+			$('.input-append.date').datepicker({
 				format: "yyyy-mm-dd",
-				startView: 2,
+				viewMode: 2,
 				autoclose: true
 			});
 		};
@@ -229,7 +229,7 @@ $(function(){
 			'			<!-- datePicker -->' +
 			'			<span>' +
 			'				<span data-bind="text: label"></span> ' +
-			'				<div class="input-append date">' +
+			'				<div class="input-append date" data-date="2014-01-01">' +
 			'					<input placeholder="YYYY-MM-DD" type="text" class="span2" data-bind="value: value">' +
 			'					<button class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
 			'					<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
@@ -848,8 +848,15 @@ $(function(){
 			$.each(from.seed.interfaceFields(), function(index, item){
 				// if (item.hasInterface) {
 				to.seed.interfaceFields.push(item);
+				if (item.input == "seed") {
+					item.parentQuantifier = to;
+					console.log("Z")
+				}
 				// }
 			});
+			to.seed.parentQuantifier = to;
+			from.seed.parentQuantifier = null;
+
 			// XXX Needed ?
 			if (to.label === "") {
 				to.label = from.label;
@@ -1227,6 +1234,7 @@ $(function(){
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
+			that.seed.parentQuantifier = that;
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1367,9 +1375,11 @@ $(function(){
 		var seedModel = function() {
 			var that = {};
 			that.input = "seed";
+			that.parentQuantifier = "";
 			that.interfaceFields = ko.observableArray();
 			that.clone = function() {
 				var result = seedModel();
+				result.parentQuantifier = that.parentQuantifier;
 				$.each(that.interfaceFields(), function(index, field){
 					result.interfaceFields.push(field.clone());
 				});
@@ -1590,14 +1600,14 @@ $(function(){
 			var parentPath = path.slice(0, path.length-1);
 			var nodeValue = $.trim(node.nodeValue);
 			if (node.nodeType === 3 && nodeValue !== "") {
-				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
+				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields(), null);
 
 				var atts =parentNode.attributes;
 				for (var attIndex =0; attIndex < atts.length; ++attIndex) {
 					var currentAtt = atts.item(attIndex);
 					parentPath.push(currentAtt.name);
 					
-					foundAndFilled(currentAtt.value, parentPath, entity.viewModel().interfaceFields());
+					foundAndFilled(currentAtt.value, parentPath, entity.viewModel().interfaceFields(), null);
 					parentPath.pop();
 				}
 
@@ -1621,7 +1631,7 @@ $(function(){
 		// XXX second value in group is not added 
 		// XXX same problem ?
 
-		var foundAndFilled = function(nodeValue, parentPath, field) {
+		var foundAndFilled = function(nodeValue, parentPath, field, parentField) {
 			// 
 			if (field.input === "quantifier") {
 				// check path if sub continue
@@ -1633,7 +1643,7 @@ $(function(){
 					// alert(field.interfaceFields().length)
 					$.each(field.interfaceFields(), function(i, currentField) {
 						
-						if(foundAndFilled(nodeValue, parentPath, currentField)) {							
+						if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
 							foundOnFields = true;
 							return false; // break out of loop
 						}
@@ -1647,7 +1657,7 @@ $(function(){
 							field.addGroup();
 
 							var lastfield = last(field.interfaceFields()) ; 					
-							return foundAndFilled(nodeValue, parentPath, lastfield);
+							return foundAndFilled(nodeValue, parentPath, lastfield, field);
 						}
 					}
 					
@@ -1659,7 +1669,7 @@ $(function(){
 				
 				$.each(field.interfaceFields(), function(i, currentField) {
 					
-					if(foundAndFilled(nodeValue, parentPath, currentField)) {
+					if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
 						foundOnSeedCheck = true;
 						return false; // break out of loop
 					}
@@ -1678,10 +1688,16 @@ $(function(){
 						if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
 							field.value(nodeValue.split(","));
 						} else {
-							field.value(nodeValue);		
+							field.value(nodeValue);
+							parentField.parentQuantifier.addGroup();
 						}
 					} else {
-						// console.log("need to add seed for " + nodeValue)
+						console.log("need to add seed for " + nodeValue)
+						console.log(parentField.parentQuantifier.label)
+						// console.log(parentField.parentQuantifier.interfaceFields().length)
+						parentField.parentQuantifier.addGroup();
+						// console.log(parentField.parentQuantifier.interfaceFields().length)
+						// added
 					}
 					
 					
