@@ -789,14 +789,6 @@ $(function(){
 
 			if (lastContainer.seed.interfaceFields().length >= 1) {
 				lastContainer.hasInterface = true;
-
-				// $.each(lastContainer.seed.interfaceFields(), function(index, item){
-				// 	var path = item.path;
-				// 	if (item.attributeName !== "") {
-				// 		path += "," + item.attributeName;
-				// 	}
-				// 	lastContainer.elements.push(path);
-				// });
 			}
 
 			if (lastContainer.hasInterface) {
@@ -816,15 +808,7 @@ $(function(){
 			$.each(lastContainer.seed.interfaceFields(), function(index, item){
 		
 				if (isInterfaceIsPresent(item)) {
-					lastContainer.hasInterface = true;
-					
-					// var path = item.path;
-					// if (item.attributeName !== "") {
-					// 	path += "," + item.attributeName;
-					// }
-				
-					// lastContainer.elements.push(path);
-					
+					lastContainer.hasInterface = true;			
 				}
 			});
 
@@ -834,7 +818,8 @@ $(function(){
 				lastContainer.seed.interfaceFields()[0].label = "";
 				
 				if (lastContainer.minItems === 1) {
-					lastContainer.interfaceFields.push(lastContainer.seed.clone());
+					// lastContainer.interfaceFields.push(lastContainer.seed.clone());
+					lastContainer.addGroup();
 				}
 				entity[dialogType].workingContainers.pop();
 			} else {
@@ -847,15 +832,17 @@ $(function(){
 		var moveInterfaceElements = function(from, to) {
 			$.each(from.seed.interfaceFields(), function(index, item){
 				// if (item.hasInterface) {
+				// item.parentQuantifier = to;
 				to.seed.interfaceFields.push(item);
-				if (item.input == "seed") {
-					item.parentQuantifier = to;
-					console.log("Z")
-				}
+
+				// if (item.input == "seed") {
+				// 	item.parentQuantifier = to;
+					// console.log("Z")
+				// }
 				// }
 			});
-			to.seed.parentQuantifier = to;
-			from.seed.parentQuantifier = null;
+			// to.seed.parentQuantifier = to;
+			// from.seed.parentQuantifier = null;
 
 			// XXX Needed ?
 			if (to.label === "") {
@@ -1234,7 +1221,7 @@ $(function(){
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
-			that.seed.parentQuantifier = that;
+			// that.seed.parentQuantifier = that;
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1271,6 +1258,7 @@ $(function(){
 				if (that.interfaceFields().length < that.maxItems) {
 					// that.interfaceFields.push(that.seed.clone());	//XXX SEED
 					var newClone = that.seed.clone();
+					// newClone.parentQuantifier = that;
 					newClone.interfaceFields()[0].label = "";
 					that.interfaceFields.push(newClone);
 					setHelp();
@@ -1642,7 +1630,7 @@ $(function(){
 					var foundOnFields = false;
 					// alert(field.interfaceFields().length)
 					$.each(field.interfaceFields(), function(i, currentField) {
-						
+						currentField.parentQuantifier = field;
 						if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
 							foundOnFields = true;
 							return false; // break out of loop
@@ -1656,7 +1644,8 @@ $(function(){
 
 							field.addGroup();
 
-							var lastfield = last(field.interfaceFields()) ; 					
+							var lastfield = last(field.interfaceFields());
+							lastfield.parentQuantifier = field;
 							return foundAndFilled(nodeValue, parentPath, lastfield, field);
 						}
 					}
@@ -1679,7 +1668,7 @@ $(function(){
 					return true;
 				}
 
-			}else if (field.input !== " header") {				
+			}else if (field.input !== "header") {				
 				if (field.path == parentPath) {
 					// console.log(field.input + " " + field.value() + " " + nodeValue);
 					// XXX working
@@ -1689,15 +1678,13 @@ $(function(){
 							field.value(nodeValue.split(","));
 						} else {
 							field.value(nodeValue);
-							parentField.parentQuantifier.addGroup();
+							// parentField.parentQuantifier.addGroup();
 						}
-					} else {
-						console.log("need to add seed for " + nodeValue)
-						console.log(parentField.parentQuantifier.label)
-						// console.log(parentField.parentQuantifier.interfaceFields().length)
-						parentField.parentQuantifier.addGroup();
-						// console.log(parentField.parentQuantifier.interfaceFields().length)
-						// added
+					} else {												
+						// parentField.parentQuantifier.addGroup();
+						var lastfield = last(parentField.interfaceFields());
+						lastfield.parentQuantifier = parentField;
+						return foundAndFilled(nodeValue, parentPath, lastfield, parentField);
 					}
 					
 					
