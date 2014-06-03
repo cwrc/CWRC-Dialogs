@@ -50,11 +50,29 @@ $(function(){
 			});
 			// $('.dpYears').bsDatepicker();
 
-			$('.input-append.date').datepicker({
-				format: "yyyy-mm-dd",
-				viewMode: 2,
-				autoclose: true
-			});
+			// $('.input-append.date').datepicker({
+			// 	format: "yyyy-mm-dd",
+			// 	viewMode: 2,
+			// 	autoclose: true
+			// })
+
+			// .on('changeDate', function (ev) {
+				// for (i in ev) {
+				// 	if (ev.hasOwnProperty(i)) {
+				// 		console.log(i)
+				// 	}
+				// }
+				// console.log(ev.target)
+				// console.log(ko.toJSON(ev.date).substr(1, 10));	
+				// $(ev.target).find("input").first().val(ko.toJSON(ev.date).substr(1, 10));
+
+				// console.log($(ev.target).find("input").first().val())
+				// if($(ev.target).find("input").first().val()) {
+				// 	$(ev.target).find("input").first().val(ko.toJSON(ev.date).substr(1, 10));
+				// }
+				
+				// console.log($(ev.target).find("input")[0].val(ko.toJSON(ev.date).substr(1, 10)))
+			// });
 		};
 
 
@@ -230,8 +248,8 @@ $(function(){
 			'			<span>' +
 			'				<span data-bind="text: label"></span> ' +
 			'				<div class="input-append date" data-date="2014-01-01">' +
-			'					<input placeholder="YYYY-MM-DD" type="text" class="span2" data-bind="value: value">' +
-			'					<button class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
+			'					<input placeholder="YYYY-MM-DD" type="text" class="span2" data-date="2014-01-01" data-bind="datepicker: value">' +
+			'					<button data-date="2014-01-01" class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
 			'					<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
 			'				</div>' +
 			'				<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
@@ -1699,6 +1717,10 @@ $(function(){
 
 		var popCreatePerson = function(opts) {
 			dialogType = "person";
+			if (!opts.editing) {
+				entity.editing = false;
+				entity.editingPID = "";	
+			}
 			entity.viewModel().dialogTitle("Add Person");
 			completeDialog(opts);
 			$('#cwrcEntityModal').modal('show');
@@ -1712,6 +1734,10 @@ $(function(){
 
 		var popCreateOrganization = function(opts) {
 			dialogType = "organization";
+			if (!opts.editing) {
+				entity.editing = false;
+				entity.editingPID = "";	
+			}
 			entity.viewModel().dialogTitle("Add Organization");
 			completeDialog(opts);
 			$('#cwrcEntityModal').modal('show');
@@ -1726,6 +1752,10 @@ $(function(){
 
 		var popCreatePlace = function(opts) {
 			dialogType = "place";
+			if (!opts.editing) {
+				entity.editing = false;
+				entity.editingPID = "";	
+			}
 			entity.viewModel().dialogTitle("Add Place");
 			completeDialog(opts);
 			$('#cwrcEntityModal').modal('show');
@@ -1740,6 +1770,10 @@ $(function(){
 		
 		var popCreateTitle = function(opts, data) {
 			dialogType = "title";
+			if (!opts.editing) {
+				entity.editing = false;
+				entity.editingPID = "";	
+			}
 			entity.viewModel().dialogTitle(entity.editing ? "Edit " + data.title : "Add Title");
 			completeTitleDialog(opts, data);
 			$('#cwrcTitleModal').modal('show');
@@ -1763,9 +1797,14 @@ $(function(){
 		
 		// pop edit
 
-		var popEditPerson = function(opts) {
+		var prepareEditingDialog = function(opts) {
 			entity.editing = true;
 			entity.editingPID = opts.id;
+			opts.editing = entity.editing;
+		}
+
+		var popEditPerson = function(opts) {
+			prepareEditingDialog(opts);
 			cD.popCreatePerson(opts);
 			populateDialog(opts);
 		};
@@ -1773,8 +1812,7 @@ $(function(){
 		cD.popEditPerson = popEditPerson;
 
 		var popEditOrganization = function(opts) {
-			entity.editing = true;
-			entity.editingPID = opts.id;
+			prepareEditingDialog(opts);
 			cD.popCreateOrganization(opts);
 			populateDialog(opts);
 		};
@@ -1782,8 +1820,7 @@ $(function(){
 		cD.popEditOrganization = popEditOrganization;
 
 		var popEditPlace = function(opts) {
-			entity.editing = true;
-			entity.editingPID = opts.id;
+			prepareEditingDialog(opts);
 			cD.popCreatePlace(opts);
 			populateDialog(opts);
 		}
@@ -1791,7 +1828,7 @@ $(function(){
 		cD.popEditPlace = popEditPlace;
 		
 		var popEditTitle = function(opts) {
-			entity.editing = true;
+			prepareEditingDialog(opts);
 			cD.popCreateTitle(opts, extractTitleMODS(opts));
 		}
 
@@ -2346,6 +2383,40 @@ $(function(){
 			$('body').append(searchTemplates);
 
 
+			ko.bindingHandlers.datepicker = {
+				init: function(element, valueAccessor, allBindingsAccessor) {
+			
+					var options = {
+						format: "yyyy-mm-dd",
+						viewMode: 2,
+						autoclose: true
+					}
+				
+					$(element).siblings(':button').first().datepicker(options);
+				
+					ko.utils.registerEventHandler($(element).siblings(':button').first(), "changeDate", function(event) {
+						var value = valueAccessor();
+						if (ko.isObservable(value)) {
+							var dateVal = ko.toJSON(event.date).substr(1, 10);
+							value(dateVal);					
+							$(element).val(dateVal)
+						}
+
+					});
+
+					ko.utils.registerEventHandler(element, 'keyup', function(event) {
+						var value = valueAccessor();
+						if (ko.isObservable(value)) {
+							var dateVal = event.target.value
+							value(dateVal);				
+						}
+					});
+				},
+				update: function(element, valueAccessor) {
+					var value = valueAccessor();
+					$(element).val(ko.unwrap(value));
+				}
+			};
 
 			
 
