@@ -40,6 +40,7 @@ The following is an example of all the files that need to be included:
 
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="css/datepicker.css">
+	<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/cD.css">
 ```		
 

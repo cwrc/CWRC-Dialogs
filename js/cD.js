@@ -1862,6 +1862,9 @@ $(function(){
 		}
 
 		search.processCWRCSearch = function(queryString) {
+			$(".linkedDataMessage").text("");
+			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+			$("#CWRCDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = cwrcApi[dialogType].getEntity;
 			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
 				query : queryString,
@@ -1869,6 +1872,8 @@ $(function(){
 					$.each(result["response"]["objects"], function(i, doc){
 						search.linkedDataSources.cwrc.results.push(search.getResultFromCWRC(doc));
 					});
+					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+					$("#CWRCDataMessage").text("Results: " + search.linkedDataSources.cwrc.results().length );
 				},
 				error: function(result) {
 					console.log(result);
@@ -1900,6 +1905,9 @@ $(function(){
 		}
 
 		search.processVIAFSearch = function(queryString) {
+			$(".linkedDataMessage").text("");
+			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+			$("#VIAFDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = search.processViafData;
 			var viafUrl = "http://apps.testing.cwrc.ca/services/viaf/search";
 			var viafPrefix = "";
@@ -1929,6 +1937,8 @@ $(function(){
 					$('searchRetrieveResponse record', response).each(function(index, spec) {
 						search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
 					});
+					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+					$("#VIAFDataMessage").text("Results: " + search.linkedDataSources.viaf.results().length );
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (ajaxOptions !== "abort") {
@@ -1939,8 +1949,10 @@ $(function(){
 		}
 		
 		search.processGeoNameSearch = function(queryString) {
+			$(".linkedDataMessage").text("");
+			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+			$("#GeoNamesDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = search.processGeoNameData;
-			
 			var quotedQueryString = encodeURI(queryString);
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
 				url: geonameUrl,
@@ -1954,6 +1966,8 @@ $(function(){
 						search.linkedDataSources.geonames.results.push(search.getResultFromGeoName(spec, index));
 						search.linkedDataSources.geonames.response.push(spec);
 					});
+					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+					$("#GeoNamesDataMessage").text("Results: " + search.linkedDataSources.geonames.results().length);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (ajaxOptions !== "abort") {
@@ -2277,7 +2291,7 @@ $(function(){
 				result +=
 				'										<div class="panel panel-default" data-bind="visible: $root.linkedDataSources.' + key+ '.showPanel">' +
 				'											<div data-name="'+key+'" class="panel-heading panel-title" data-toggle="collapse" data-parent="#accordion" href="#collapse'+key+'" data-bind="{click:$root.selectLinkedDataSource}">' +
-				'														' + lds.name +
+				'														' + lds.name +'<span class="pull-right linkedDataMessage" id="'+lds.name+'DataMessage"></span>' +
 				'											</div>' +
 				'											<div id="collapse'+key+'"" class="panel-collapse collapse '+(function(){return index ===0 ? "in" : ""})()+'">' +
 				'												<div class="panel-body">' +
@@ -2287,7 +2301,7 @@ $(function(){
 				'										<a href="#" class="list-group-item" data-bind="{click:$root.selectResult, event: { dblclick: $root.returnAndHide }, css: {active: selected}}" >' +
 				'											<h5 class="list-group-item-heading">' +
 				'												<span data-bind="text: name"></span>' +
-				'												<span class="cwrc-entity-info pull-right glyphicon glyphicon-info-sign" data-bind="click: $root.showInfoPopOver" data-content="Test content" data-original-title="Test title"></span>' +
+				'												<span class="cwrc-entity-info pull-right fa fa-info-circle" data-bind="click: $root.showInfoPopOver" data-content="Test content" data-original-title="Test title"></span>' +
 				'											</h5>' +
 				// '											<h5 class="list-group-item-heading"> <span data-bind="text:data[\'dc.title\']"></span> - <span data-bind="text:source"></span></h5>' +
 				// '											<p class="list-group-item-text"><span data-bind="text:data.id"></span></p>' +
@@ -2457,6 +2471,8 @@ $(function(){
 			search.queryString("");
 			search.initiateInfo();
 			search.removeInfoPopOver();
+			$(".linkedDataMessage").text("");
+			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 		};
 
 		// search.delayedTimeout;
