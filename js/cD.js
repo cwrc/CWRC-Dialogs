@@ -207,7 +207,7 @@ $(function(){
 			'				<span data-bind="text: label"></span>' +
 			'				<span  data-bind="if: isGrowable()">' +
 			'					<span data-bind="if: showAddButton()">' +
-			'						<button data-bind="click: addGroup" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"</span></button>' +
+			'						<button data-bind="click: addGroup" class="btn btn-default btn-xs"><span class="fa fa-plus"</span></button>' +
 			'					</span>' +
 			'				</span>' +
 			'			</div>' +
@@ -221,7 +221,7 @@ $(function(){
 			'				<span data-bind="template:{name: $root.displayMode, foreach: interfaceFields}"></span>' +
 			'				<span data-bind="if: $parent.showRemoveThisButton()">' +
 			'					<button data-bind="click: $parent.removeThisGroup" class="btn btn-default btn-xs">' +
-			'						<span class="glyphicon glyphicon-minus"></span>' +
+			'						<span class="fa fa-minus"></span>' +
 			'					</button>' +
 			'				</span>' +
 			'			</div>' +
@@ -231,7 +231,7 @@ $(function(){
 			'			<span>' +
 			'				<span data-bind="text: label"></span> ' +
 			'				<input data-bind="value: value" /> ' +
-			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'				<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
 			'			</span>' +
 			'		</script>' +
@@ -249,8 +249,8 @@ $(function(){
 			'				<span data-bind="text: label"></span> ' +
 			'				<div class="input-append date" data-date="2014-01-01">' +
 			'					<input placeholder="YYYY-MM-DD" type="text" class="span2" data-date="2014-01-01" data-bind="datepicker: value">' +
-			'					<button data-date="2014-01-01" class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
-			'					<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'					<button data-date="2014-01-01" class=" add-on btn btn-default btn-xs"><span class="fa fa-calendar"></span></button>' +
+			'					<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'				</div>' +
 			'				<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
 			'			</span>' +
@@ -266,7 +266,7 @@ $(function(){
 			'			<span>' +
 			'				<span data-bind="text: label"></span> ' +
 			'				<textarea rows="4" cols="50" data-bind="value: value"></textarea> ' +
-			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'				<div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
 			'			</span>' +
 			'		</script>' +
@@ -279,7 +279,7 @@ $(function(){
 			'						<span data-bind="text:content"></span> ' +
 			'					</li>' +
 			'				</ul>' +
-			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="dynamicCheckbox">' +
@@ -291,12 +291,12 @@ $(function(){
 			'						<span data-bind="text:content"></span> ' +
 			'					</li>' +
 			'				</ul>' +
-			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="dropDown">' +
 			'			<select data-bind="value: value, options: options, optionsText: \'content\', optionsValue: \'value\'"></select>' +
-			'				<span class="cwrc-help glyphicon glyphicon-question-sign" data-bind="attr:{\'title\': help}"></span>'+
+			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
 			'		</script>';
 
 
@@ -361,7 +361,7 @@ $(function(){
 			'						<span>Author</span>' +
 			'							<span>' +
 			'								<span>' +
-			'									<button data-bind="click: addNewAuthor" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-plus"</span></button>' +
+			'									<button data-bind="click: addNewAuthor" class="btn btn-default btn-xs"><span class="fa fa-plus"</span></button>' +
 			'								</span>' +
 			'							</span>' +
 			'						</div>' +
@@ -373,7 +373,7 @@ $(function(){
 			'							</span>' +
 			'							<span data-bind="if: $index">' +
 			'								<button data-bind="click: $parent.removeThisAuthor" class="btn btn-default btn-xs">' +
-			'									<span class="glyphicon glyphicon-minus"></span>' +
+			'									<span class="fa fa-minus"></span>' +
 			'								</button>' +
 			'							</span>' +
 			'						</div>' +	
@@ -387,8 +387,8 @@ $(function(){
 			'					<div class="interfaceFieldsContainer"> ' +
 			//'						<div class="input-append date">' +
 			'							<input placeholder="YYYY-MM-DD" type="text" class="span2" data-bind="value: date">' +
-			//'							<button class=" add-on btn btn-default btn-xs"><span class="glyphicon glyphicon-calendar"></span></button>' +
-			'							<span class="cwrc-help glyphicon glyphicon-question-sign" title="Date must be in the form of YYYY, YYYY-MM or YYYY-MM-DD."></span>'+
+			//'							<button class=" add-on btn btn-default btn-xs"><span class="fa fa-calendar"></span></button>' +
+			'							<span class="cwrc-help fa fa-question-circle" title="Date must be in the form of YYYY, YYYY-MM or YYYY-MM-DD."></span>'+
 			//'						</div>' +
 			'						<div class="label label-danger" data-bind="ifnot:validation.date">Invalid date</div>' +
 			'					</div>' +
