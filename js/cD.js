@@ -1057,9 +1057,9 @@ $(function(){
 			}
 			
 			// create access condition
-			var accessCondition = entity.selfWorking.createElement("accessCondition");
-			accessCondition.setAttribute("type", "use and reproduction");
-			accessCondition.appendChild(entity.selfWorking.createTextNode(accessConditionText));
+			var accessCondition = $("<accessCondition></accessCondition>");
+			$(accessCondition).attr("type", "use and reproduction");
+			$(accessCondition).html(accessConditionText);
 			mods.append(accessCondition);
 			
 			// create record info
