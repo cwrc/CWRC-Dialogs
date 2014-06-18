@@ -2466,6 +2466,10 @@ $(function(){
 
 			ko.applyBindings(search, $("#cDSearch")[0]);
 			$("#cwrcSearchDialog").modal(params.modalOptions);
+			$("#cwrcSearchDialog").on('hidden.bs.modal', function (e) { 
+				search.clear();
+			})
+
 			$("#cwrcSearchDialog").draggable({	
 				handle: ".modal-header"
 			});
@@ -2495,6 +2499,7 @@ $(function(){
 			search.removeInfoPopOver();
 			$(".linkedDataMessage").text("");
 			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+			$("#searchEntityInput").val("");
 		};
 
 		// search.delayedTimeout;
