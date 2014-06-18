@@ -67,6 +67,7 @@ When opening the search dialog on can pass different options to the call functio
 + success - a function to be called when selecting an entry
 + error - a function to call when an error occurs
 + buttons - this array defines custom butons with ther actions, each entry in the array takes the form of an object with a `label` string and an `action` in the form of the function to be run on click.
++ query - the search dialog will open with a search using this parameter
 
 An example follows
 
@@ -98,7 +99,8 @@ An example follows
 				label : "Show response",
 				action : customAction
 			}
-		]
+		],
+		query : "Bruce Wayne"
 	}
 
 	cD.popSearchPerson(opts);

@@ -20,19 +20,59 @@
 	<body class="bootstrap-scope">
 		<div class="container">
 			<h1>Entity schema creation test</h1>
-			<hr>					
+			<hr>				
+
+<!-- 			<div>
+				<ul class="pagination">
+					<li><a href="#">&laquo;</a></li>
+					<li><a href="#">1</a></li>
+					<li><a href="#">2</a></li>
+					<li><a href="#">3</a></li>
+					<li><a href="#">4</a></li>
+					<li><a href="#">5</a></li>
+					<li><a href="#">&raquo;</a></li>
+				</ul>
+			</div> -->
+
 			<div class="row">
 				<div class="col-md-6">
-					<!-- <div id="content">
-					</div> -->
-					<button id="searchPerson" type="button" class="btn btn-default">Search Person</button>
-					<button id="addPerson" type="button" class="btn btn-default">Add Person</button>
-					<button id="searchOrganization" type="button" class="btn btn-default">Search Organization</button>
-					<button id="addOrganization" type="button" class="btn btn-default">Add Organization</button>
-					<button id="searchPlace" type="button" class="btn btn-default">Search Place</button>
-					<button id="addPlace" type="button" class="btn btn-default">Add Place</button>
-					<button id="searchTitle" type="button" class="btn btn-default">Search Title</button>
-					<button id="addTitle" type="button" class="btn btn-default">Add Title</button>
+					<div class="form-group">					
+						<button id="searchPerson" type="button" class="btn btn-default">Search Person</button>
+						<button id="addPerson" type="button" class="btn btn-default">Add Person</button>
+					</div>
+					<div  class="form-group">
+						<button id="searchOrganization" type="button" class="btn btn-default">Search Organization</button>
+						<button id="addOrganization" type="button" class="btn btn-default">Add Organization</button>
+					</div>
+					<div  class="form-group">
+						<button id="searchPlace" type="button" class="btn btn-default">Search Place</button>
+						<button id="addPlace" type="button" class="btn btn-default">Add Place</button>
+					</div>
+					<div  class="form-group">
+						<button id="searchTitle" type="button" class="btn btn-default">Search Title</button>
+						<button id="addTitle" type="button" class="btn btn-default">Add Title</button>
+					</div>
+					<div  class="form-group">
+						<div class="input-group">
+
+
+							<div class="input-group-btn">
+        						<button type="button"  id="customSearchSelectionButton" class="btn btn-default dropdown-toggle btnStatus" data-toggle="dropdown">Person <span class="caret"></span></button>
+        						<ul class="dropdown-menu" id="customSearchSelection">
+          							<li><a href="#">Person</a></li>
+						        	<li><a href="#">Organization</a></li>
+						          	<li><a href="#">Place</a></li>
+						          	<li><a href="#">Title</a></li>
+						        </ul>
+      						</div>
+
+							<input type="text" class="form-control" id="searchPersonInput" placeholder="Search">
+							<span class="input-group-btn">
+								<button id="searchCustomButton" type="button" class="btn btn-default">Go</button>
+							</span>
+						</div>
+					</div>
+
 				</div>
 				<div class="col-md-6">
 					

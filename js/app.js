@@ -221,6 +221,37 @@ $(function(){
 		cD.popSearchTitle(opts);
 	});
 
+	$("#searchCustomButton").click(function(){
+
+		var searchType = $("#customSearchSelectionButton").text();
+		var searchQuery = $("#searchPersonInput").val();
+
+		$("#resultHeader").text(searchType + " ");
+		$("#entityXMLContainer").text("");
+
+		var opts = {
+			success: function(result) {
+				$("#resultHeader").text("Added");
+				$("#entityXMLContainer").text(JSON.stringify(result));
+			},
+			error : function(errorThrown) {
+				$("#entityXMLContainer").text("");
+				$("#resultHeader").text("Entity ");
+			},
+			query : searchQuery
+		}
+	
+		cD.popSearch[searchType.toLowerCase().trim()](opts)
+
+	});
+
+
+	$('#customSearchSelection li > a').click(function(e){
+		$("#customSearchSelectionButton").html(this.innerHTML + ' <span class="caret"></span>');
+	});
+
+
+
 	$("#clear-button").click(function(){
 		$("#entityXMLContainer").text("");
 		$("#resultHeader").text("Entity ");

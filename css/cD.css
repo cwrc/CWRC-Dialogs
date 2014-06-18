@@ -35,6 +35,18 @@ textarea{
 	min-width: 300px;
 }
 
+.nomargin {
+  margin: 0px 0px 0px 0px !important;
+  padding: 0px 0px 0px 0px !important;;
+}
+/*
+
+
+.linkedDataMessage {
+  margin: -3px 0px 0px 0px !important;
+  padding: 0px 0px 0px 0px !important;
+
+}*/
 
 
 /* Spinner http://jsfiddle.net/AndrewDryga/zcX4h/1/ */

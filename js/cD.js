@@ -1874,6 +1874,8 @@ $(function(){
 					});
 					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 					$("#CWRCDataMessage").text("Results: " + search.linkedDataSources.cwrc.results().length );
+
+					
 				},
 				error: function(result) {
 					console.log(result);
@@ -2294,7 +2296,27 @@ $(function(){
 				'														' + lds.name +'<span class="pull-right linkedDataMessage" id="'+lds.name+'DataMessage"></span>' +
 				'											</div>' +
 				'											<div id="collapse'+key+'"" class="panel-collapse collapse '+(function(){return index ===0 ? "in" : ""})()+'">' +
-				'												<div class="panel-body">' +
+				'												<div class="panel-body">' +				
+				// paginator
+				'									<div class="paginatorArea" id="'+lds.name+'Paginator">' +
+				// '									<span>Results 100</span>'+
+				// '									<select class="form-control">' +
+				// '										<option>1</option>' +
+				// '										<option>2</option>' +
+				// '										<option>3</option>' +
+				// '										<option>4</option>' +
+				// '										<option>5</option>' +
+				// '									</select>' +
+				// '									<ul class="pagination  pagination-sm nomargin">' +
+				// '									<li><a href="#">&laquo;</a></li>' +
+				// '									<li><a href="#">1</a></li>' +
+				// '									<li><a href="#">2</a></li>' +
+				// '									<li><a href="#">3</a></li>' +
+				// '									<li><a href="#">4</a></li>' +
+				// '									<li><a href="#">5</a></li>' +
+				// '									<li><a href="#">&raquo;</a></li>' +
+				// '									</ul>' +
+				'									</div>' +
 				// content
 				'									<div class="list-group cwrc-result-area">' +
 				'										<!-- ko foreach: linkedDataSources.'+key+'.results -->' +
@@ -2812,6 +2834,11 @@ $(function(){
 			// alert(search.buttons[0].label)
 			search.success = typeof opts.success === undefined ? function(){} : opts.success;
 			search.error = typeof opts.error === undefined ? function(){} : opts.error;
+
+			if (opts.query) {
+				$("#searchEntityInput").val(opts.query);
+				search.performSearch(opts.query);
+			}
 		}
 
 		var popSearchPerson = function(opts) {
@@ -2856,10 +2883,10 @@ $(function(){
 		cD.popSearchTitle = popSearchTitle;
 
 		var popSearch = {
-			person: popSearchPerson,
-			organization : popSearchOrganization,
-			place : popSearchPlace,
-			title: popSearchTitle
+			person: cD.popSearchPerson,
+			organization : cD.popSearchOrganization,
+			place : cD.popSearchPlace,
+			title: cD.popSearchTitle
 		};
 
 		cD.popSearch = popSearch;
