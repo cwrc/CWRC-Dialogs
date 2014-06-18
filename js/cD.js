@@ -2466,15 +2466,14 @@ $(function(){
 
 			ko.applyBindings(search, $("#cDSearch")[0]);
 			$("#cwrcSearchDialog").modal(params.modalOptions);
-			$("#cwrcSearchDialog").on('hidden.bs.modal', function (e) { 
-				search.clear();
-			})
+			
 
 			$("#cwrcSearchDialog").draggable({	
 				handle: ".modal-header"
 			});
-			$("#cwrcSearchDialog").on('hidden.bs.modal', function () {
+			$("#cwrcSearchDialog").on('hidden.bs.modal', function (e) { 
   				// stop ajax call if exists
+  				search.clear();
 				for(var key in search.linkedDataSources) {
 					var lds = search.linkedDataSources[key];
 					if (lds.ajaxRequest) {
