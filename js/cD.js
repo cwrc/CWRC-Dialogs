@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
@@ -2351,13 +2351,13 @@ $(function(){
 				// '										<option>5</option>' +
 				// '									</select>' +
 				'									<ul class="pagination  pagination-sm nomargin" data-bind="with: $root.linkedDataSources[\'' + key + '\']">' +
-				'										<li data-bind="{css: {disabled: page() <= 0}}"><a href="#">&laquo;</a></li>' +
+				'										<li data-bind="{css: {disabled: page() <= 0}}"><a href="#" data-bind="{attr: {data: page() - 1}, click: paginate}">&laquo;</a></li>' +
 				'										<li data-bind="{css: {active: page() == paginateNumber(0), disabled: paginateNumber(0) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(0)}, text: paginateNumber(0) + 1, click: paginate}" data="0">1</a></li>' +
 				'										<li data-bind="{css: {active: page() == paginateNumber(1), disabled: paginateNumber(1) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(1)}, text: paginateNumber(1) + 1, click: paginate}" data="1">2</a></li>' +
 				'										<li data-bind="{css: {active: page() == paginateNumber(2), disabled: paginateNumber(2) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(2)}, text: paginateNumber(2) + 1, click: paginate}" data="2">3</a></li>' +
 				'										<li data-bind="{css: {active: page() == paginateNumber(3), disabled: paginateNumber(3) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(3)}, text: paginateNumber(3) + 1, click: paginate}" data="3">4</a></li>' +
 				'										<li data-bind="{css: {active: page() == paginateNumber(4), disabled: paginateNumber(4) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(4)}, text: paginateNumber(4) + 1, click: paginate}" data="4">5</a></li>' +
-				'										<li data-bind="{css: {disabled: page() >= maxPage()}}"><a href="#">&raquo;</a></li>' +
+				'										<li data-bind="{css: {disabled: page() >= maxPage()}}"><a href="#" data-bind="{attr: {data: page() + 1}, click: paginate}">&raquo;</a></li>' +
 				'									</ul>' +
 				'									</div>' +
 				// content
