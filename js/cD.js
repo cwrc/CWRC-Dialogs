@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
@@ -1860,13 +1860,16 @@ $(function(){
 				paginate: specs.paginate === null ? function(e){} : function(scope, event){
 					var page = $(event.currentTarget).attr("data");
 					specs.paginate(page, that);
-				}
+				},
+				maxPage: ko.observable(0),
+				showPaginate: ko.observable(specs.paginate != null)
 			}
 
 			return that;
 		}
 
 		search.processCWRCSearch = function(queryString, page) {
+			var perPage = 100;
 			search.linkedDataSources.cwrc.page(page);
 			
 			$(".linkedDataMessage").text("");
@@ -1874,7 +1877,7 @@ $(function(){
 			$("#CWRCDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = cwrcApi[dialogType].getEntity;
 			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
-				limit: 100,
+				limit: perPage,
 				page: page ? page : 0,
 				query : queryString,
 				success : function(result){
@@ -1882,9 +1885,16 @@ $(function(){
 						search.linkedDataSources.cwrc.results.push(search.getResultFromCWRC(doc));
 					});
 					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
-					$("#CWRCDataMessage").text("Results: " + search.linkedDataSources.cwrc.results().length );
-
+					//$("#CWRCDataMessage").text("Results: " + search.linkedDataSources.cwrc.results().length );
 					
+					// Calculate the range displayed in the message
+					var bottom = 1 + (perPage * page);
+					var top = 1 + ((page + 1) * perPage);
+					top = top > result["response"]["numFound"] ? result["response"]["numFound"] : top;
+					
+					$("#CWRCDataMessage").text("Results: " +  bottom + " - " + top);	
+					
+					search.linkedDataSources.cwrc.maxPage(Math.floor(result["response"]["numFound"] / perPage))
 				},
 				error: function(result) {
 					console.log(result);
@@ -2322,8 +2332,8 @@ $(function(){
 				'											<div id="collapse'+key+'"" class="panel-collapse collapse '+(function(){return index ===0 ? "in" : ""})()+'">' +
 				'												<div class="panel-body">' +				
 				// paginator
-				'									<div class="paginatorArea" id="'+lds.name+'Paginator">' +
-				'									<span data-bind="{text: $root.linkedDataSources[\'' + key + '\'].page}">Results 100</span>'+
+				'									<div class="paginatorArea" id="'+lds.name+'Paginator" data-bind="{if: $root.linkedDataSources[\'' + key + '\'].showPaginate}">' +
+				//'									<span data-bind="{text: $root.linkedDataSources[\'' + key + '\'].page}">Results 100</span>'+
 				// '									<select class="form-control">' +
 				// '										<option>1</option>' +
 				// '										<option>2</option>' +
@@ -2332,13 +2342,13 @@ $(function(){
 				// '										<option>5</option>' +
 				// '									</select>' +
 				'									<ul class="pagination  pagination-sm nomargin">' +
-				'										<li><a href="#">&laquo;</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 0}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="0">1</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 1}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="1">2</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 2}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="2">3</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 3}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="3">4</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 4}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="4">5</a></li>' +
-				'										<li><a href="#">&raquo;</a></li>' +
+				'										<li data-bind="{css: {disabled: $root.linkedDataSources[\'' + key + '\'].page() <= 0}}"><a href="#">&laquo;</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 0, disabled: 0 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="0">1</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 1, disabled: 1 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="1">2</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 2, disabled: 2 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="2">3</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 3, disabled: 3 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="3">4</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 4, disabled: 4 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="4">5</a></li>' +
+				'										<li data-bind="{css: {disabled: $root.linkedDataSources[\'' + key + '\'].page() >= $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#">&raquo;</a></li>' +
 				'									</ul>' +
 				'									</div>' +
 				// content
