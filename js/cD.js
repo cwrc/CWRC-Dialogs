@@ -1858,11 +1858,20 @@ $(function(){
 				showPanel: ko.observable(true),
 				page: ko.observable(0),
 				paginate: specs.paginate === null ? function(e){} : function(scope, event){
-					var page = $(event.currentTarget).attr("data");
+					var page = parseInt($(event.currentTarget).attr("data"));
 					specs.paginate(page, that);
 				},
 				maxPage: ko.observable(0),
-				showPaginate: ko.observable(specs.paginate != null)
+				showPaginate: ko.observable(specs.paginate != null),
+				paginateNumber: function(index){
+					if(that.page() < 3){
+						return index;
+					}else if(that.page() >= (that.maxPage() - 3) ){
+						return index + that.maxPage() - 5;
+					}
+					
+					return index - 2 + that.page();
+				}
 			}
 
 			return that;
@@ -1889,8 +1898,8 @@ $(function(){
 					
 					// Calculate the range displayed in the message
 					var bottom = 1 + (perPage * page);
-					var top = 1 + ((page + 1) * perPage);
-					top = top > result["response"]["numFound"] ? result["response"]["numFound"] : top;
+					var top = (page + 1) * perPage;
+					top = result["response"]["numFound"] < top ? result["response"]["numFound"] : top;
 					
 					$("#CWRCDataMessage").text("Results: " +  bottom + " - " + top);	
 					
@@ -2341,14 +2350,14 @@ $(function(){
 				// '										<option>4</option>' +
 				// '										<option>5</option>' +
 				// '									</select>' +
-				'									<ul class="pagination  pagination-sm nomargin">' +
-				'										<li data-bind="{css: {disabled: $root.linkedDataSources[\'' + key + '\'].page() <= 0}}"><a href="#">&laquo;</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 0, disabled: 0 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="0">1</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 1, disabled: 1 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="1">2</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 2, disabled: 2 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="2">3</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 3, disabled: 3 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="3">4</a></li>' +
-				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 4, disabled: 4 > $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="4">5</a></li>' +
-				'										<li data-bind="{css: {disabled: $root.linkedDataSources[\'' + key + '\'].page() >= $root.linkedDataSources[\'' + key + '\'].maxPage()}}"><a href="#">&raquo;</a></li>' +
+				'									<ul class="pagination  pagination-sm nomargin" data-bind="with: $root.linkedDataSources[\'' + key + '\']">' +
+				'										<li data-bind="{css: {disabled: page() <= 0}}"><a href="#">&laquo;</a></li>' +
+				'										<li data-bind="{css: {active: page() == paginateNumber(0), disabled: paginateNumber(0) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(0)}, text: paginateNumber(0) + 1, click: paginate}" data="0">1</a></li>' +
+				'										<li data-bind="{css: {active: page() == paginateNumber(1), disabled: paginateNumber(1) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(1)}, text: paginateNumber(1) + 1, click: paginate}" data="1">2</a></li>' +
+				'										<li data-bind="{css: {active: page() == paginateNumber(2), disabled: paginateNumber(2) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(2)}, text: paginateNumber(2) + 1, click: paginate}" data="2">3</a></li>' +
+				'										<li data-bind="{css: {active: page() == paginateNumber(3), disabled: paginateNumber(3) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(3)}, text: paginateNumber(3) + 1, click: paginate}" data="3">4</a></li>' +
+				'										<li data-bind="{css: {active: page() == paginateNumber(4), disabled: paginateNumber(4) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(4)}, text: paginateNumber(4) + 1, click: paginate}" data="4">5</a></li>' +
+				'										<li data-bind="{css: {disabled: page() >= maxPage()}}"><a href="#">&raquo;</a></li>' +
 				'									</ul>' +
 				'									</div>' +
 				// content
