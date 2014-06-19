@@ -3,8 +3,8 @@
 $(function(){
 	cD = {};
 	(function(){
-		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
-		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
+		//var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
 		
@@ -1855,18 +1855,27 @@ $(function(){
 				// scrape : specs.scrape,
 				htmlify : specs.htmlify,
 				datatype: specs.datatype,
-				showPanel: ko.observable(true)
+				showPanel: ko.observable(true),
+				page: ko.observable(0),
+				paginate: specs.paginate === null ? function(e){} : function(scope, event){
+					var page = $(event.currentTarget).attr("data");
+					specs.paginate(page, that);
+				}
 			}
 
 			return that;
 		}
 
-		search.processCWRCSearch = function(queryString) {
+		search.processCWRCSearch = function(queryString, page) {
+			search.linkedDataSources.cwrc.page(page);
+			
 			$(".linkedDataMessage").text("");
 			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 			$("#CWRCDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = cwrcApi[dialogType].getEntity;
 			search.linkedDataSources.cwrc.ajaxRequest = cwrcApi[dialogType].searchEntity({
+				limit: 100,
+				page: page ? page : 0,
 				query : queryString,
 				success : function(result){
 					$.each(result["response"]["objects"], function(i, doc){
@@ -2259,22 +2268,37 @@ $(function(){
 			
 			return xmlToString(head[0]);
 		};
+		
+		search.paginateSearch = function(page, dataSource){
+			for (var key in search.linkedDataSources) {
+				var lds = search.linkedDataSources[key];
+				lds.results.removeAll();
+			}
+			
+			var queryString = search.queryString();
+			if(queryString && queryString != null && queryString.length > 0){
+				dataSource.processSearch(search.queryString(), page);
+			}
+		};
 
 		search.linkedDataSources = {
 			"cwrc": search.getLinkedDataSource({
 				"name": "CWRC", 
 				"processSearch": search.processCWRCSearch,
-				"datatype": ["person", "place", "organization", "title"]
+				"datatype": ["person", "place", "organization", "title"],
+				"paginate": search.paginateSearch
 			}),
 			"viaf": search.getLinkedDataSource({
 				"name": "VIAF", 
 				"processSearch": search.processVIAFSearch,
-				"datatype": ["person", "organization", "title"]
+				"datatype": ["person", "organization", "title"],
+				"paginate": null
 			}),
 			"geonames": search.getLinkedDataSource({
 				"name": "GeoNames",
 				"processSearch": search.processGeoNameSearch,
-				"datatype": ["place"]
+				"datatype": ["place"],
+				"paginate": null
 			})
 		}
 
@@ -2299,7 +2323,7 @@ $(function(){
 				'												<div class="panel-body">' +				
 				// paginator
 				'									<div class="paginatorArea" id="'+lds.name+'Paginator">' +
-				// '									<span>Results 100</span>'+
+				'									<span data-bind="{text: $root.linkedDataSources[\'' + key + '\'].page}">Results 100</span>'+
 				// '									<select class="form-control">' +
 				// '										<option>1</option>' +
 				// '										<option>2</option>' +
@@ -2307,15 +2331,15 @@ $(function(){
 				// '										<option>4</option>' +
 				// '										<option>5</option>' +
 				// '									</select>' +
-				// '									<ul class="pagination  pagination-sm nomargin">' +
-				// '									<li><a href="#">&laquo;</a></li>' +
-				// '									<li><a href="#">1</a></li>' +
-				// '									<li><a href="#">2</a></li>' +
-				// '									<li><a href="#">3</a></li>' +
-				// '									<li><a href="#">4</a></li>' +
-				// '									<li><a href="#">5</a></li>' +
-				// '									<li><a href="#">&raquo;</a></li>' +
-				// '									</ul>' +
+				'									<ul class="pagination  pagination-sm nomargin">' +
+				'										<li><a href="#">&laquo;</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 0}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="0">1</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 1}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="1">2</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 2}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="2">3</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 3}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="3">4</a></li>' +
+				'										<li data-bind="{css: {active: $root.linkedDataSources[\'' + key + '\'].page() == 4}}"><a href="#" data-bind="{click:$root.linkedDataSources[\'' + key + '\'].paginate}" data="4">5</a></li>' +
+				'										<li><a href="#">&raquo;</a></li>' +
+				'									</ul>' +
 				'									</div>' +
 				// content
 				'									<div class="list-group cwrc-result-area">' +
@@ -2742,7 +2766,7 @@ $(function(){
 						lds.ajaxRequest.abort();	
 					}
 				}
-				search.linkedDataSources[search.selectedLinkedDataSource].processSearch(queryString);
+				search.linkedDataSources[search.selectedLinkedDataSource].processSearch(queryString, 0);
 			}
 		};
 
