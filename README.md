@@ -56,11 +56,17 @@ The interface as opened to the user includes:
 + initializeWithLogin
 + popCreatePerson
 + popCreateOrganization
++ popCreatePlace
++ popCreateTitle
 + popSearchPerson
++ popSearchOrganization
++ popSearchPlace
++ popSearchTitle
 + popCreate 
 + popSearch
++ popEdit
 
-The objects `popCreate` and `popSearch` provide key base access to the create and search dialogs respectively using the entity names as keys (person, organization etc.) 
+The objects `popCreate`, `popSearch`, and `popEdit` provide key base access to the create and search dialogs respectively using the entity names as keys (person, organization etc.) 
 
 When opening the search dialog on can pass different options to the call function that will modify the behaviour of the dialog.
 
