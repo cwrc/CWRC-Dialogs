@@ -223,10 +223,11 @@ $(function(){
 
 	$("#searchCustomButton").click(function(){
 
-		var searchType = $("#customSearchSelectionButton").text();
+		var searchName = $("#customSearchSelectionButton").text();
+		var searchType = searchName.toLowerCase().trim();
 		var searchQuery = $("#searchPersonInput").val();
 
-		$("#resultHeader").text(searchType + " ");
+		$("#resultHeader").text(searchName + " ");
 		$("#entityXMLContainer").text("");
 
 		var opts = {
@@ -238,10 +239,17 @@ $(function(){
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
 			},
+			buttons : [
+				{
+					label : "Edit",
+					action : cD.popEdit[searchType]
+				},
+					
+			],
 			query : searchQuery
 		}
 	
-		cD.popSearch[searchType.toLowerCase().trim()](opts)
+		cD.popSearch[searchType](opts)
 
 	});
 

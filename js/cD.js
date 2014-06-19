@@ -1698,6 +1698,10 @@ $(function(){
 							field.value(nodeValue);
 							// parentField.parentQuantifier.addGroup();
 						}
+					} else if (field.isSet && parentField.parentQuantifier.isInterleave() ) {
+						// console.log("deal with problem");
+						return false;
+
 					} else {												
 						// parentField.parentQuantifier.addGroup();
 						var lastfield = last(parentField.interfaceFields());
@@ -1833,6 +1837,13 @@ $(function(){
 		}
 
 		cD.popEditTitle = popEditTitle;
+
+		cD.popEdit = {
+			person: popEditPerson,
+			organization : popEditOrganization,
+			place : popEditPlace,
+			title : popEditTitle
+		}
 
 		///////////////////////////////////////////////////////////////////////
 		// Search
