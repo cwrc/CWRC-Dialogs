@@ -1870,7 +1870,10 @@ $(function(){
 				page: ko.observable(0),
 				paginate: specs.paginate === null ? function(e){} : function(scope, event){
 					var page = parseInt($(event.currentTarget).attr("data"));
-					specs.paginate(page, that);
+					
+					if(page <= that.maxPage() && page >= 0){
+						specs.paginate(page, that);
+					}
 				},
 				maxPage: ko.observable(0),
 				showPaginate: ko.observable(specs.paginate != null),
