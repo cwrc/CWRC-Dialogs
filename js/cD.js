@@ -8,7 +8,7 @@ $(function(){
 		cD.setCwrcApi = function(url){
 			cwrcApi = new CwrcApi(url, $);
 		}
-		cwrcApi = cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
+		cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
 		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// Geonames Url
@@ -31,7 +31,7 @@ $(function(){
 			show: false,
 			keyboard: true,
 			backdrop: false,
-			maxHeight: 500,
+			// maxHeight: 500,
 		}
 		var dialogType = "";
 
@@ -441,6 +441,13 @@ $(function(){
 			$("#cwrcTitleModal").modal(params.modalOptions);
 			$("#cwrcTitleModal").draggable({	
 				handle: ".modal-header"
+			});
+
+			$("#cwrcEntityModal").on('show.bs.modal', function () {
+				$('.modal-body-area').css('max-height',$( window ).height()*0.7);
+			});
+			$("#cwrcTitleModal").on('show.bs.modal', function () {
+				$('.modal-body-area').css('max-height',$( window ).height()*0.7);
 			});
 
 			ko.applyBindings(entity.viewModel, $("#newDialogue")[0]);
@@ -2542,6 +2549,10 @@ $(function(){
 					}
 				}
 				search.clear();
+			});
+
+			$("#cwrcSearchDialog").on('show.bs.modal', function (e) { 
+				$('.modal-body-area').css('max-height',$( window ).height()*0.7);
 			});
 
 		}
