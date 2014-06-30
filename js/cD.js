@@ -1703,33 +1703,21 @@ $(function(){
 
 			}else if (field.input !== "header") {				
 				if (field.path == parentPath) {
-					// console.log(field.input + " " + field.value() + " " + nodeValue);
-					// XXX working
+					
 					if (! field.isSet) {
 						field.isSet = true;
 						if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
 							field.value(nodeValue.split(","));
 						} else {
 							field.value(nodeValue);
-							// parentField.parentQuantifier.addGroup();
 						}
-					} else if (field.isSet) {
-						// console.log("deal with problem");
+					} else if (field.isSet) {				
 						return false;
-
 					} 
-					// else {												
-					// 	// parentField.parentQuantifier.addGroup();
-					// 	var lastfield = last(parentField.interfaceFields());
-					// 	lastfield.parentQuantifier = parentField;
-					// 	return foundAndFilled(nodeValue, parentPath, lastfield, parentField);
-					// }
-					
-					
-					// XXX need to add another group in previous container
+				
 					return true;
 				}
-				// return true;
+				
 			}
 		}
 
