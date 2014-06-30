@@ -3,10 +3,25 @@
 $(function(){
 	cD = {};
 	(function(){
-		var cwrcApi = new CwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/', $);
+		// Cwrc Api
+		var cwrcApi = null;
+		cD.setCwrcApi = function(url){
+			cwrcApi = new CwrcApi(url, $);
+		}
+		cwrcApi = cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
 		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
+		// Geonames Url
 		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
+		cD.setGeonameUrl = function(url){
+			geonameUrl = url;
+		}
+		
+		// Viaf Url
+		var viafUrl = "http://apps.testing.cwrc.ca/services/viaf/";
+		cD.setViafUrl = function(url){
+			viafUrl = url;
+		}
 		
 		// parameters
 
@@ -1871,7 +1886,10 @@ $(function(){
 				page: ko.observable(0),
 				paginate: specs.paginate === null ? function(e){} : function(scope, event){
 					var page = parseInt($(event.currentTarget).attr("data"));
-					specs.paginate(page, that);
+					
+					if(page <= that.maxPage() && page >= 0){
+						specs.paginate(page, that);
+					}
 				},
 				maxPage: ko.observable(0),
 				showPaginate: ko.observable(specs.paginate != null),
@@ -1929,7 +1947,7 @@ $(function(){
 		}
 
 		search.processViafData = function(id) {
-			var url = "http://apps.testing.cwrc.ca/services/viaf/" + id + "/viaf.xml";
+			var url = viafUrl + "/" + id + "/viaf.xml";
 			var result = "";
 			$.ajax({
 				url: url,
@@ -1951,7 +1969,7 @@ $(function(){
 			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 			$("#VIAFDataMessage").addClass("fa fa-spin fa-refresh");
 			search.processData = search.processViafData;
-			var viafUrl = "http://apps.testing.cwrc.ca/services/viaf/search";
+			var viafSearchUrl = viafUrl + "/search";
 			var viafPrefix = "";
 
 			switch (dialogType) {
@@ -1970,7 +1988,7 @@ $(function(){
 			}
 			var quotedQueryString = '"' + queryString + '"';
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
-				url: viafUrl,
+				url: viafSearchUrl,
 				// dataType : 'json',
 				dataType : "xml",
 				processData : false,
