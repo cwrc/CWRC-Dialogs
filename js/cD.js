@@ -1698,16 +1698,17 @@ $(function(){
 							field.value(nodeValue);
 							// parentField.parentQuantifier.addGroup();
 						}
-					} else if (field.isSet && parentField.parentQuantifier.isInterleave() ) {
+					} else if (field.isSet) {
 						// console.log("deal with problem");
 						return false;
 
-					} else {												
-						// parentField.parentQuantifier.addGroup();
-						var lastfield = last(parentField.interfaceFields());
-						lastfield.parentQuantifier = parentField;
-						return foundAndFilled(nodeValue, parentPath, lastfield, parentField);
-					}
+					} 
+					// else {												
+					// 	// parentField.parentQuantifier.addGroup();
+					// 	var lastfield = last(parentField.interfaceFields());
+					// 	lastfield.parentQuantifier = parentField;
+					// 	return foundAndFilled(nodeValue, parentPath, lastfield, parentField);
+					// }
 					
 					
 					// XXX need to add another group in previous container
