@@ -872,18 +872,11 @@ $(function(){
 		var moveInterfaceElements = function(from, to) {
 			$.each(from.seed.interfaceFields(), function(index, item){
 				// if (item.hasInterface) {
-				// item.parentQuantifier = to;
+				
 				to.seed.interfaceFields.push(item);
 
-				// if (item.input == "seed") {
-				// 	item.parentQuantifier = to;
-					// console.log("Z")
-				// }
-				// }
 			});
-			// to.seed.parentQuantifier = to;
-			// from.seed.parentQuantifier = null;
-
+			
 			// XXX Needed ?
 			if (to.label === "") {
 				to.label = from.label;
@@ -1261,7 +1254,7 @@ $(function(){
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
-			// that.seed.parentQuantifier = that;
+			
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1298,7 +1291,7 @@ $(function(){
 				if (that.interfaceFields().length < that.maxItems) {
 					// that.interfaceFields.push(that.seed.clone());	//XXX SEED
 					var newClone = that.seed.clone();
-					// newClone.parentQuantifier = that;
+					
 					newClone.interfaceFields()[0].label = "";
 					that.interfaceFields.push(newClone);
 					setHelp();
@@ -1403,11 +1396,9 @@ $(function(){
 		var seedModel = function() {
 			var that = {};
 			that.input = "seed";
-			that.parentQuantifier = "";
 			that.interfaceFields = ko.observableArray();
 			that.clone = function() {
 				var result = seedModel();
-				result.parentQuantifier = that.parentQuantifier;
 				$.each(that.interfaceFields(), function(index, field){
 					result.interfaceFields.push(field.clone());
 				});
@@ -1669,8 +1660,7 @@ $(function(){
 				if (parentPath.toString().indexOf(field.path) === 0) {
 					var foundOnFields = false;
 					// alert(field.interfaceFields().length)
-					$.each(field.interfaceFields(), function(i, currentField) {
-						currentField.parentQuantifier = field;
+					$.each(field.interfaceFields(), function(i, currentField) {						
 						if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
 							foundOnFields = true;
 							return false; // break out of loop
@@ -1684,8 +1674,7 @@ $(function(){
 
 							field.addGroup();
 
-							var lastfield = last(field.interfaceFields());
-							lastfield.parentQuantifier = field;
+							var lastfield = last(field.interfaceFields());						
 							return foundAndFilled(nodeValue, parentPath, lastfield, field);
 						}
 					}
@@ -1738,6 +1727,10 @@ $(function(){
 			}
 			entity.viewModel().dialogTitle("Add Person");
 			completeDialog(opts);
+
+			// set default value
+			console.log(entity.viewModel().interfaceFields().interfaceFields()[0]);
+
 			$('#cwrcEntityModal').modal('show');
 			// hackish
 			setTimeout(function(){
