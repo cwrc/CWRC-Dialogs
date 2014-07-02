@@ -139,9 +139,10 @@ $(function(){
 				{
 					label : "Edit",
 					action : cD.popEditPerson
-				},
+				}
 					
-			]
+			],
+			query : $("#startValuePerson").val()
 		}
 
 		cD.popSearchPerson(opts);
@@ -167,7 +168,8 @@ $(function(){
 					action : cD.popEditOrganization
 				},
 					
-			]
+			],
+			query : $("#startValueOrganization").val()
 		}
 
 		cD.popSearchOrganization(opts);
@@ -192,7 +194,8 @@ $(function(){
 					action : cD.popEditPlace
 				},
 					
-			]
+			],
+			query : $("#startValuePlace").val()
 		}
 
 		cD.popSearchPlace(opts);
@@ -217,7 +220,8 @@ $(function(){
 					action : cD.popEditTitle
 				},
 					
-			]
+			],
+			query : $("#startValueTitle").val()
 		}
 
 		cD.popSearchTitle(opts);
