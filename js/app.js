@@ -1,16 +1,5 @@
 
 $(function(){
-	// var opts = {
-	//	success: function(data) {
-	//		$("#entityXMLContainer").text(data);
-	//	},
-	//	error : function(errorThrown) {
-	//		$("#entityXMLContainer").text("");
-	//	}
-	// };
-
-	// cD.popPersonDialog(opts);
-	// cD.popOrganizationDialog(opts);
 
 	cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
 	cD.setPersonSchema("./schemas/entities.rng");
