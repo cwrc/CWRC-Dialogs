@@ -103,7 +103,8 @@ $(function(){
 		entity.viewModel().validated = ko.observable(true);
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = [];
-		
+		entity.startValuePath = [];
+
 		entity.viewModel().modsFields = ko.observable({
 			modsTypes: [
 			{name:'Audio'},
@@ -469,11 +470,11 @@ $(function(){
 		var completeTitleDialog = function(opts, data) {
 			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
 			entity[dialogType].error = typeof opts.error === undefined ? function(){} : opts.error;
-			newTitleDialog(data);
+			newTitleDialog(opts, data);
 			setHelp();
 		};
 		
-		var newTitleDialog = function(data) {
+		var newTitleDialog = function(opts, data) {
 			initializeQuantifiers();
 			
 			var modsFields = entity.viewModel().modsFields();
@@ -494,7 +495,11 @@ $(function(){
 				}
 			}else{
 				modsFields.modsType("Audio");
-				modsFields.title("");
+				if (opts.startValue && opts.startValue.trim() !== "") {
+					modsFields.title(opts.startValue);
+				} else {
+					modsFields.title("");	
+				}				
 				modsFields.author([]);
 				modsFields.date("");
 				modsFields.project("");
@@ -695,8 +700,10 @@ $(function(){
 			// ADD WIDGET HERE
 			var appInfoNode = $(node).children("xs\\:appinfo");
 			// check all children for path XXX
+			var isStartValue = "";
 			$(appInfoNode).children("interface-field").each(function(i,e){
 				var currentPath = $(e).attr('path').split('/');
+				isStartValue = $(e).attr('startValue');
 				if (isSamePath(currentPath)) {
 					// if same path XXX
 					// check what widget to add XXX
@@ -768,6 +775,12 @@ $(function(){
 						if (lastContainer.isRequired()) {
 							newInput.nodeMessage("Required value");
 						}
+
+						
+						if (isStartValue === "true") {
+							entity.startValuePath = currentPath;
+						}
+
 						lastContainer.seed.interfaceFields.push(newInput);
 
 					}
@@ -1717,42 +1730,48 @@ $(function(){
 			}
 		}
 
+		var addStartValue = function(value, path) {
+			// clear ors |
+			for (var i=0; i< path.length; ++i) {
+				if (path[i].indexOf("|") != -1) {
+					path[i] = dialogType;
+				}
+			}
+			foundAndFilled(value, path, entity.viewModel().interfaceFields(), null);
+		}
+
 		// pop create		
 
-		var popCreatePerson = function(opts) {
-			dialogType = "person";
+		var popCreateEntity = function(opts) {
 			if (!opts.editing) {
 				entity.editing = false;
 				entity.editingPID = "";	
 			}
-			entity.viewModel().dialogTitle("Add Person");
 			completeDialog(opts);
-
-			// set default value
-			console.log(entity.viewModel().interfaceFields().interfaceFields()[0]);
-
+			// set default value			
+			if (opts.startValue && opts.startValue.trim() != "") {
+				addStartValue(opts.startValue, entity.startValuePath);	
+			}			
 			$('#cwrcEntityModal').modal('show');
 			// hackish
 			setTimeout(function(){
 				$(".modal-body-area").scrollTop(0);
 			},5);
+		}
+
+		var popCreatePerson = function(opts) {
+			dialogType = "person";
+			entity.viewModel().dialogTitle("Add Person");
+			popCreateEntity(opts);
+			
 		};
 
 		cD.popCreatePerson = popCreatePerson;
 
 		var popCreateOrganization = function(opts) {
 			dialogType = "organization";
-			if (!opts.editing) {
-				entity.editing = false;
-				entity.editingPID = "";	
-			}
 			entity.viewModel().dialogTitle("Add Organization");
-			completeDialog(opts);
-			$('#cwrcEntityModal').modal('show');
-			// hackish
-			setTimeout(function(){
-				$(".modal-body-area").scrollTop(0);
-			},5);
+			popCreateEntity(opts);
 			
 		};
 
@@ -1760,17 +1779,8 @@ $(function(){
 
 		var popCreatePlace = function(opts) {
 			dialogType = "place";
-			if (!opts.editing) {
-				entity.editing = false;
-				entity.editingPID = "";	
-			}
 			entity.viewModel().dialogTitle("Add Place");
-			completeDialog(opts);
-			$('#cwrcEntityModal').modal('show');
-			// hackish
-			setTimeout(function(){
-				$(".modal-body-area").scrollTop(0);
-			},5);
+			popCreateEntity(opts);
 			
 		};
 

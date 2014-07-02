@@ -1514,7 +1514,7 @@
             <xs:annotation>
                 <xs:appinfo>
 
-                    <interface-field path="entity/person|organization|place/identity/preferredForm/namePart">
+                    <interface-field startValue="true" path="entity/person|organization|place/identity/preferredForm/namePart">
                         <label xml:lang="en">Name Part</label>
                         <help-text xml:lang="en">Required. Provide the person's, organization's, or place's
                             standard name, by part, in natural order. Add more name parts if

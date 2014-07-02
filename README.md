@@ -68,6 +68,12 @@ The interface as opened to the user includes:
 
 The objects `popCreate`, `popSearch`, and `popEdit` provide key base access to the create and search dialogs respectively using the entity names as keys (person, organization etc.) 
 
+Methods popCreatePerson, popCreateOrganization, popCreatePlace, popCreateTitle can take the following arguments as part of a hash:
+
++ success - Function to execute when an entity is created.
++ error - Function to execute when entity creation fails.
++ startValue - Starting value for the dialog. 
+
 When opening the search dialog on can pass different options to the call function that will modify the behaviour of the dialog.
 
 + success - a function to be called when selecting an entry

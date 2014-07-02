@@ -985,6 +985,7 @@
                 <xs:appinfo>
 
                     <interface-field
+                        startValue="true"
                         path="entity/person|organization/identity/preferredForm/namePart">
                         <label xml:lang="en">Name Part</label>
                         <help-text xml:lang="en">Required. Provide the person's or organization's

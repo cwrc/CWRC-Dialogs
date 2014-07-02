@@ -21,8 +21,6 @@ $(function(){
 		$("#entityXMLContainer").text("");
 		var opts = {
 			success: function(result) {
-				
-				
 				if(result.response.error){
 					alert(result.response.error);
 					$("#entityXMLContainer").text("");
@@ -34,7 +32,8 @@ $(function(){
 			error : function(errorThrown) {
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
-			}
+			},
+			startValue : $("#startValuePerson").val()
 		};
 		cD.popCreatePerson(opts);
 	});
@@ -55,7 +54,8 @@ $(function(){
 			error : function(errorThrown) {
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
-			}
+			},
+			startValue : $("#startValueOrganization").val()
 		};
 		cD.popCreateOrganization(opts);
 	});
@@ -76,7 +76,8 @@ $(function(){
 			error : function(errorThrown) {
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
-			}
+			},
+			startValue : $("#startValuePlace").val()
 		};
 		cD.popCreatePlace(opts);
 	});
@@ -97,7 +98,8 @@ $(function(){
 			error : function(errorThrown) {
 				$("#entityXMLContainer").text("");
 				$("#resultHeader").text("Entity ");
-			}
+			},
+			startValue : $("#startValueTitle").val()
 		};
 		cD.popCreateTitle(opts);
 	});
