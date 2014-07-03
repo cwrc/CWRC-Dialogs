@@ -104,6 +104,7 @@ $(function(){
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = [];
 		entity.startValuePath = [];
+		entity.currentPadding = "0";
 
 		entity.viewModel().modsFields = ko.observable({
 			modsTypes: [
@@ -217,7 +218,7 @@ $(function(){
 
 			var entityTemplates = '' +
 			'		<script type="text/htmlify" id="quantifier">' +
-			'			<div class="quantifier">' +
+			'			<div class="quantifier" data-bind="style:{margin : fieldPadding()}">' +
 			'			<div>' +
 			// '				<h2><span data-bind="text: header"></span></h2>' +
 			'				<span data-bind="text: label"></span>' +
@@ -226,9 +227,9 @@ $(function(){
 			'						<button data-bind="click: addGroup" class="btn btn-default btn-xs"><span class="fa fa-plus"</span></button>' +
 			'					</span>' +
 			'				</span>' +
+			'			</div>' +			
 			'			</div>' +
 			'			<div class="interfaceFieldsContainer" data-bind="template:{name: $root.displayMode, foreach: interfaceFields}"> ' +
-			'			</div>' +
 			'			</div>' +
 			'		</script>' +
 			'		<script type="text/html" id="seed">' +
@@ -244,7 +245,7 @@ $(function(){
 			'		</script>' +
 			'		<script type="text/html" id="textField">' +
 			'			<!--textField-->' +
-			'			<span>' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'				<span data-bind="text: label"></span> ' +
 			'				<input data-bind="value: value" /> ' +
 			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
@@ -254,8 +255,8 @@ $(function(){
 			
 			'		<script type="text/html" id="header">' +
 			'			<!--header-->' +
-			'			<span>' +
-			'				<h4><span data-bind="text: label"></span></h4>' +
+			'			<span>' + 
+			'				<h4><span data-bind="text: label, style:{margin : fieldPadding()}"></span></h4>' +
 			'			</span>' +
 			'		</script>' +
 
@@ -273,13 +274,13 @@ $(function(){
 			'		</script>' +
 			'		<script type="text/html" id="dialogue">' +
 			'			<!--dialogue-->' +
-			'			<span>' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'				<span class="cwrc-help" data-bind="text: label, attr:{\'title\': help}"></span> ' +
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="textArea">' +
 			'			<!--textArea-->' +
-			'			<span>' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'				<span data-bind="text: label"></span> ' +
 			'				<textarea rows="4" cols="50" data-bind="value: value"></textarea> ' +
 			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
@@ -287,7 +288,7 @@ $(function(){
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="radioButton">' +
-			'			<span>' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'				<span data-bind="text: label"></span>' +
 			'				<ul data-bind="foreach: options">' +
 			'					<li>' +
@@ -299,7 +300,7 @@ $(function(){
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="dynamicCheckbox">' +
-			'			<span>' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'				<span data-bind="text: label"></span>' +
 			'				<ul data-bind="foreach: options">' +
 			'					<li>' +
@@ -311,8 +312,10 @@ $(function(){
 			'			</span>' +
 			'		</script>' +
 			'		<script type="text/html" id="dropDown">' +
+			'			<span data-bind="style:{margin : fieldPadding()}">' +
 			'			<select data-bind="value: value, options: options, optionsText: \'content\', optionsValue: \'value\'"></select>' +
 			'				<span class="cwrc-help fa fa-question-circle" data-bind="attr:{\'title\': help}"></span>'+
+			'			</span>' +
 			'		</script>';
 
 
@@ -701,9 +704,11 @@ $(function(){
 			var appInfoNode = $(node).children("xs\\:appinfo");
 			// check all children for path XXX
 			var isStartValue = "";
+			var leftPadding = "";
 			$(appInfoNode).children("interface-field").each(function(i,e){
 				var currentPath = $(e).attr('path').split('/');
 				isStartValue = $(e).attr('startValue');
+				leftPadding = $(e).attr("leftPadding");
 				if (isSamePath(currentPath)) {
 					// if same path XXX
 					// check what widget to add XXX
@@ -775,11 +780,16 @@ $(function(){
 						if (lastContainer.isRequired()) {
 							newInput.nodeMessage("Required value");
 						}
-
 						
 						if (isStartValue === "true") {
 							entity.startValuePath = currentPath;
 						}
+
+						if (leftPadding && leftPadding.trim() !== "") {
+							entity.currentPadding = leftPadding;
+						}
+						console.log(entity.currentPadding)
+						newInput.fieldPadding("0px 0px 0px "+entity.currentPadding+"px")
 
 						lastContainer.seed.interfaceFields.push(newInput);
 
@@ -1085,9 +1095,11 @@ $(function(){
 			}
 			
 			// create access condition
-			var accessCondition = $("<accessCondition></accessCondition>");
-			$(accessCondition).attr("type", "use and reproduction");
+	
+			var accessCondition = entity.selfWorking.createElement("accessCondition");
+			accessCondition.setAttribute("type", "use and reproduction");
 			$(accessCondition).html(accessConditionText);
+
 			mods.append(accessCondition);
 			
 			// create record info
@@ -1267,7 +1279,7 @@ $(function(){
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
-			
+			that.fieldPadding = ko.observable("0px 0px 0px 0px")
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1363,6 +1375,7 @@ $(function(){
 				result.path = this.path;
 				result.label = this.label;
 				result.header = this.header;
+				result.fieldPadding = ko.observable(this.fieldPadding);
 				// result.elements = this.elements;
 				// take label
 				// result.label = result.seed.interfaceFields()[0].label;
@@ -1435,6 +1448,7 @@ $(function(){
 			that.nodeMessageClass = ko.observable("label label-info");
 			that.options = [];
 			that.isSet = false;
+			that.fieldPadding = ko.observable("0px 0px 0px 0px")
 			that.clone = function() {
 				var result = that.constructor();
 				result.label = that.label;
@@ -1446,6 +1460,7 @@ $(function(){
 				result.nodeMessage = ko.observable(that.nodeMessage());
 				result.nodeMessageClass = ko.observable(that.nodeMessageClass());
 				result.isSet = that.isSet;
+				result.fieldPadding = ko.observable(that.fieldPadding());
 				if (result.defaultValue) {
 					result.value(that.value());
 				}
