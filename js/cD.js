@@ -2019,7 +2019,7 @@ $(function(){
 					$("#VIAFDataMessage").text("Results: " + search.linkedDataSources.viaf.results().length );
 					
 					// Calculate the range displayed in the message
-					var totalResults = parseInt($('searchResponse numberOfRecords', response).text());
+					var totalResults = parseInt($('searchRetrieveResponse numberOfRecords', response).text());
 					var top = (page + 1) * perPage;
 					top = totalResults < top ? totalResults : top;
 					
