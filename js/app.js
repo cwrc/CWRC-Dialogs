@@ -1,6 +1,6 @@
 
 $(function(){
-
+	cD.setCwrcApi('http://localhost/cwrc/');
 	cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
 	cD.setPersonSchema("./schemas/entities.rng");
 	cD.setOrganizationSchema("./schemas/entities.rng");

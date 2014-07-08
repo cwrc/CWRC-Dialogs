@@ -1977,7 +1977,12 @@ $(function(){
 			return result;
 		}
 
-		search.processVIAFSearch = function(queryString) {
+		search.processVIAFSearch = function(queryString, page) {
+			// Calculate Page Information
+			var perPage = 100;
+			var bottom = 1 + (page * perPage);
+			search.linkedDataSources.viaf.page(page);
+			
 			$(".linkedDataMessage").text("");
 			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 			$("#VIAFDataMessage").addClass("fa fa-spin fa-refresh");
@@ -2005,13 +2010,22 @@ $(function(){
 				// dataType : 'json',
 				dataType : "xml",
 				processData : false,
-				data : "query=" + viafPrefix + quotedQueryString + "&httpAccept=text/xml",
+				data : "query=" + viafPrefix + quotedQueryString + "&maximumRecords=" + perPage + "&startRecord=" + bottom + "&httpAccept=text/xml",
 				success: function(response) {
 					$('searchRetrieveResponse record', response).each(function(index, spec) {
 						search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
 					});
 					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 					$("#VIAFDataMessage").text("Results: " + search.linkedDataSources.viaf.results().length );
+					
+					// Calculate the range displayed in the message
+					var totalResults = parseInt($('searchResponse numberOfRecords', response).text());
+					var top = (page + 1) * perPage;
+					top = totalResults < top ? totalResults : top;
+					
+					$("#VIAFDataMessage").text("Results: " +  bottom + " - " + top);	
+					
+					search.linkedDataSources.viaf.maxPage(totalResults / perPage);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (ajaxOptions !== "abort") {
@@ -2354,7 +2368,7 @@ $(function(){
 				"name": "VIAF", 
 				"processSearch": search.processVIAFSearch,
 				"datatype": ["person", "organization", "title"],
-				"paginate": null
+				"paginate": search.paginateSearch
 			}),
 			"geonames": search.getLinkedDataSource({
 				"name": "GeoNames",
