@@ -50,6 +50,10 @@ A test application is included with the code. This application can be reached by
 
 From the `app.js` file you can see that the CWRC dialogs need to be initialized for the cwrc api to work. You can initialize it with the `initializeWithLogin` or `initializeWithCookie` methods.
 
+Service call urls can be customized by using the functions `setCwrcApi`, `setGeonameUrl`, and `setViafUrl`.
+
+The location of entity schemas can be defined by using the functions `setPersonSchema`, `setOrganizationSchema`, or `setPlaceSchema`.
+
 The interface as opened to the user includes:
 
 + initializeWithCookie
@@ -65,6 +69,12 @@ The interface as opened to the user includes:
 + popCreate 
 + popSearch
 + popEdit
++ setCwrcApi
++ setGeonameUrl
++ setViafUrl
++ setPersonSchema
++ setOrganizationSchema
++ setPlaceSchema
 
 The objects `popCreate`, `popSearch`, and `popEdit` provide key base access to the create and search dialogs respectively using the entity names as keys (person, organization etc.) 
 
