@@ -2025,7 +2025,7 @@ $(function(){
 					
 					$("#VIAFDataMessage").text("Results: " +  bottom + " - " + top);	
 					
-					search.linkedDataSources.viaf.maxPage(totalResults / perPage);
+					search.linkedDataSources.viaf.maxPage(Math.floor(totalResults / perPage));
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (ajaxOptions !== "abort") {
