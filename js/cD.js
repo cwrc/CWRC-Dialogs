@@ -1172,7 +1172,7 @@ $(function(){
 				case 'person' :					
 				case 'organization' :					
 				case 'place' :
-					startingXML += '<?xml-model href="http://cwrc.ca/schema/entities.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>';
+					startingXML += '<?xml-model href="http://cwrc.ca/schemas/entities.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?>';
 					break;
 				case 'title' :
 					startingXML += '<mods xmlns="http://www.loc.gov/mods/v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.loc.gov/mods/v3 http://www.loc.gov/standards/mods/mods.xsd">';
