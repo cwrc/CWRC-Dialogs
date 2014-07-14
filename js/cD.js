@@ -471,8 +471,8 @@ $(function(){
 		};
 		
 		var completeTitleDialog = function(opts, data) {
-			entity[dialogType].success = typeof opts.success === undefined ? function(){} : opts.success;
-			entity[dialogType].error = typeof opts.error === undefined ? function(){} : opts.error;
+			entity[dialogType].success = opts.success ? opts.success : function(){}; //typeof opts.success === undefined ? function(){} : opts.success;
+			entity[dialogType].error = opts.error ? opts.error : function(){};//typeof opts.error === undefined ? function(){} : opts.error;
 			newTitleDialog(opts, data);
 			setHelp();
 		};
