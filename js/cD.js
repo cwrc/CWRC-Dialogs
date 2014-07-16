@@ -101,6 +101,7 @@ $(function(){
 		entity.viewModel().interfaceFields = ko.observableArray([]);
 		entity.viewModel().dialogTitle = ko.observable("");
 		entity.viewModel().validated = ko.observable(true);
+		entity.viewModel().showSavingMessage = ko.observable(false);
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = [];
 		entity.startValuePath = [];
@@ -327,6 +328,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+			'				<span data-bind="visible: showSavingMessage"><h5 class="modal-title pull-right"><span>Saving</span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area">' +
@@ -350,6 +352,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
+			'				<span data-bind="visible: showSavingMessage"><h5 class="modal-title pull-right"><span>Saving</span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area" data-bind="with: modsFields">' +
@@ -456,6 +459,14 @@ $(function(){
 
 			ko.applyBindings(entity.viewModel, $("#newDialogue")[0]);
 			ko.applyBindings(entity.viewModel, $("#newTitleDialogue")[0]);
+		}
+
+		var savingMessageOn = function() {
+			entity.viewModel().showSavingMessage(true);
+		}
+
+		var savingMessageOff = function() {
+			entity.viewModel().showSavingMessage(false);
 		}
 
 		var initializeQuantifiers = function() {
@@ -1200,6 +1211,7 @@ $(function(){
 		};
 
 		cD.processCallback = function() {
+			savingMessageOn();
 			entity.viewModel().validated(true);
 			var xml = getWorkingXML();
 			// console.log(xml);
@@ -1225,6 +1237,7 @@ $(function(){
 			} else {
 				entity[dialogType].error("Form not valid");
 			}
+			savingMessageOff();
 		};
 
 		var xmlToString = function(xmlData) {
