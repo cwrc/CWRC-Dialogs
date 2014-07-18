@@ -799,8 +799,9 @@ $(function(){
 						if (leftPadding && leftPadding.trim() !== "") {
 							entity.currentPadding = leftPadding;
 						}
-						console.log(entity.currentPadding)
-						newInput.fieldPadding("0px 0px 0px "+entity.currentPadding+"px")
+						// console.log(entity.currentPadding)
+						// XXX in progress
+						// newInput.fieldPadding("0px 0px 0px "+entity.currentPadding+"px")
 
 						lastContainer.seed.interfaceFields.push(newInput);
 
@@ -1583,16 +1584,34 @@ $(function(){
 
 		}
 
+		var visitChildrenPopulate = function(children, path) {
+			for (var i=0; i< children.length; ++i) {
+
+				if (path.length > 0 && children[i].nodeName == last(path).name) {
+					last(path).count++;
+				} else {
+					path.push({name: children[i].nodeName, count: 1});	
+				}
+				
+				visitNodeCWRCPopulate(children[i], path);
+				
+				if ((path.length > 0 && i < children.length-1 && children[i+1].nodeName != last(path).name) ||
+					i === children.length - 1) {
+						path.pop();	
+				}
+
+				
+			}
+		}
+
 		var populateCWRC = function(opts) {
 			// cwrc
 			
-			var workingXML = $.parseXML(opts.data);
-			
-			children = workingXML.childNodes;
+			var workingXML = $.parseXML(opts.data);			
 			var path = [];
-			for (var i=0; i< children.length; ++i) {
-				visitNodeCWRCPopulate(children[i], path, null);
-			}
+
+			visitChildrenPopulate(workingXML.childNodes, path);
+		
 		}
 		
 		var extractTitleMODS = function(opts){
@@ -1644,38 +1663,90 @@ $(function(){
 			return result;
 		}
 
-		var visitNodeCWRCPopulate = function (node, path, parentNode) {
-			path.push(node.nodeName);
+		var visitNodeCWRCPopulate = function(node, path) {
 			
-			var children = node.childNodes;	
-			for (var i=0; i< children.length; ++i) {		
-				var currentNode = children[i]
-				visitNodeCWRCPopulate(currentNode, path, node);
-			}
+			// path.push(node.nodeName);
+				
+			visitChildrenPopulate(node.childNodes, path);
 
 			var parentPath = path.slice(0, path.length-1);
 			var nodeValue = $.trim(node.nodeValue);
 			if (node.nodeType === 3 && nodeValue !== "") {
-				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields(), null);
+				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
 
-				var atts =parentNode.attributes;
+				var atts = node.parentNode.attributes;
 				for (var attIndex =0; attIndex < atts.length; ++attIndex) {
 					var currentAtt = atts.item(attIndex);
-					parentPath.push(currentAtt.name);
-					
-					foundAndFilled(currentAtt.value, parentPath, entity.viewModel().interfaceFields(), null);
+					parentPath.push({name: currentAtt.name, count : 1});					
+					foundAndFilled(currentAtt.value, parentPath, entity.viewModel().interfaceFields());
 					parentPath.pop();
 				}
 
 			} 
 
-			path.pop();
+			// path.pop();
 		}
+
+		var GetFromFields = function(currentSection, fields) {
+			var nodeNumber = currentSection.count;
+			var currentCount = 0;
+
+
+
+			
+			console.log(fields.input) // first one is a quantifier
+			$.each(fields, function(i, field){
+				console.log(field.toSource())
+				console.log(field.input)
+				if (field.input){
+					console.log(field.path)
+					var fieldPath = field.path.split(',');
+					if (last(fieldPath) === currentSection.name) {
+						++currentCount;
+	
+						if (currentCount === nodeNumber) {
+							return field;
+						}
+					}
+				}
+			});
+			
+			// not found, look for in seed
+
+
+
+		}
+
+		var NEW_foundAndFilled = function(nodeValue, parentPath) {
+			var pathNames = parentPath.map(function(p){
+				return p.name;
+			});
+
+			var field = entity.viewModel().interfaceFields().interfaceFields();
+
+			for (var i=0; i<parentPath.length; ++i) {
+				console.log(parentPath[i]);
+				var currentSection = parentPath[i];
+				field = GetFromFields(currentSection, field);
+			}
+
+			// field should be where the value goes
+			if (field.input == "radioButton" || field.input == "dynamicCheckbox") {
+				field.value(nodeValue.split(","));
+			} else {
+				field.value(nodeValue);
+			}
+
+		}
+
 
 		var foundOnSeed = function(field, parentPath) {
 			var result = false;
+			var pathNames = parentPath.map(function(p){
+				return p.name;
+			});
 			$.each(field.seed.interfaceFields(), function(i, currentField) {
-				if (parentPath.toString().indexOf(currentField.path) === 0) {
+				if (pathNames.toString().indexOf(currentField.path) === 0) {
 					result = true;
 					return false;
 				}
@@ -1687,18 +1758,18 @@ $(function(){
 		// XXX second value in group is not added 
 		// XXX same problem ?
 
-		var foundAndFilled = function(nodeValue, parentPath, field, parentField) {
-			// 
+		var foundAndFilled = function(nodeValue, parentPath, field) {
+			var pathNames = parentPath.map(function(p){
+				return p.name;
+			});
 			if (field.input === "quantifier") {
 				// check path if sub continue
 
-
-				// if (parentPath.toString().indexOf(field.path) > -1) {
-				if (parentPath.toString().indexOf(field.path) === 0) {
+				if (pathNames.toString().indexOf(field.path) === 0) {
 					var foundOnFields = false;
 					// alert(field.interfaceFields().length)
 					$.each(field.interfaceFields(), function(i, currentField) {						
-						if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
+						if(foundAndFilled(nodeValue, parentPath, currentField)) {
 							foundOnFields = true;
 							return false; // break out of loop
 						}
@@ -1712,19 +1783,17 @@ $(function(){
 							field.addGroup();
 
 							var lastfield = last(field.interfaceFields());						
-							return foundAndFilled(nodeValue, parentPath, lastfield, field);
+							return foundAndFilled(nodeValue, parentPath, lastfield);
 						}
-					}
-					
+					}					
 				}
-
 
 			} else if(field.input === "seed") {
 				var foundOnSeedCheck = false;
 				
 				$.each(field.interfaceFields(), function(i, currentField) {
 					
-					if(foundAndFilled(nodeValue, parentPath, currentField, field)) {
+					if(foundAndFilled(nodeValue, parentPath, currentField)) {
 						foundOnSeedCheck = true;
 						return false; // break out of loop
 					}
@@ -1735,7 +1804,7 @@ $(function(){
 				}
 
 			}else if (field.input !== "header") {				
-				if (field.path == parentPath) {
+				if (field.path == pathNames) {
 					
 					if (! field.isSet) {
 						field.isSet = true;
@@ -1746,11 +1815,9 @@ $(function(){
 						}
 					} else if (field.isSet) {				
 						return false;
-					} 
-				
+					} 				
 					return true;
-				}
-				
+				}				
 			}
 		}
 
@@ -1761,7 +1828,7 @@ $(function(){
 					path[i] = dialogType;
 				}
 			}
-			foundAndFilled(value, path, entity.viewModel().interfaceFields(), null);
+			foundAndFilled(value, path, entity.viewModel().interfaceFields());
 		}
 
 		// pop create		
