@@ -101,7 +101,7 @@ $(function(){
 		entity.viewModel().interfaceFields = ko.observableArray([]);
 		entity.viewModel().dialogTitle = ko.observable("");
 		entity.viewModel().validated = ko.observable(true);
-		entity.viewModel().showSavingMessage = ko.observable("start");
+		entity.viewModel().showSavingMessage = ko.observable("");
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = [];
 		entity.startValuePath = [];
@@ -328,7 +328,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-			'				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
+			'				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i id="showSavingIcon"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area">' +
@@ -352,7 +352,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-			// '				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
+			'				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i id="showSavingIcon"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area" data-bind="with: modsFields">' +
@@ -463,10 +463,14 @@ $(function(){
 
 		var savingMessageOn = function() {
 			entity.viewModel().showSavingMessage("Saving ");
+			entity.viewModel().showSavingMessage.valueHasMutated();
+			$("#showSavingIcon").addClass("fa fa-spin fa-refresh");
 		}
 
 		var savingMessageOff = function() {
 			entity.viewModel().showSavingMessage("");
+			entity.viewModel().showSavingMessage.valueHasMutated();
+			$("#showSavingIcon").removeClass("fa fa-spin fa-refresh");
 		}
 
 		var initializeQuantifiers = function() {
@@ -1215,10 +1219,8 @@ $(function(){
 		};
 
 		cD.processCallback = function() {
-			savingMessageOn();			
-			// entity.viewModel().showSavingMessage("Saving ");
-
-			(function(){
+			savingMessageOn();					
+			setTimeout((function(){
 				entity.viewModel().validated(true);
 				var xml = getWorkingXML();
 				// console.log(xml);
@@ -1244,8 +1246,9 @@ $(function(){
 				} else {
 					entity[dialogType].error("Form not valid");
 				}
-			})();
-			// savingMessageOff();
+				savingMessageOff();
+			}), 200);
+			
 		};
 
 		var xmlToString = function(xmlData) {
