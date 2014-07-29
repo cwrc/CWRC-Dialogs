@@ -36,8 +36,8 @@ $(function(){
 		var dialogType = "";
 
 		// fix conflicts with jquery ui
-		// var datepicker = $.fn.datepicker.noConflict();
-		// $.fn.bsDatepicker = datepicker;
+		var datepicker = $.fn.datepicker.noConflict();
+		$.fn.bsDatepicker = datepicker;
 		var button = $.fn.button.noConflict();
 		$.fn.bsButton = button;
 		var tooltip = $.fn.tooltip.noConflict();
@@ -2604,7 +2604,7 @@ $(function(){
 						autoclose: true
 					}
 				
-					$(element).siblings(':button').first().datepicker(options);
+					$(element).siblings(':button').first().bsDatepicker(options);
 				
 					ko.utils.registerEventHandler($(element).siblings(':button').first(), "changeDate", function(event) {
 						var value = valueAccessor();

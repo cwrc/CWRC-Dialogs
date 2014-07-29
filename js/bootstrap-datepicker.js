@@ -332,19 +332,20 @@
 		}
 	};
 	
+	var old = $.fn.datepicker;
 	$.fn.datepicker = function ( option, val ) {
 		return this.each(function () {
 			var $this = $(this),
 				data = $this.data('datepicker'),
 				options = typeof option === 'object' && option;
 			if (!data) {
-				$this.data('datepicker', (data = new Datepicker(this, $.extend({}, $.fn.datepicker.defaults,options))));
+				$this.data('datepicker', (data = new Datepicker(this, $.extend({}, defaults, options))));
 			}
 			if (typeof option === 'string') data[option](val);
 		});
 	};
 
-	$.fn.datepicker.defaults = {
+	var defaults = $.fn.datepicker.defaults = {
 		onRender: function(date) {
 			return '';
 		}
@@ -471,4 +472,12 @@
 							'</div>'+
 						'</div>';
 
+	/* DATEPICKER NO CONFLICT
+	* =================== */
+
+	$.fn.datepicker.noConflict = function(){
+		$.fn.datepicker = old;
+		return this;
+	};
+	
 }( window.jQuery );
