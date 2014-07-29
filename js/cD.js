@@ -2550,7 +2550,7 @@ $(function(){
 			// '					<h4 class="modal-title"><span>Search XXX</span></h4>' +
 			'						<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'				</div>' +
-			'				<div class="modal-body">' +
+			'				<div class="modal-body modal-body-area">' +
 			'					<!-- Content -->' +
 			'					<div class="row">' +
 			'						<div class="col-lg-12">' +
