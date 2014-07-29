@@ -101,7 +101,7 @@ $(function(){
 		entity.viewModel().interfaceFields = ko.observableArray([]);
 		entity.viewModel().dialogTitle = ko.observable("");
 		entity.viewModel().validated = ko.observable(true);
-		entity.viewModel().showSavingMessage = ko.observable(false);
+		entity.viewModel().showSavingMessage = ko.observable("start");
 		entity.selfWorking = $.parseXML('<entity></entity>');
 		entity.elementPath = [];
 		entity.startValuePath = [];
@@ -328,7 +328,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-			'				<span data-bind="visible: showSavingMessage"><h5 class="modal-title pull-right"><span>Saving</span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
+			'				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area">' +
@@ -352,7 +352,7 @@ $(function(){
 			'		<div class="modal-content">' +
 			'			<div class="modal-header">' +
 			'				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
-			'				<span data-bind="visible: showSavingMessage"><h5 class="modal-title pull-right"><span>Saving</span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
+			// '				<span><h5 class="modal-title pull-right"><span data-bind="text: showSavingMessage"></span> <i class="fa fa-spin fa-refresh"></i>&nbsp;</h5></span>' +
 			'				<h4 class="modal-title"><span data-bind="text: dialogTitle"></span></h4>' +
 			'			</div>' +
 			'			<div class="modal-body modal-body-area" data-bind="with: modsFields">' +
@@ -462,11 +462,11 @@ $(function(){
 		}
 
 		var savingMessageOn = function() {
-			entity.viewModel().showSavingMessage(true);
+			entity.viewModel().showSavingMessage("Saving ");
 		}
 
 		var savingMessageOff = function() {
-			entity.viewModel().showSavingMessage(false);
+			entity.viewModel().showSavingMessage("");
 		}
 
 		var initializeQuantifiers = function() {
@@ -793,7 +793,10 @@ $(function(){
 						}
 						
 						if (isStartValue === "true") {
-							entity.startValuePath = currentPath;
+							entity.startValuePath = currentPath.map(function(p){
+								return {name : p,
+										count: 1};
+							});
 						}
 
 						if (leftPadding && leftPadding.trim() !== "") {
@@ -1212,33 +1215,37 @@ $(function(){
 		};
 
 		cD.processCallback = function() {
-			savingMessageOn();
-			entity.viewModel().validated(true);
-			var xml = getWorkingXML();
-			// console.log(xml);
-			if (entity.viewModel().validated()) {
-				var response;
-				if (entity.editing) {
-					response = cwrcApi[dialogType].modifyEntity(entity.editingPID, xml);	
-				} else {
-					response = cwrcApi[dialogType].newEntity(xml);	
-				}
-				var result = {
-					response : response,
-					data : xml
-				};
+			savingMessageOn();			
+			// entity.viewModel().showSavingMessage("Saving ");
 
-				entity[dialogType].success(result);	
-				
-				if(dialogType === 'title'){
-					$('#cwrcTitleModal').modal('hide');
-				}else{
-					$('#cwrcEntityModal').modal('hide');
+			(function(){
+				entity.viewModel().validated(true);
+				var xml = getWorkingXML();
+				// console.log(xml);
+				if (entity.viewModel().validated()) {
+					var response;
+					if (entity.editing) {
+						response = cwrcApi[dialogType].modifyEntity(entity.editingPID, xml);	
+					} else {
+						response = cwrcApi[dialogType].newEntity(xml);	
+					}
+					var result = {
+						response : response,
+						data : xml
+					};
+
+					entity[dialogType].success(result);	
+					
+					if(dialogType === 'title'){
+						$('#cwrcTitleModal').modal('hide');
+					}else{
+						$('#cwrcEntityModal').modal('hide');
+					}
+				} else {
+					entity[dialogType].error("Form not valid");
 				}
-			} else {
-				entity[dialogType].error("Form not valid");
-			}
-			savingMessageOff();
+			})();
+			// savingMessageOff();
 		};
 
 		var xmlToString = function(xmlData) {
@@ -1824,10 +1831,12 @@ $(function(){
 		var addStartValue = function(value, path) {
 			// clear ors |
 			for (var i=0; i< path.length; ++i) {
-				if (path[i].indexOf("|") != -1) {
-					path[i] = dialogType;
+				if (path[i].name.indexOf("|") != -1) {
+					path[i].name = dialogType;
 				}
 			}
+
+
 			foundAndFilled(value, path, entity.viewModel().interfaceFields());
 		}
 
@@ -1839,7 +1848,8 @@ $(function(){
 				entity.editingPID = "";	
 			}
 			completeDialog(opts);
-			// set default value			
+			// set default value
+
 			if (opts.startValue && opts.startValue.trim() != "") {
 				addStartValue(opts.startValue, entity.startValuePath);	
 			}			
