@@ -338,7 +338,7 @@ $(function(){
 			'			<div class="modal-footer">' +
 			'				<div class="label label-danger" data-bind="ifnot: validated"> Form is not valid</div>' +
 			'				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
-			'				<button type="button" class="btn btn-primary" onclick="cD.processCallback();">Ok</button>' +
+			'				<button type="button" class="btn btn-primary" onclick="processCallback();">Ok</button>' +
 			'			</div>' +
 			'		</div>' +
 			'	</div>' +
@@ -431,7 +431,7 @@ $(function(){
 			'			<div class="modal-footer">' +
 			'				<div class="label label-danger" data-bind="ifnot: validated"> Form is not valid</div>' +
 			'				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
-			'				<button type="button" class="btn btn-primary" onclick="cD.processCallback();">Ok</button>' +
+			'				<button type="button" class="btn btn-primary" onclick="processCallback();">Ok</button>' +
 			'			</div>' +
 			'		</div>' +
 			'	</div>' +
@@ -1218,7 +1218,7 @@ $(function(){
 			return result;
 		};
 
-		cD.processCallback = function() {
+		var processCallback = function() {
 			savingMessageOn();					
 			setTimeout((function(){
 				entity.viewModel().validated(true);
