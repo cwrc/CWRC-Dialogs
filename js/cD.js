@@ -431,7 +431,7 @@ $(function(){
 			'			<div class="modal-footer">' +
 			'				<div class="label label-danger" data-bind="ifnot: validated"> Form is not valid</div>' +
 			'				<button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
-			'				<button type="button" class="btn btn-primary" onclick="processCallback();">Ok</button>' +
+			'				<button type="button" class="btn btn-primary" data-bind="click: $root.processCallback">Ok</button>' +
 			'			</div>' +
 			'		</div>' +
 			'	</div>' +
