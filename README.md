@@ -48,7 +48,7 @@ The following is an example of all the files that need to be included:
 
 A test application is included with the code. This application can be reached by opening the `index.html` file. The test application queries the solr engine and adds entries to a list. The application logic is located on the `app.js` file.
 
-From the `app.js` file you can see that the CWRC dialogs need to be initialized for the cwrc api to work. You can initialize it with the `initializeWithLogin` or `initializeWithCookie` methods.
+From the `app.js` file you can see that the CWRC dialogs need to be initialized for the cwrc api to work. You can initialize it with the `initializeWithLogin` or `initializeWithCookieData` methods.
 
 Service call urls can be customized by using the functions `setCwrcApi`, `setGeonameUrl`, and `setViafUrl`.
 
@@ -56,7 +56,7 @@ The location of entity schemas can be defined by using the functions `setPersonS
 
 The interface as opened to the user includes:
 
-+ initializeWithCookie
++ initializeWithCookieData
 + initializeWithLogin
 + popCreatePerson
 + popCreateOrganization
@@ -75,6 +75,8 @@ The interface as opened to the user includes:
 + setPersonSchema
 + setOrganizationSchema
 + setPlaceSchema
+
+The dialogs can be initialized using the function initializeWithCookieData by passing in the data string representing the cookies containing the session information. The passed in cookie string must be in the format "cookiename=cookiedata;". Each cookie can be separated by a semicolon. This cookie string usually can be obtained by using the javascript function document.cookie. 
 
 The objects `popCreate`, `popSearch`, and `popEdit` provide key base access to the create and search dialogs respectively using the entity names as keys (person, organization etc.) 
 
