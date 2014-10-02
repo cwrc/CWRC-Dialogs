@@ -2260,6 +2260,10 @@ $(function(){
 			return xmlToString(search.linkedDataSources.geonames.response[id]);
 		}
 
+		search.processGoogleGeocodeData = function(id) {
+			return "TEST"
+		}
+
 		search.processViafData = function(id) {
 			var url = viafUrl + "/" + id + "/viaf.xml";
 			var result = "";
@@ -2369,7 +2373,7 @@ $(function(){
 			$(".linkedDataMessage").text("");
 			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
 			$("#GoogleGeocodeDataMessage").addClass("fa fa-spin fa-refresh");
-			search.processData = search.processGeoNameData;
+			search.processData = search.processGoogleGeocodeData;
 			var quotedQueryString = encodeURI(queryString);
 			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
 				url: googleGeocodeUrl,
@@ -2389,7 +2393,7 @@ $(function(){
 
 					
 					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
-					$("#GoogleGeocodeDataMessage").text("Results: " + search.linkedDataSources.geonames.results().length);
+					$("#GoogleGeocodeDataMessage").text("Results: " + search.linkedDataSources.googlegeocode.results().length);
 				},
 				error : function(xhr, ajaxOptions, thrownError) {
 					if (ajaxOptions !== "abort") {
@@ -2481,7 +2485,7 @@ $(function(){
 			var anchor = $("<a></a>");
 			anchor.attr("target", "_blank");
 			anchor.attr("href", url);
-			anchor.append("URL:" + url);
+			anchor.append("URL: " + url);
 
 			return anchor;
 		}
@@ -3002,6 +3006,26 @@ $(function(){
 			
 			return xmlToString(head[0]);
 		}
+
+		search.htmlifyGoogleGeocodePlace = function(lat, lng, url) {
+			var head = $("<div></div>");
+			var list = $("<ul></ul>");
+			var listItem = $("<li></li>");
+			listItem.append("Latitude: " + lat);
+			list.append(listItem);
+			
+			listItem = $("<li></li>");
+			listItem.append("Longitude: " + lng);
+			list.append(listItem);
+
+			listItem = $("<li></li>");
+			listItem.append(search.getAnchor(url));
+			list.append(listItem);
+
+			head.append(list);
+			
+			return xmlToString(head[0]);
+		}
 		
 		search.getResultFromGeoName = function(specs, index) {
 			// specs has data and source
@@ -3016,7 +3040,7 @@ $(function(){
 				 $(specs).find("lat").text(),
 				 $(specs).find("lng").text(),
 				 $(specs).find("geonameid").text())
-				 };
+			};
 			
 			return that;
 		}
@@ -3027,10 +3051,15 @@ $(function(){
 			that.name = $(specs).find("formatted_address").text();
 
 			that.htmlify = function() {
+				var location = $(specs).find("geometry").find("location");
+				var url = "https://www.google.ca/maps/place/" + encodeURI($(specs).find("formatted_address").text());
 
+				return search.htmlifyGoogleGeocodePlace($(location).find("lat").text(), 
+														$(location).find("lng").text(), 
+														url);
 			}
 
-			return that
+			return that;
 		}
 
 		search.getResultFromCWRC = function(specs) {
