@@ -23,6 +23,13 @@ $(function(){
 			viafUrl = url;
 		}
 		
+
+		// Google geocode api url
+		var googleGeocodeUrl = "http://maps.googleapis.com/maps/api/geocode/xml"
+		cD.setGoogleGeocodeUrl = function(url){
+			googleGeocodeUrl = url;
+		}
+
 		// parameters
 
 		var params = {};
@@ -2358,6 +2365,40 @@ $(function(){
 			});
 		}
 
+		search.processGoogleGeocodeSearch = function(queryString) {
+			$(".linkedDataMessage").text("");
+			$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+			$("#GoogleGeocodeDataMessage").addClass("fa fa-spin fa-refresh");
+			search.processData = search.processGeoNameData;
+			var quotedQueryString = encodeURI(queryString);
+			search.linkedDataSources.viaf.ajaxRequest = $.ajax({
+				url: googleGeocodeUrl,
+				// dataType : 'json',
+				dataType : "xml",
+				processData : false,
+				data : "address=" + quotedQueryString,
+				success: function(response) {
+					search.linkedDataSources.googlegeocode.response = [];
+					console.log(response);
+
+					$('GeocodeResponse result', response).each(function(index, spec){
+						search.linkedDataSources.googlegeocode.results.push(search.getResultFromGoogleGeocode(spec, index));
+						search.linkedDataSources.googlegeocode.response.push(spec);
+					});
+
+
+					
+					$(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
+					$("#GoogleGeocodeDataMessage").text("Results: " + search.linkedDataSources.geonames.results().length);
+				},
+				error : function(xhr, ajaxOptions, thrownError) {
+					if (ajaxOptions !== "abort") {
+						console.log("Error " + ajaxOptions);	
+					}					
+				}
+			});
+		}
+
 		// Scraping functions 
 
 		search.scrapeResult = function() {
@@ -2669,6 +2710,12 @@ $(function(){
 				"processSearch": search.processGeoNameSearch,
 				"datatype": ["place"],
 				"paginate": null
+			}),
+			"googlegeocode" : search.getLinkedDataSource({
+				"name": "GoogleGeocode",
+				"processSearch": search.processGoogleGeocodeSearch,
+				"datatype": ["place"],
+				"paginate": null
 			})
 		}
 
@@ -2972,6 +3019,18 @@ $(function(){
 				 };
 			
 			return that;
+		}
+
+		search.getResultFromGoogleGeocode = function(specs, index) {
+			var that = search.result();
+			that.id = index;
+			that.name = $(specs).find("formatted_address").text();
+
+			that.htmlify = function() {
+
+			}
+
+			return that
 		}
 
 		search.getResultFromCWRC = function(specs) {
