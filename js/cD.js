@@ -2261,7 +2261,7 @@ $(function(){
 		}
 
 		search.processGoogleGeocodeData = function(id) {
-			return "TEST"
+			return xmlToString(search.linkedDataSources.googlegeocode.response[id]);
 		}
 
 		search.processViafData = function(id) {
