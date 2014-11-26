@@ -8,24 +8,22 @@ $(function(){
 		cD.setCwrcApi = function(url){
 			cwrcApi = new CwrcApi(url, $);
 		}
-		cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
-		//var cwrcApi = new CwrcApi('http://localhost/cwrc/', $);
 		
 		// Geonames Url
-		var geonameUrl = "http://apps.testing.cwrc.ca/cwrc-mtp/geonames/";
+		var geonameUrl = null; 
 		cD.setGeonameUrl = function(url){
 			geonameUrl = url;
 		}
 		
 		// Viaf Url
-		var viafUrl = "http://apps.testing.cwrc.ca/services/viaf/";
+		var viafUrl = null; 
 		cD.setViafUrl = function(url){
 			viafUrl = url;
 		}
 		
 
 		// Google geocode api url
-		var googleGeocodeUrl = "http://maps.googleapis.com/maps/api/geocode/xml"
+		var googleGeocodeUrl = null; 
 		cD.setGoogleGeocodeUrl = function(url){
 			googleGeocodeUrl = url;
 		}

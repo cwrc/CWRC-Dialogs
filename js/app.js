@@ -1,10 +1,16 @@
-
+// a test app using the core pieces cD.j and cwrc-api.js
+//
 $(function(){
 	//cD.setCwrcApi('http://localhost/cwrc/');
-	cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
-	cD.setPersonSchema("./schemas/entities.rng");
-	cD.setOrganizationSchema("./schemas/entities.rng");
-	cD.setPlaceSchema("./schemas/entities.rng");
+    //cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
+    cD.setCwrcApi('http://cwrc-dev-01.srv.ualberta.ca/islandora/cwrc_entities/v1/');
+	//cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
+	cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
+	cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
+	cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
+    cD.setGeonameUrl("http://cwrc-dev-01.srv.ualberta.ca/cwrc-mtp/geonames/");
+    cD.setViafUrl("http://cwrc-dev-01.srv.ualberta.ca/services/viaf/");
+    cD.setGoogleGeocodeUrl("http://maps.googleapis.com/maps/api/geocode/xml");
 	
 	$("#addPerson").click(function(){
 		$("#entityXMLContainer").text("");
