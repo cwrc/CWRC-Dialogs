@@ -62,20 +62,7 @@
                 <optional>
                     <ref name="variantForms-element"/>
                 </optional>
-                <zeroOrMore>
-                    <ref name="sameAs-element"/>
-                </zeroOrMore>
             </interleave>
-        </element>
-    </define>
-
-    <define name="personTypes-element">
-        <element name="personTypes">
-            <a:documentation>Captures generic person types defined by each project. Based on
-                WEAC-CPF's @localType.</a:documentation>
-            <zeroOrMore>
-                <ref name="personType-element"/>
-            </zeroOrMore>
         </element>
     </define>
 
