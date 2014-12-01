@@ -13,6 +13,11 @@
 	padding: 10px 0px 0px 10px;
 }
 
+.interfaceFieldsContainer > div {
+  border-left-width: 2px;
+  border-left-style: solid;
+}
+
 textarea{
 	resize:none
 }
