@@ -5,7 +5,7 @@ $(function(){
     //cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
     cD.setCwrcApi('http://cwrc-dev-01.srv.ualberta.ca/islandora/cwrc_entities/v1/');
 	//cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
-	cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/person_streamlined.rng");
+	cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/person_streamlined_v3.rng");
 	cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
 	cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
     cD.setGeonameUrl("http://cwrc-dev-01.srv.ualberta.ca/cwrc-mtp/geonames/");
