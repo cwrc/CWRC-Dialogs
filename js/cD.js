@@ -1634,57 +1634,8 @@ $(function(){
 			visitChildrenPopulate(workingXML.childNodes, path);
 		
 		}
-		
-		var extractTitleMODS = function(opts){
-			var mods = $(opts.data);
-			var modsFields = entity.viewModel().modsFields();
-			var element = null;
-			var result = {
-				author: []
-			};
-			
-			// Create the title element
-			element = mods.find("titleInfo>title");
-			result.title = element.text();
-			
-			// Create the author names
-			mods.find("name>namePart").each(function(){
-				result.author.push({
-						name: $(this).text()
-					});
-			});
-			
-			// Create genre element
-			var genre = mods.find("genre").text();
-			result.modsType = genre;
-			 
-			// create origin info or related item info
-			switch(genre){
-				case 'Book (part)':
-					element = mods.find("relatedItem > originInfo > dateIssued");
-					break;
-					
-				case 'Journal (part)':
-					element = mods.find("relatedItem > part > date");
-					break;
-					
-				default:
-					element = mods.find("originInfo > dateIssued");
-					break;
-			}
-			if(element.length > 0){
-				result.date = element.text();
-			}
-			
-			element = mods.find("recordInfo > recordContentSource");
-			if(element.length > 0){
-				result.project = element.text();
-			}
-			
-			return result;
-		}
 
-		var visitNodeCWRCPopulate = function(node, path) {
+        var visitNodeCWRCPopulate = function(node, path) {
 			
 			// path.push(node.nodeName);
 				
@@ -1694,213 +1645,7 @@ $(function(){
 			var nodeValue = $.trim(node.nodeValue);
 			if (node.nodeType === 3 && nodeValue !== "") {
 				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
-
-				// var atts = node.parentNode.attributes;
-				// for (var attIndex =0; attIndex < atts.length; ++attIndex) {
-				// 	var currentAtt = atts.item(attIndex);
-				// 	parentPath.push({name: currentAtt.name, count : 1});					
-				// 	foundAndFilled(currentAtt.value, parentPath, entity.viewModel().interfaceFields());
-				// 	parentPath.pop();
-				// }
-
 			} 
-
-			// path.pop();
-		}
-
-		var getFromFields = function(currentSection, field) {
-			var nodeNumber = currentSection.count;
-			var currentCount = 0;
-			console.log("GETTING FROM FIELDS");
-			if (field.input === "quantifier") {
-				var result = null;
-				ko.utils.arrayForEach(field.interfaceFields(), function(currentSeed){
-
-					ko.utils.arrayForEach(currentSeed.interfaceFields(), function(currentField){
-						var pathArray = currentField.path.split(",");
-						console.log(currentSection.toSource() + " " + pathArray.toSource())
-						if ($.inArray(currentSection.name , pathArray) >= 0) {
-							if (currentField.input != "header"){
-								console.log(">>>>>>>>>>>>>>>>>>>> RETURNING " + currentField.input);
-								result = currentField;
-								return false;
-							}
-						} else {
-							console.log("xx xxx xx not found " + currentSection)
-						}
-					});
-
-					if (result != null) {
-						return false;
-					}
-					
-				});
-				console.log("RESULT :::::: " + result);
-				return result;
-			} else {
-				console.log("UNHANDLED INPUT     "+ field.input);
-			}
-
-			// if not found add Group 
-
-
-			// console.log("name " + currentSection.name)
-			// console.log("input " + field.input);
-			// console.log("path " + field.path);
-			// return null;
-
-
-			// switch (field.input) {
-			// 	case "quantifier":
-			// 		ko.utils.arrayForEach(field.interfaceFields(), function(currentField){
-			// 			switch (currentField.input) {
-			// 				case "quantifier":
-			// 				break;
-			// 				default:
-			// 					console.log("level 2 unknown case : " + field.input);
-			// 				break;
-			// 			}
-			// 		});
-			// 	break;
-			// 	default:
-			// 		console.log("level 1 unknown case : " + field.input);
-			// 	break;
-			// }
-
-
-			// if (field.input == "quantifier" || field.input == "seed") {
-			// 	var result = null;
-			// 	ko.utils.arrayForEach(field.interfaceFields(), function(currentField){
-					
-
-			// 		switch (currentField.input) {
-			// 			case "quantifier":
-
-			// 			break;
-			// 			case "seed":
-
-			// 			break;
-			// 			default:
-			// 				if (currentField.input != "header") {
-
-			// 				}
-			// 			break
-			// 		}
-
-			// 		// if (currentField.input == "quantifier" || currentField.input == "seed") {
-						
-			// 		// 	if (currentField.interfaceFields && currentField.interfaceFields()[0] && currentField.interfaceFields()[0].path &&
-			// 		// 	  currentField.interfaceFields()[0].path.indexOf(currentSection.name) >= 0) {
-			// 		// 		console.log("if claimed")
-			// 		// 		result = currentField;
-			// 		// 		// return false;
-			// 		// 	}
-
-			// 		// } else if (currentField.input != "header") {
-			// 		// 	// if (currentField.path.indexOf())
-
-			// 		// 	console.log("xxx [] found " + currentField.input);
-			// 		// 	result = currentField;
-			// 		// }
-
-					
-			// 	});
-			// 	console.log("returning result " + result)
-			// 	return result;
-
-
-			// } 
-
-			// console.log("not quantifier nore seed")
-			// return null;
-/*
-			if (fields.input === "quantifier") {
-				var fieldPath = last(fields.path.split(','));
-
-				if (fieldPath == currentSection.name) {
-					// ++currentCount;
-					// if (currentCount === nodeNumber) {
-					// 	console.log("returning")
-					// 	return fields.interfaceFields()[];
-					// }
-					// while (fields.interfaceFields().length < currentSection.count) {
-					// 	fields.interfaceFields().addGroup();
-					// }
-					console.log("return field");
-					return fields.interfaceFields()[currentSection.count-1];
-
-				}
-
-			} else if (fields.input === "seed") {
-				// return getFromFields(currentSection, fields.interfaceFields());
-				$.each(fields.interfaceFields(), function(i, field){
-					// console.log(field.input)
-					if (field.input === "quantifier") {
-						console.log("return quantifier");
-						return getFromFields(currentSection, field);
-					}
-
-				});
-			}
-			console.log("return null");
-			return null;
-
-
-			*/
-			// else if (fields.input === "seed") {
-			// 	console.log("seed")
-			// 	$.each(fields.interfaceFields(), function(i, field){
-			// 		console.log("seed " + i)
-			// 		console.log(field.toSource())
-			// 	});
-			// }
-
-			// console.log("nothing");
-
-			// if (fields.input == "quantifier") {
-			// 	console.log("here");
-			// 	$.each(fields.interfaceFields(), function(i, field){
-			// 		console.log(field.toSource())
-			// 		var fieldPath = field.path.split(',');
-
-
-			// 		console.log(last(fieldPath) +" "+ currentSection.name)
-			// 		if (last(fieldPath) == currentSection.name) {
-			// 			console.log("returning field")
-			// 			return field;
-			// 		}
-			// 		// var fieldPath = field.path.split(',');
-
-			// 		// if (last(fieldPath) === currentSection.name) {
-			// 		// 	++currentCount;
-			// 		// 	if (currentCount === nodeNumber) {
-			// 		// 		return field;
-			// 		// 	}
-			// 		// }
-			// 	});
-			// }
-
-
-			// // console.log("fields.input " + fields.input) // first one is a quantifier
-			// $.each(fields, function(i, field){
-			// 	// console.log("field source " + field.toSource())
-			// 	// console.log("field input " + field.input)
-			// 	if (field.input && field.path){
-			// 		// console.log("field path " + field.path)
-			// 		var fieldPath = field.path.split(',');
-			// 		if (last(fieldPath) === currentSection.name) {
-			// 			++currentCount;
-	
-			// 			if (currentCount === nodeNumber) {
-			// 				return field;
-			// 			}
-			// 		}
-			// 	}
-			// });
-			
-			// not found, look for in seed
-
-
 
 		}
 
@@ -1917,45 +1662,6 @@ $(function(){
 				}
 			});
 			return result;
-		}
-
-		var NEW_foundAndFilled = function(nodeValue, parentPath) {
-			var pathNames = parentPath.map(function(p){
-				return p.name;
-			});
-
-			// var field = entity.viewModel().interfaceFields().interfaceFields();
-			var field = entity.viewModel().interfaceFields();
-
-			console.log("[][][][][] " + parentPath.toSource())
-			// i == 0 is entity
-			for (var i=0; i<parentPath.length-1; ++i) {
-				// console.log(i + " : " + parentPath[i].toSource());
-
-				var currentSection = parentPath[i+1];
-				console.log(i+1 + "] : " + currentSection.toSource());
-				field = getFromFields(currentSection, field);
-
-				if (field == null) {
-					break;
-				} 
-			}
-			if (!field) {
-				console.log("NOTHING");
-			} else {
-				console.log("FOUND!! !! !!")
-			}
-			// field should be where the value goes
-			if (field) {
-				if (field.input == "radioButton" || field.input == "dynamicCheckbox") {					
-					field.value(nodeValue.split(","));
-				} else {
-					field.value(nodeValue);
-				}	
-				console.log("SETTING VALUE");
-			}
-			
-
 		}
 
 		var lastCount = 0;
@@ -2040,6 +1746,59 @@ $(function(){
 				}				
 			}
 		}
+
+		
+		var extractTitleMODS = function(opts){
+			var mods = $(opts.data);
+			var modsFields = entity.viewModel().modsFields();
+			var element = null;
+			var result = {
+				author: []
+			};
+			
+			// Create the title element
+			element = mods.find("titleInfo>title");
+			result.title = element.text();
+			
+			// Create the author names
+			mods.find("name>namePart").each(function(){
+				result.author.push({
+						name: $(this).text()
+					});
+			});
+			
+			// Create genre element
+			var genre = mods.find("genre").text();
+			result.modsType = genre;
+			 
+			// create origin info or related item info
+			switch(genre){
+				case 'Book (part)':
+					element = mods.find("relatedItem > originInfo > dateIssued");
+					break;
+					
+				case 'Journal (part)':
+					element = mods.find("relatedItem > part > date");
+					break;
+					
+				default:
+					element = mods.find("originInfo > dateIssued");
+					break;
+			}
+			if(element.length > 0){
+				result.date = element.text();
+			}
+			
+			element = mods.find("recordInfo > recordContentSource");
+			if(element.length > 0){
+				result.project = element.text();
+			}
+			
+			return result;
+		}
+
+
+
 
 		var addStartValue = function(value, path) {
 			// clear ors |
