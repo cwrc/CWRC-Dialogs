@@ -976,7 +976,7 @@ $(function(){
 				maxDepth = fullPath.length,
 				path,
 				thisPathString,
-				selectior,
+				selector,
 				newElement;
 			
 			if (node.attributeName !== "") {
@@ -1606,7 +1606,7 @@ $(function(){
 		}
 
 		var visitChildrenPopulate = function(children, path) {
-			for (var i=0; i< children.length; ++i) {
+			for (var i=0; children && i< children.length; ++i) {
 
 				if (path.length > 0 && children[i].nodeName == last(path).name) {
 					last(path).count++;
@@ -1640,6 +1640,7 @@ $(function(){
 			
 			// path.push(node.nodeName);
 				
+			visitChildrenPopulate(node.attributes, path);
 			visitChildrenPopulate(node.childNodes, path);
 
 			var parentPath = path.slice(0, path.length-1);
@@ -1647,7 +1648,6 @@ $(function(){
 			if (node.nodeType === 3 && nodeValue !== "") {
 				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
 			} 
-
 		}
 
 
