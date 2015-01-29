@@ -224,7 +224,7 @@ $(function(){
 
 			var entityTemplates = '' +
 			'		<script type="text/htmlify" id="quantifier">' +
-			'			<div class="quantifier" data-bind="style:{margin : fieldPadding()}">' +
+			'			<div class="quantifier" data-bind="css:fieldCSSClass ,  style:{margin : fieldPadding()}">' +
 			'			<div>' +
 			// '				<h2><span data-bind="text: header"></span></h2>' +
 			'				<span data-bind="text: label"></span>' +
@@ -844,6 +844,7 @@ $(function(){
 			///////////////
 
 			newQuantifier.path = entity.elementPath.toString();
+			newQuantifier.fieldCSSClass = (newQuantifier.path).replace(/,/g,'_'); 
 			
 			///////////////
 
@@ -933,7 +934,13 @@ $(function(){
 			to.seed.interfaceFields.remove(from);
 		};
 
-		var visitStringifyResult = function(node) {
+
+
+        
+		///////////////////////////////////////////////////////////////////////
+		// Validate and Output interface model as XML 
+		///////////////////////////////////////////////////////////////////////
+		var visitStringifyResult = function(node, nodeIndex) {
 			if (node.input === "quantifier" || node.input === "seed") {
 				if (node.input === "quantifier") {
 					var minItems = node.minItems;
@@ -949,7 +956,7 @@ $(function(){
 				
 				}
 				$.each(node.interfaceFields(), function(index, node) {
-					visitStringifyResult(node);
+					visitStringifyResult(node, index);
 				});
 				if (node.input === "quantifier") {
 					entity[dialogType].shouldValidate.pop();
@@ -966,11 +973,11 @@ $(function(){
 					
 					node.nodeMessageClass("label label-info");
 				}
-				createNode(node);
+				createNode(node, nodeIndex);
 			}
 		};
 
-		var createNode = function(node) {
+		var createNode = function(node, nodeIndex) {
 			var pathString = node.path,
 				fullPath = pathString.split(","),
 				maxDepth = fullPath.length,
@@ -989,6 +996,8 @@ $(function(){
 				--maxDepth;
 			}
 			
+            console.log(" cN... :" + nodeIndex + " : " + node.value());
+
 			for (var i=0; i< maxDepth; i++) {
 				path = pathString.split(',');
 				thisPathString = path.splice(0, i+1) + "";
@@ -1305,6 +1314,7 @@ $(function(){
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
 			that.fieldPadding = ko.observable("0px 0px 0px 0px")
+			that.fieldCSSClass = ko.observable("initial")
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1401,6 +1411,7 @@ $(function(){
 				result.label = this.label;
 				result.header = this.header;
 				result.fieldPadding = ko.observable(this.fieldPadding);
+				result.fieldCSSClass = ko.observable(this.fieldCSSClass);
 				// result.elements = this.elements;
 				// take label
 				// result.label = result.seed.interfaceFields()[0].label;

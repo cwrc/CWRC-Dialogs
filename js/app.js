@@ -7,8 +7,11 @@ $(function(){
 	//cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
 	cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/person_streamlined_v3.rng");
 	cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
+	cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
 	cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
+	cD.setOrganizationSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
 	cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
+	cD.setPlaceSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
     cD.setGeonameUrl("http://cwrc-dev-01.srv.ualberta.ca/cwrc-mtp/geonames/");
     cD.setViafUrl("http://cwrc-dev-01.srv.ualberta.ca/services/viaf/");
     cD.setGoogleGeocodeUrl("http://maps.googleapis.com/maps/api/geocode/xml");
