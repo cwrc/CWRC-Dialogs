@@ -235,7 +235,7 @@ $(function(){
 			'				</span>' +
 			'			</div>' +			
 			'			</div>' +
-			'			<div class="interfaceFieldsContainer" data-bind="template:{name: $root.displayMode, foreach: interfaceFields}"> ' +
+			'			<div class="interfaceFieldsContainer" data-bind="css:fieldCSSClass , template:{name: $root.displayMode, foreach: interfaceFields}"> ' +
 			'			</div>' +
 			'		</script>' +
 			'		<script type="text/html" id="seed">' +
@@ -940,28 +940,56 @@ $(function(){
 		///////////////////////////////////////////////////////////////////////
 		// Validate and Output interface model as XML 
 		///////////////////////////////////////////////////////////////////////
-		var visitStringifyResult = function(node, nodeIndex) {
-			if (node.input === "quantifier" || node.input === "seed") {
-				if (node.input === "quantifier") {
-					var minItems = node.minItems;
-					var maxItems = node.maxItems;
-					entity[dialogType].shouldValidate.push(node.isRequired());
-					/*
-					if (node.isRequired()) {
-						entity[dialogType].shouldValidate.push(true);
-					} else {
-						entity[dialogType].shouldValidate.push(false);
-					}
-					*/
-				
+        //
+        //
+       
+        // recursively traverse the interface model
+        // use the parentNodePath of the interface node 
+		var visitStringifyResult = function(node, nodeIndex, parentInterfacePathStack) {
+			if (node.input === "quantifier") {
+                var minItems = node.minItems;
+                var maxItems = node.maxItems;
+
+                entity[dialogType].shouldValidate.push(node.isRequired());
+
+				if (
+                    parentInterfacePathStack 
+                    && (
+                     parentInterfacePathStack.length == 0
+                     ||
+                     node.path != last(parentInterfacePathStack).path
+                     )
+                    ) 
+                {
+					parentInterfacePathStack.push({path: node.path, index: 0});	
 				}
+
 				$.each(node.interfaceFields(), function(index, node) {
-					visitStringifyResult(node, index);
+					visitStringifyResult(node, index, parentInterfacePathStack);
 				});
-				if (node.input === "quantifier") {
-					entity[dialogType].shouldValidate.pop();
+				
+				if (
+                    parentInterfacePathStack 
+                    &&
+                    parentInterfacePathStack.length > 0 
+                    && 
+                    node.path != last(parentInterfacePathStack).path
+                    )  
+                {
+					parentInterfacePathStack.pop();	
 				}
-			} else if (node.input !== "label" && node.input !== "header") {
+
+                entity[dialogType].shouldValidate.pop();
+
+
+			} 
+            else if (node.input === "seed") {
+				$.each(node.interfaceFields(), function(index, node) {
+                    last(parentInterfacePathStack).index = index;
+					visitStringifyResult(node, index, parentInterfacePathStack);
+				});
+            }
+            else if (node.input !== "label" && node.input !== "header") {
 				// CREATE NODE
 				
 				var validate = last(entity[dialogType].shouldValidate);
@@ -973,11 +1001,14 @@ $(function(){
 					
 					node.nodeMessageClass("label label-info");
 				}
-				createNode(node, nodeIndex);
+                parentInterfacePathStack.push({path: node.path, index: 0});	
+				createNode(node, nodeIndex, parentInterfacePathStack);
+                parentInterfacePathStack.pop();	
 			}
 		};
 
-		var createNode = function(node, nodeIndex) {
+		var createNode = function(node, nodeIndex, parentInterfacePathStack) 
+        {
 			var pathString = node.path,
 				fullPath = pathString.split(","),
 				maxDepth = fullPath.length,
@@ -995,7 +1026,97 @@ $(function(){
 			if (node.attributeName !== "") {
 				--maxDepth;
 			}
-			
+	
+
+            // build selector for the "text" node to add to the XML result
+            // also build the XML structural elements, if needed
+            var tmpSelectorStr = "";
+            var tmpPathStr = "";
+			for (var i=0; i<parentInterfacePathStack.length; i++) 
+            {
+              tmpPathStr = parentInterfacePathStack[i].path;
+            
+console.log("cN... 1 : " + tmpPathStr);
+              // break apart the path at each level in the stack,
+              // test that element exists in the XML result,
+              // add element, if necessary
+              // Stack content at each level may look like 
+              // 'entity,person,identiy'
+              // ToDo: niave implementation - optimize, if necessary
+              if (tmpPathStr)
+              {
+                // chop off first part of the path string because already
+                // represented within selector
+                // include ','
+                if ( i>0 )
+                {
+                  tmpPathStr = tmpPathStr.replace(parentInterfacePathStack[i-1].path, '');
+                  tmpPathStr = tmpPathStr.replace(/^,/,'');
+                }
+console.log("cN... 2 : " + tmpPathStr);
+console.log("cN... 3 : " + selector);
+              
+                var tmpPathStrArray = tmpPathStr.split(','); 
+                for (var j=0; j<tmpPathStrArray.length; j++)
+                {
+                  // convert path to JavaScript XML selector syntax
+                  //var tmp = tmpPathStrArray;
+                  //tmp = tmp.slice(0, j+1) + "";
+                  //tmpSelectorStr = tmp.replace(/,/g, " > ");
+
+                  tmpSelectorStr = tmpPathStrArray[j];
+
+console.log("cN... 4 : " + tmpPathStrArray.length + " : " + j + " " + tmpSelectorStr);
+
+                  // add predicate index if last item in the path
+                  if ( j == tmpPathStrArray.length-1 )
+                  {
+                    tmpSelectorStr 
+                      = tmpSelectorStr 
+                      + ":eq(" 
+                      + parentInterfacePathStack[i].index 
+                      + ")" 
+                      ;
+                  }
+
+                  if ( selector && tmpSelectorStr ) 
+                  {
+                    selector 
+                      = selector 
+                      + " > "
+                      + tmpSelectorStr 
+                      ;
+                  }
+                  else if ( tmpSelectorStr) 
+                  {
+                    selector = tmpSelectorStr;
+                  }
+                  else
+                  {
+                    selector = "";
+                  }
+
+                  // use tmp selector and add on subsequent paths
+		          addXMLNodeIfMissing(selector, tmpPathStrArray[j]);
+                }
+              }
+            }
+            
+//            if (node)
+ //           {
+  //            if (selector)
+   //           {
+    //            selector = selector + " > " + node.nodeName;
+     //         }
+      //        else
+       //       {
+        //        selector = node.nodeName;
+         //     }
+          //    addXMLNodeIfMissing(selector, node.nodeName);
+           // }
+
+
+
             console.log(" cN... :" + nodeIndex + " : " + node.value());
 
 			for (var i=0; i< maxDepth; i++) {
@@ -1012,7 +1133,8 @@ $(function(){
 					$(entity.selfWorking).find(selector).last().append(newElement);
 				}
 			}
-			// set value
+
+			// set XML destination node value
 			if(node.attributeName !== "") {
 				// set attribute value
 				thisPathString = path.splice(0, i) + "";
@@ -1025,7 +1147,24 @@ $(function(){
 			}
 
 		};
-		
+	
+		var addXMLNodeIfMissing = function(selector, nodeName)
+        {
+console.log("cN... 5 : " + selector);
+            target = $(entity.selfWorking).find(selector);
+console.log("cN... 6 : " + target.size() );
+            if (target && target.size()===0)
+            {
+                newElement = entity.selfWorking.createElement(nodeName);
+                $(entity.selfWorking).find(selector).last().append(newElement);
+console.log("cN... 7 : " + 
+                $(entity.selfWorking).find(selector).last().nodeName
+                    );
+            }
+        }
+
+
+
 		var validateModsInfo = function(xml){
 			var modsFields = entity.viewModel().modsFields();
 			
@@ -1225,7 +1364,7 @@ $(function(){
 			}else{
 				entity.selfWorking = $.parseXML(startingXML + '<entity></entity>');
 				addRecordInfo(entity.selfWorking);
-				visitStringifyResult(entity[dialogType].workingContainers[0]);
+				visitStringifyResult(entity[dialogType].workingContainers[0],0,[]);
 				var result = xmlToString(entity.selfWorking);
 			}
 			
@@ -1313,8 +1452,8 @@ $(function(){
 			that.maxItems = Number.MAX_VALUE; // infinity;
 			that.interfaceFields = ko.observableArray();
 			that.seed = seedModel();
-			that.fieldPadding = ko.observable("0px 0px 0px 0px")
-			that.fieldCSSClass = ko.observable("initial")
+			that.fieldPadding = ko.observable("0px 0px 0px 0px");
+			that.fieldCSSClass = "initial";
 			// 1 1 Interleave
 			// 0 1 Optional
 			// 1 INF One or more
@@ -1411,7 +1550,7 @@ $(function(){
 				result.label = this.label;
 				result.header = this.header;
 				result.fieldPadding = ko.observable(this.fieldPadding);
-				result.fieldCSSClass = ko.observable(this.fieldCSSClass);
+				result.fieldCSSClass = this.fieldCSSClass;
 				// result.elements = this.elements;
 				// take label
 				// result.label = result.seed.interfaceFields()[0].label;
@@ -2050,8 +2189,16 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 		cD.popEditPlace = popEditPlace;
 		
 		var popEditTitle = function(opts) {
-			prepareEditingDialog(opts);
-			cD.popCreateTitle(opts, extractTitleMODS(opts));
+            // 2015-02-04 : 
+            // Editing disabled
+            // Edit of Title entities looses
+            // information from MODS records that are
+            // more extensive than what implemented in these
+            // dialogs - i.e. pre-existing MODS records
+            
+            window.alert("Edit not implemented for Title entities");    
+			//prepareEditingDialog(opts);
+			//cD.popCreateTitle(opts, extractTitleMODS(opts));
 		}
 
 		cD.popEditTitle = popEditTitle;

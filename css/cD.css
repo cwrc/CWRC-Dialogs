@@ -13,10 +13,13 @@
 	padding: 10px 0px 0px 10px;
 }
 
-.interfaceFieldsContainer > div {
-  border-left-width: 2px;
-  border-left-style: solid;
+div.interfaceFieldsContainer.entity_person_identity_variantForms_variant
+, div.interfaceFieldsContainer.entity_person_identity_preferredForm > div
+{
+  margin: 10px 0px 0px 10px;
+  background-color: #EEEEEE;
 }
+
 
 textarea{
 	resize:none
