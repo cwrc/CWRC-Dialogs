@@ -9,6 +9,12 @@ $(function(){
 			cwrcApi = new CwrcApi(url, $);
 		}
 		
+		// CWRC Base URL to a repository object 
+		var repositoryBaseObjectURL = null;
+		cD.setRepositoryBaseObjectURL= function(url){
+			repositoryBaseObjectURL = url;
+		}
+		
 		// Geonames Url
 		var geonameUrl = null; 
 		cD.setGeonameUrl = function(url){
@@ -184,15 +190,15 @@ $(function(){
 		cD.setPersonSchema = entity.setPersonSchema;
 
 		entity.setOrganizationSchema = function(url) {
-			$.ajax({
-				type: "GET",
-				async: false,
-				url: url,
-				dataType: "xml",
-				success: function(xml) {
-					entity.organization.schema = xml;
-				}
-			});
+            $.ajax({
+                type: "GET",
+                async: false,
+                url: url,
+                dataType: "xml",
+                success: function(xml) {
+                    entity.organization.schema = xml;
+                }
+            });
 		}
 
 		cD.setOrganizationSchema = entity.setOrganizationSchema;
@@ -2500,7 +2506,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 			data.gender = $(workingXML).find(genderSelector).first().text();
 
 			// url
-			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			data.url = repositoryBaseObjectURL + data.object_url;
 			
 			return search.completeHtmlifyPerson(data);
 
@@ -2510,10 +2516,11 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 			
 			var data = search.selectedData;
 			var workingXML = $.parseXML(data.data);
+
 			// url
-			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			data.url = repositoryBaseObjectURL + data.object_url;
+
 			return search.completeHtmlifyOrganization(data);
-			
 		}
 
 		search.getAnchor = function(url) {
@@ -2558,8 +2565,9 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 
 			var dateSelector = "mods > originInfo > dateIssued";
 			data.date = $(workingXML).find(dateSelector).first().text();
+
 			//URL
-			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			data.url = repositoryBaseObjectURL + data.object_url;
 
 			return search.completeHtmlifyTitle(data);
 		}
@@ -2610,7 +2618,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 			data.long = $(workingXML).find(longSelector).first().text();
 
 
-			data.url = "http://cwrc-dev-01.srv.ualberta.ca/islandora/object/" + data.id;
+			data.url = repositoryBaseObjectURL + data.object_url;
 
 			return search.completeHtmlifyPlace(data);
 		}
@@ -3102,6 +3110,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 			var that = search.result();
 			that.name = specs["object_label"];
 			that.id = specs["PID"];
+			that.object_url = specs["object_url"];
 
 			
 			switch (dialogType) {
