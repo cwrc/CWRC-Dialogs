@@ -2110,7 +2110,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 
 		var popCreatePerson = function(opts) {
 			dialogType = "person";
-			entity.viewModel().dialogTitle("Add Person");
+			entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Person");
 			popCreateEntity(opts);
 			
 		};
@@ -2119,7 +2119,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 
 		var popCreateOrganization = function(opts) {
 			dialogType = "organization";
-			entity.viewModel().dialogTitle("Add Organization");
+			entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Organization");
 			popCreateEntity(opts);
 			
 		};
@@ -2128,7 +2128,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 
 		var popCreatePlace = function(opts) {
 			dialogType = "place";
-			entity.viewModel().dialogTitle("Add Place");
+			entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Place");
 			popCreateEntity(opts);
 			
 		};
@@ -2141,7 +2141,7 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 				entity.editing = false;
 				entity.editingPID = "";	
 			}
-			entity.viewModel().dialogTitle(entity.editing ? "Edit " + data.title : "Add Title");
+			entity.viewModel().dialogTitle(entity.editing ? "Edit: " + data.title : "Add Title");
 			completeTitleDialog(opts, data);
 			$('#cwrcTitleModal').modal('show');
 			// hackish
