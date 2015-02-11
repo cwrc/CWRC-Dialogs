@@ -960,17 +960,17 @@ $(function(){
 
 				if (
                     parentInterfacePathStack 
-                    && (
-                     parentInterfacePathStack.length == 0
-                     ||
-                     node.path != last(parentInterfacePathStack).path
-                     )
                     ) 
                 {
-					parentInterfacePathStack.push({path: node.path, index: 0});	
+					parentInterfacePathStack.push({path: node.path, index: nodeIndex});	
 				}
 
 				$.each(node.interfaceFields(), function(index, node) {
+                    if (index > 0)
+                    {
+console.log("sTTT...  : index="+index+ " : " );
+                    }
+console.log("sXXXX...  : index="+index+ " : " );
 					visitStringifyResult(node, index, parentInterfacePathStack);
 				});
 				
@@ -978,8 +978,6 @@ $(function(){
                     parentInterfacePathStack 
                     &&
                     parentInterfacePathStack.length > 0 
-                    && 
-                    node.path != last(parentInterfacePathStack).path
                     )  
                 {
 					parentInterfacePathStack.pop();	
@@ -991,11 +989,17 @@ $(function(){
 			} 
             else if (node.input === "seed") {
 				$.each(node.interfaceFields(), function(index, node) {
-                    last(parentInterfacePathStack).index = index;
-					visitStringifyResult(node, index, parentInterfacePathStack);
+                    /*
+                    if (node.path === last(parentInterfacePathStack).path)
+                    {
+                      //last(parentInterfacePathStack).index++;
+                      last(parentInterfacePathStack).index = nodeIndex;
+                    }
+                    */
+					visitStringifyResult(node, nodeIndex, parentInterfacePathStack);
 				});
             }
-            else if (node.input !== "label" && node.input !== "header") {
+            else if (node.input !== "dialogue" && node.input !== "label" && node.input !== "header") {
 				// CREATE NODE
 				
 				var validate = last(entity[dialogType].shouldValidate);
@@ -1007,7 +1011,7 @@ $(function(){
 					
 					node.nodeMessageClass("label label-info");
 				}
-                parentInterfacePathStack.push({path: node.path, index: 0});	
+                parentInterfacePathStack.push({path: node.path, index: nodeIndex});	
 				createNode(node, nodeIndex, parentInterfacePathStack);
                 parentInterfacePathStack.pop();	
 			}
@@ -1020,7 +1024,8 @@ $(function(){
 				maxDepth = fullPath.length,
 				path,
 				thisPathString,
-				selector,
+				selector = null,
+				previous_selector = null,
 				newElement;
 			
 			if (node.attributeName !== "") {
@@ -1042,7 +1047,7 @@ $(function(){
             {
               tmpPathStr = parentInterfacePathStack[i].path;
             
-console.log("cN... 1 : " + tmpPathStr);
+console.log("cN... 1 : nodeIndex : " + nodeIndex + " : i="+i+ " : " + tmpPathStr);
               // break apart the path at each level in the stack,
               // test that element exists in the XML result,
               // add element, if necessary
@@ -1063,6 +1068,13 @@ console.log("cN... 2 : " + tmpPathStr);
 console.log("cN... 3 : " + selector);
               
                 var tmpPathStrArray = tmpPathStr.split(','); 
+
+                if(node.attributeName !== "" && i == parentInterfacePathStack.length-1) {
+                  // if attribute, remove the last node from the path
+                  // from the last path on the stack
+                  tmpPathStrArray.pop();
+                }
+
                 for (var j=0; j<tmpPathStrArray.length; j++)
                 {
                   // convert path to JavaScript XML selector syntax
@@ -1072,21 +1084,31 @@ console.log("cN... 3 : " + selector);
 
                   tmpSelectorStr = tmpPathStrArray[j];
 
-console.log("cN... 4 : " + tmpPathStrArray.length + " : " + j + " " + tmpSelectorStr);
+console.log("cN... 4 : " + node.input + " : j=" + j + " " + tmpSelectorStr + " " + parentInterfacePathStack[i].index);
+
+                  if ( !tmpSelectorStr )
+                  {
+                    // path repeated, skip
+console.log("cN... 4aaa : " + node.input + " : j=" + j + " " + tmpSelectorStr + " " + parentInterfacePathStack[i].index);
+                    continue;
+                  }
 
                   // add predicate index if last item in the path
                   if ( j == tmpPathStrArray.length-1 )
                   {
-                    tmpSelectorStr 
-                      = tmpSelectorStr 
-                      + ":eq(" 
-                      + parentInterfacePathStack[i].index 
-                      + ")" 
-                      ;
+                    {
+                      tmpSelectorStr 
+                        = tmpSelectorStr 
+                        + ":eq(" 
+                        + parentInterfacePathStack[i].index 
+                        + ")" 
+                        ;
+                    }
                   }
 
                   if ( selector && tmpSelectorStr ) 
                   {
+                    previous_selector = selector;
                     selector 
                       = selector 
                       + " > "
@@ -1103,7 +1125,7 @@ console.log("cN... 4 : " + tmpPathStrArray.length + " : " + j + " " + tmpSelecto
                   }
 
                   // use tmp selector and add on subsequent paths
-		          addXMLNodeIfMissing(selector, tmpPathStrArray[j]);
+		          addXMLNodeIfMissing(selector, previous_selector, tmpPathStrArray[j]);
                 }
               }
             }
@@ -1124,7 +1146,7 @@ console.log("cN... 4 : " + tmpPathStrArray.length + " : " + j + " " + tmpSelecto
 
 
             console.log(" cN... :" + nodeIndex + " : " + node.value());
-
+/*
 			for (var i=0; i< maxDepth; i++) {
 				path = pathString.split(',');
 				thisPathString = path.splice(0, i+1) + "";
@@ -1139,32 +1161,39 @@ console.log("cN... 4 : " + tmpPathStrArray.length + " : " + j + " " + tmpSelecto
 					$(entity.selfWorking).find(selector).last().append(newElement);
 				}
 			}
-
+*/
 			// set XML destination node value
 			if(node.attributeName !== "") {
 				// set attribute value
-				thisPathString = path.splice(0, i) + "";
-				selector = thisPathString.replace(/,/g, " > ");
+				//thisPathString = path.splice(0, i) + "";
+				//selector = thisPathString.replace(/,/g, " > ");
 				$(entity.selfWorking).find(selector).last().attr(node.attributeName, node.value());
 			} else {
 				// set text value
 				var newText = entity.selfWorking.createTextNode(node.value());
-				$(newElement).append(newText);
+				$(entity.selfWorking).find(selector).last().append(newText);
+				//$(newElement).append(newText);
 			}
 
 		};
 	
-		var addXMLNodeIfMissing = function(selector, nodeName)
+		var addXMLNodeIfMissing = function(selector, previous_selector, nodeName)
         {
 console.log("cN... 5 : " + selector);
             target = $(entity.selfWorking).find(selector);
 console.log("cN... 6 : " + target.size() );
-            if (target && target.size()===0)
+            if (nodeName && target && target.size()===0)
             {
                 newElement = entity.selfWorking.createElement(nodeName);
-                $(entity.selfWorking).find(selector).last().append(newElement);
+                $(entity.selfWorking).find(previous_selector).last().append(newElement);
 console.log("cN... 7 : " + 
-                $(entity.selfWorking).find(selector).last().nodeName
+                $(entity.selfWorking).find(previous_selector).last().nodeName
+                    );
+            }
+            else if (!nodeName)
+            {
+console.log("cN... 8 : " + 
+                $(entity.selfWorking).find(previous_selector).last().nodeName
                     );
             }
         }
