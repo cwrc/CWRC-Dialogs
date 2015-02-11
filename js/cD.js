@@ -1222,7 +1222,7 @@ console.log("cN... 8 : " +
 		};
 		
 		var addModsInfo = function(xml){
-			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.';
+			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
 			var mods = $(xml).find("mods");
 			var modsFields = entity.viewModel().modsFields();
 			
@@ -1333,7 +1333,7 @@ console.log("cN... 8 : " +
 		}
 
 		var addRecordInfo = function(xml) {
-			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.';
+			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
 			
 			var recordInfo = entity.selfWorking.createElement("recordInfo");
 			var accessCondition = entity.selfWorking.createElement("accessCondition");
