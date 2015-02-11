@@ -1332,6 +1332,7 @@ console.log("cN... 8 : " +
 			mods.append(recordInfo);
 		}
 
+        // build a skeletal recordInfo branch of the resulting XML.
 		var addRecordInfo = function(xml) {
 			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
 			
@@ -1348,11 +1349,8 @@ console.log("cN... 8 : " +
 			selector = "entity > " + dialogType;
 			$(xml).find(selector).append(recordInfo);
 			selector = "entity > " + dialogType + " > recordInfo";
-			// var selector = "entity > ";
-			
-			// accessCondition.attr("type", "use and reproduction");
-			// var newText = entity.selfWorking.createTextNode(accessConditionText);
-			$(accessCondition).html(accessConditionText);
+
+            $(accessCondition).html(accessConditionText);
 			$(xml).find(selector).append(accessCondition);
 			// $(accessCondition).append(newText);
 
@@ -1360,7 +1358,7 @@ console.log("cN... 8 : " +
 			selector = "entity > " + dialogType + " > recordInfo > originInfo";
 			var todayText = entity.viewModel().paddedToday();
 			var creationText = "";
-			// XXX Change when editing
+            // XXX Change when editing
 			if(!entity.editing) {
 				creationText = todayText;
 			}
@@ -1760,34 +1758,12 @@ console.log("cN... 8 : " +
 		cD.initializeWithCookieData = initializeWithCookieData;
 
 		// population functions
-
 		var populateDialog = function(opts) {
-			
-			// change this to object
-			/*
-			switch (dialogType) {
-				case "person" :
-					switch (opts.repository) {
-						case "cwrc":
-						populateCWRC(opts);
-						break;
-					}
-				break;
-				case "organization":
-				break;
-				case "place":
-				break;
-
-			}
-			*/
-
 			switch (opts.repository) {
 				case "cwrc":
 					populateCWRC(opts);
 				break;
 			}
-			
-
 		}
 
 		var visitChildrenPopulate = function(children, path) {
@@ -1874,9 +1850,6 @@ console.log("cN... 8 : " +
 
 				if (pathNames.toString().indexOf(field.path) === 0) {
 
-					// console.log("++++ "  + field.path)
-
-
                   // compare xPath with predicates from the source XML
                   // with the path in the interface model
                   // if the predicate at one level of the XPath
@@ -1886,21 +1859,6 @@ console.log("cN... 8 : " +
                   var tmpSrcNodeArray = parentPath;
                   var indexLastMatch = tmpInterfaceNodeArray.length - 1;
                   var indexNextNode = indexLastMatch + 1;
-
-                  /*
-            console.log( "fAF---- : " 
-                + ":" 
-                + tmpSrcNodeArray.length 
-                + ":" 
-                + indexNextNode
-                +  ":" 
-                + field.path
-                +  ":" 
-                + tmpSrcNodeArray[indexNextNode].count 
-                +  ":" 
-                + field.interfaceFields().length
-                );
-*/
 
                   if (
                       tmpSrcNodeArray.length > indexNextNode
@@ -1938,82 +1896,19 @@ console.log( "====-1d : " + " " + indexNextNode + " " + field.path);
                       &&
                       tmpSrcNodeArray[indexNextNode].count <= field.interfaceFields().length
                     )
-                    {
+                  {
 console.log( "====-2a : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
 console.log( "====-2b : " + " " + indexNextNode + " " + field.path);
                       // node exists - pick correct child and follow 
                       var tmpfield = field.interfaceFields()[tmpSrcNodeArray[indexNextNode].count - 1];						
                       return foundAndFilled(nodeValue, parentPath, tmpfield);
-                    }
+                  }
                   else
                   {
 console.log( "====-3a : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
 console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
                   }
-
-
-
-
-
-
-
-
-                   /* 
-					var lastField = last(field.path.split(","));
-					lastCount = 0;
-					$.each(parentPath, function(i, path){
-						if (path.name == lastField) {
-							lastCount = path.count;
-							return false;
-						}
-					});
-*/
-
-
-/*
-
-                    console.log( "fAF-3: " + ":" + field.path);
-
-
-
-					var foundOnFields = false;
-					// alert(field.interfaceFields().length)
-					// var currentCount = 0;
-					$.each(field.interfaceFields(), function(i, currentField) {						
-						if(foundAndFilled(nodeValue, parentPath, currentField)) {
-							// currentCount += 1;
-							// if (currentCount == lastCount) {
-								foundOnFields = true;
-								return false; // break out of loop	
-							// }							
-						}
-					});
-					if (foundOnFields) {
-						return true;
-					}
-
-
-                    console.log( "fAF-4: " + foundOnFields + ":" + field.path);
-
-
-					if (!foundOnFields) {
-                    console.log( "fAF-5a: " + foundOnFields + ":" + field.path);
-						if (foundOnSeed(field, parentPath)) {
-
-                    console.log( "fAF-5b: " + foundOnFields + ":" + field.path);
-
-							field.addGroup();
-
-							var lastfield = last(field.interfaceFields());						
-                    console.log( "fAF-6: " + foundOnFields + ":" + lastfield.path + ":" + lastfield.input);
-
-							return foundAndFilled(nodeValue, parentPath, lastfield);
-						}
-					}					
-                */
 				}
-
-
 			} else if(field.input === "seed") {
 				var foundOnSeedCheck = false;
 				var currentCount = 0;				
