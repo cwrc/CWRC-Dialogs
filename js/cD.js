@@ -1222,7 +1222,7 @@ console.log("cN... 8 : " +
 		};
 		
 		var addModsInfo = function(xml){
-			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
+			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
 			var mods = $(xml).find("mods");
 			var modsFields = entity.viewModel().modsFields();
 			
@@ -1333,7 +1333,7 @@ console.log("cN... 8 : " +
 		}
 
 		var addRecordInfo = function(xml) {
-			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
+			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
 			
 			var recordInfo = entity.selfWorking.createElement("recordInfo");
 			var accessCondition = entity.selfWorking.createElement("accessCondition");
@@ -1887,6 +1887,7 @@ console.log("cN... 8 : " +
                   var indexLastMatch = tmpInterfaceNodeArray.length - 1;
                   var indexNextNode = indexLastMatch + 1;
 
+                  /*
             console.log( "fAF---- : " 
                 + ":" 
                 + tmpSrcNodeArray.length 
@@ -1899,7 +1900,7 @@ console.log("cN... 8 : " +
                 +  ":" 
                 + field.interfaceFields().length
                 );
-
+*/
 
                   if (
                       tmpSrcNodeArray.length > indexNextNode
