@@ -1690,8 +1690,22 @@ $(function(){
 		}
 
 		var visitChildrenPopulate = function(children, path) {
+
+            var hasSibling = false;
+
 			for (var i=0; children && i< children.length; ++i) {
 
+                // if an empty "#text" node, skip
+                if ( children[i].nodeName === "#text" && children[i].nodeType == 3 && ($.trim(children[i].nodeValue)) === "")
+                {
+                  continue;
+                }
+
+                // check if top of the stack has the same element
+                // as the last element name in the XML node 
+                // if so, don't increment the count on the last element
+                // name in the path, otherwise create item add it to the
+                // stack   
 				if (path.length > 0 && children[i].nodeName == last(path).name) {
 					last(path).count++;
 				} else {
@@ -1699,10 +1713,40 @@ $(function(){
 				}
 				
                 console.log("vC.... "  + last(path).count + ":" + last(path).name );
+                if ( last(path).name === "namePart" || last(path).name === "partType" )
+                {
+                  console.log("vCCCCCCCC.... [" + path + "]");
+                }
+
 				visitNodeCWRCPopulate(children[i], path);
-				
-				if ((path.length > 0 && i < children.length-1 && children[i+1].nodeName != last(path).name) ||
-					i === children.length - 1) {
+			
+
+                // check if any of the sibiling nodes have the same path
+                // if so, don't pop the last element name off the stack    
+                // element nodes may be interleaved with "text" nodes
+                hasSibling = false;
+                lastPathName = last(path).name;
+                for ( var j=i+1; children[j] && j<children.length; j++)
+                {
+                  tmpNode = children[j]; 
+                  if (tmpNode && tmpNode.nodeName == lastPathName && tmpNode.nodeType == 1)
+                  {
+                    hasSibling = true;
+                    break;
+                  } 
+                }
+				if (
+                    (
+                     path.length > 0 
+                     && 
+                     i < children.length-1 
+                     //&& children[i+1].nodeName != last(path).name
+                     && !hasSibling
+                     ) 
+                    ||
+					i === children.length - 1
+                    ) 
+                {
 						path.pop();	
 				}
 
@@ -1722,13 +1766,13 @@ $(function(){
 
         var visitNodeCWRCPopulate = function(node, path) {
 			
-			if (node.attributes && node.attributes.length > 0)	
-            {
-              visitChildrenPopulate(node.attributes, path);
-            }
 			if (node.childNodes && node.childNodes.length > 0)	
             {
               visitChildrenPopulate(node.childNodes, path);
+            }
+			if (node.attributes && node.attributes.length > 0)	
+            {
+              visitChildrenPopulate(node.attributes, path);
             }
 
 			var parentPath = path.slice(0, path.length-1);
