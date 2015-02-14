@@ -1781,7 +1781,9 @@ $(function(){
 				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
 			} 
             else if (node.nodeType === 2 && nodeValue !== "") {
-                // firefox does represent an attribute value as a text node
+                // firefox does not represent an attribute value as a text node
+                // ToDo prevent on other browsers the attribute values
+                // from being added twice
 				foundAndFilled(nodeValue, path, entity.viewModel().interfaceFields());
             }
 		}
