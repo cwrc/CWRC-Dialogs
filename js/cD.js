@@ -1712,14 +1712,9 @@ $(function(){
 					path.push({name: children[i].nodeName, count: 1});	
 				}
 				
-                console.log("vC.... "  + last(path).count + ":" + last(path).name );
-                if ( last(path).name === "namePart" || last(path).name === "partType" )
-                {
-                  console.log("vCCCCCCCC.... [" + path + "]");
-                }
+                //console.log("vC.... "  + last(path).count + ":" + last(path).name );
 
 				visitNodeCWRCPopulate(children[i], path);
-			
 
                 // check if any of the sibiling nodes have the same path
                 // if so, don't pop the last element name off the stack    
@@ -1795,9 +1790,6 @@ $(function(){
 				return p.name;
 			});
 			$.each(field.seed.interfaceFields(), function(i, currentField) {
-
-                console.log( "fAS " + currentField.path+ ":" + pathNames.toString() );
-
 				if (pathNames.toString().indexOf(currentField.path) === 0) {
 					result = true;
 					return false;
@@ -1810,17 +1802,9 @@ $(function(){
 
 		var foundAndFilled = function(nodeValue, parentPath, field) {
 
-            console.log( "fAF-FFF " + parentPath.map(function(p){return p.name + ":" + p.count  }));
-
-
-
 			var pathNames = parentPath.map(function(p){
 				return p.name;
 			});
-
-
-            console.log( "fAF-2 src: " + pathNames.toString()+";"+nodeValue );
-            console.log( "fAF-3 interface: " + field.input + ":" + field.label +  ":" + field.path);
 
 			if (field.input === "quantifier") {
 				// check path if sub continue
@@ -1853,16 +1837,9 @@ $(function(){
                     if (foundOnSeed(field, parentPath)) {
                       // test is the 'seed' variable contains a 
                       // template for the next level of interface elements
-console.log( "====-1a : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
-console.log( "====-1b : " + " " + indexNextNode + " " + field.path);
                       field.addGroup();
                       var lastfield = last(field.interfaceFields());						
                       return foundAndFilled(nodeValue, parentPath, lastfield);
-                    }
-                    else
-                    {
-console.log( "====-1c : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
-console.log( "====-1d : " + " " + indexNextNode + " " + field.path);
                     }
                   }
                   else if 
@@ -1874,24 +1851,15 @@ console.log( "====-1d : " + " " + indexNextNode + " " + field.path);
                       tmpSrcNodeArray[indexNextNode].count <= field.interfaceFields().length
                     )
                   {
-console.log( "====-2a : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
-console.log( "====-2b : " + " " + indexNextNode + " " + field.path);
                       // node exists - pick correct child and follow 
                       var tmpfield = field.interfaceFields()[tmpSrcNodeArray[indexNextNode].count - 1];						
                       return foundAndFilled(nodeValue, parentPath, tmpfield);
-                  }
-                  else
-                  {
-console.log( "====-3a : " + " " + indexNextNode + " " + parentPath.map(function(p){return p.name + ":" + p.count  }));
-console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
                   }
 				}
 			} else if(field.input === "seed") {
 				var foundOnSeedCheck = false;
 				var currentCount = 0;				
 				$.each(field.interfaceFields(), function(i, currentField) {
-					
-                    console.log( "fAF-7 seed: " + i + ":" + currentField.path);
 					if(foundAndFilled(nodeValue, parentPath, currentField)) {
 						// currentCount += 1;
 						// if (currentCount == lastCount){
@@ -1906,7 +1874,6 @@ console.log( "====-3b : " + " " + indexNextNode + " " + field.path);
 				}
 
 			}else if (field.input !== "header") {	
-                console.log( "fAF-8: " + pathNames + ":" + field.path + ":" + field.input);
 				// set value
 				if (field.path == pathNames) {
 					
