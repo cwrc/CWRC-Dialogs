@@ -1780,6 +1780,10 @@ $(function(){
 			if (node.nodeType === 3 && nodeValue !== "") {
 				foundAndFilled(nodeValue, parentPath, entity.viewModel().interfaceFields());
 			} 
+            else if (node.nodeType === 2 && nodeValue !== "") {
+                // firefox does represent an attribute value as a text node
+				foundAndFilled(nodeValue, path, entity.viewModel().interfaceFields());
+            }
 		}
 
 
