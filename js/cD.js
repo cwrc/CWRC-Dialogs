@@ -1,3 +1,19 @@
+// CWRC-Dialogs Library for the entities: Person, Organization, Place, and Title
+//
+// The purposes of this JavaScript file:
+// * render entity-based Search dialogs, populate via a API call to Solr
+// * allow selection of a given entity and pass info to another library (e..g CWRC-Writer)
+// * create new (via popCreateXXX) Person, Place, Organization entities through a form build based on qualities of an Relax-NG schema and annotations embedded with the schema (e.g. http://cwrc.ca/schemas/entities.rng - except for Title Entities), and serialize the form as XML to save via an API call
+// * edit an existing (via popEditXXX) Person, Place, and Organization (no editing of Titles) with a process equivalent to creation but with an extra step to read an existing XML doc from an API call to the repository and populating the rendered form
+// * http://cwrc.ca/schemas/entities.rng - contains instructions on how to use the annotations within the schema
+// * Title entities are handled very differently relative to Person, Place, Organization.  Titles are built from a hard-coded form and based on a MODS schema using only a small subset of properties.
+// * main entry points:
+// ** popCreateXXX
+// ** popEditXXX
+// ** entity.viewModel().processCallback
+
+// ToDo:
+// * reorganize code such that the Title specific components are grouped together
 
 // Tree traversal
 $(function(){
@@ -223,6 +239,11 @@ $(function(){
 			place : cD.setPlaceSchema
 		};
 
+        // initialization of the entity form 
+        // contains the HTML templates for the various types of nodes
+        // added to the interface model datastructure
+        // the "id" in the script element maps to node property of "input"
+        // Note: contains the Knockout JS properties
 		entity.initialize = function() {
 					
 			// entity.setPersonSchema("./schemas/entities.rng");
@@ -332,6 +353,8 @@ $(function(){
 
 
 
+            // Initial frame for the dialog to create/edit an Entity
+            // Entity form elements are added afterward 
 			var newDialogTemplate = '' +
 			'<div id="newDialogue" class="bootstrap-scope cwrcDialog" title="">' +
 			'<div class="modal fade" id="cwrcEntityModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
@@ -355,7 +378,10 @@ $(function(){
 			'	</div>' +
 			'</div>' +
 			'</div>';
-			
+		
+            // Initial frame for the dialog to create/edit an Entity
+            // Title entity forms are not created through automated
+            // inspection of a RELAX-NG
 			var newTitleDialogTemplate = '' +
 			'<div id="newTitleDialogue" class="bootstrap-scope cwrcDialog" title="">' +
 			'<div class="modal fade" id="cwrcTitleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
@@ -548,6 +574,8 @@ $(function(){
 			setHelp();
 		};
 
+        // create the new dialog by reading the schema and building
+        // the Inteface Model that underlies the rendered form interface
 		var newDialog = function() {
 			initializeQuantifiers();
 			var interfaceOrder = $(entity['person'].schema).find('interface-order[type='+dialogType+']');
@@ -566,6 +594,14 @@ $(function(){
 			
 		};
 
+        // ////////////////////
+        // ---------- Begin Schema reading and Interface Model building
+        //
+        // * for the model, capture the following from the RELAX-NG schema
+        // * hierarchical info
+        // * qualifiers (e.g. oneormore)
+        // * custom annotation code added to the schema - see schema for details
+        // ////////////////////
 		var visit = function(node) {
 			if (node.nodeType === 1) { // ELEMENT_NODE
 				entity[dialogType].nodeStack.push(node);
@@ -725,6 +761,8 @@ $(function(){
 			});
 		};
 
+        // process the annotations added to the RELAX-NG schema
+        // within the <xs:annotation> elements
 		var processXSAnnotation = function(node){
 			// ADD WIDGET HERE
 			var appInfoNode = $(node).children("xs\\:appinfo");
@@ -940,14 +978,15 @@ $(function(){
 			to.seed.interfaceFields.remove(from);
 		};
 
+        // ////////////////////
+        // ---------- End -- Schema reading and Interface Model building
+        // ////////////////////
 
 
         
 		///////////////////////////////////////////////////////////////////////
-		// Validate and Output interface model as XML 
+		// Validate and serialize interface model as XML 
 		///////////////////////////////////////////////////////////////////////
-        //
-        //
        
         // recursively traverse the interface model
         // use the parentNodePath of the interface node 
@@ -1005,6 +1044,10 @@ $(function(){
 			}
 		};
 
+        // add a Node to the DOM datastructure used to build the XML
+        // that will be serialized
+        // use XML selectors to determine the proper tree branch to place
+        // the node
 		var createNode = function(node, nodeIndex, parentInterfacePathStack) 
         {
 			var selector = null;
@@ -1102,7 +1145,9 @@ $(function(){
 			}
 
 		};
-	
+
+        // add the XML node to the datastructure
+        // if "selector" is missing then add "nodeName" at "previous_selector"
 		var addXMLNodeIfMissing = function(selector, previous_selector, nodeName)
         {
             target = $(entity.selfWorking).find(selector);
@@ -1121,8 +1166,11 @@ $(function(){
             }
         }
 
-
-
+       
+		///////////////////////////////////////////////////////////////////////
+        // -- BEGIN -- Mods handling 
+		///////////////////////////////////////////////////////////////////////
+       
 		var validateModsInfo = function(xml){
 			var modsFields = entity.viewModel().modsFields();
 			
@@ -1254,7 +1302,16 @@ $(function(){
 			
 			mods.append(recordInfo);
 		}
+        // ////////////////////
+		// --End-- Validate and serialize interface model as XML 
+        // ////////////////////
 
+
+        
+		///////////////////////////////////////////////////////////////////////
+        // -- BEGIN -- Mods handling 
+		///////////////////////////////////////////////////////////////////////
+ 
         // build a skeletal recordInfo branch of the resulting XML.
 		var addRecordInfo = function(xml) {
 			var accessConditionText = 'Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/4.0/" rel="license">Attribution-NonCommercial 4.0 International License</a>.';
@@ -1293,6 +1350,7 @@ $(function(){
 			
 		};
 
+        // build a skeletal entity XML to start 
 		var getWorkingXML = function() {
 			var startingXML = '<?xml version="1.0" encoding="UTF-8"?>';
 
@@ -1327,6 +1385,8 @@ $(function(){
 			return result;
 		};
 
+        // Saving action for an EDIT or NEW entity dialog 
+        // serialize XML
 		entity.viewModel().processCallback = function() {
 			savingMessageOn();					
 			setTimeout((function(){
@@ -1689,6 +1749,21 @@ $(function(){
 			}
 		}
 
+        // read in input XML entity and add to the interface model
+		var populateCWRC = function(opts) {
+			// cwrc
+			
+			var workingXML = $.parseXML(opts.data);			
+			var path = [];
+
+			visitChildrenPopulate(workingXML.childNodes, path);
+        }
+
+        // recursively traverse the XML DOM tree via a depth first search
+        // if locate a text node or and attribute node
+        // then add it to the interface model so that it will
+        // appear in the rendered form
+        // keep a stack representing the path traversal of the XML tree
 		var visitChildrenPopulate = function(children, path) {
 
             var hasSibling = false;
@@ -1749,22 +1824,16 @@ $(function(){
 			}
 		}
 
-		var populateCWRC = function(opts) {
-			// cwrc
-			
-			var workingXML = $.parseXML(opts.data);			
-			var path = [];
-
-			visitChildrenPopulate(workingXML.childNodes, path);
-		
-		}
-
+        // recursively traversal depending on type of node
+        // if textnode or attribute then add to the interface model 
         var visitNodeCWRCPopulate = function(node, path) {
 			
+            // recursively handle the child nodes 
 			if (node.childNodes && node.childNodes.length > 0)	
             {
               visitChildrenPopulate(node.childNodes, path);
             }
+            // special handling of an attribute
 			if (node.attributes && node.attributes.length > 0)	
             {
               visitChildrenPopulate(node.attributes, path);
@@ -1800,6 +1869,13 @@ $(function(){
 
 		var lastCount = 0;
 
+        // add the textnode or attribute value to the 
+        // interface model so it is rendered on the form interface
+        // careful to track instances where there could be multiple
+        // "variant" names requiring the use of an XPath expression
+        // with predicate indicating which of the multiple siblings
+        // at a given level to use when indicating which branch
+        // a text node needs to be added 
 		var foundAndFilled = function(nodeValue, parentPath, field) {
 
 			var pathNames = parentPath.map(function(p){
@@ -1957,8 +2033,10 @@ $(function(){
 			foundAndFilled(value, path, entity.viewModel().interfaceFields());
 		}
 
-		// pop create		
 
+		///////////////////////////////////////////////////////////////////////
+		// Creation Pop-Up Dialogs - starting point  
+		///////////////////////////////////////////////////////////////////////
 		var popCreateEntity = function(opts) {
 			if (!opts.editing) {
 				entity.editing = false;
@@ -2031,8 +2109,9 @@ $(function(){
 
 		cD.popCreate = popCreate;
 		
-		// pop edit
-
+		///////////////////////////////////////////////////////////////////////
+		// Edit Pop-Up Dialogs - starting point  
+		///////////////////////////////////////////////////////////////////////
 		var prepareEditingDialog = function(opts) {
 			entity.editing = true;
 			entity.editingPID = opts.id;
@@ -2085,10 +2164,10 @@ $(function(){
 			title : popEditTitle
 		}
 
+
 		///////////////////////////////////////////////////////////////////////
-		// Search
+		// Search Dialog - build, render, and populate with results
 		///////////////////////////////////////////////////////////////////////
-		
 		
 		var search = {};
 		search.buttons = ko.observableArray([]);
