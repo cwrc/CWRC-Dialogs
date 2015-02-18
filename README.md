@@ -70,7 +70,9 @@ The interface as opened to the user includes:
 + popSearch
 + popEdit
 + setCwrcApi
++ setRepositoryBaseObjectURL 
 + setGeonameUrl
++ setGoogleGeocodeUrl 
 + setViafUrl
 + setPersonSchema
 + setOrganizationSchema
