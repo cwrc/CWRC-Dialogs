@@ -1,20 +1,15 @@
 // a test app using the core pieces cD.j and cwrc-api.js
 //
 $(function(){
-	//cD.setCwrcApi('http://localhost/cwrc/');
-    //cD.setCwrcApi('http://apps.testing.cwrc.ca/services/ccm-api/');
+    // set the BASE URL to the Entity API for loading/saving/creating/searching
     cD.setCwrcApi('http://cwrc-dev-01.srv.ualberta.ca/islandora/cwrc_entities/v1/');
+    // set the BASE URL of the source object link in the search information boxes
     cD.setRepositoryBaseObjectURL('http://cwrc-dev-01.srv.ualberta.ca/');
+    // set Schemas
 	cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
 	cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
 	cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
-	//cD.initializeWithLogin('mark_test', 'P4ssw0rd!');
-	//cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/person_streamlined_v3.rng");
-	cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
-	//cD.setPersonSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
-	//cD.setOrganizationSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
-	//cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
-	//cD.setPlaceSchema("http://cwrc-dev-01.srv.ualberta.ca/dev/CWRC-Dialogs/schemas/entities-test.rng");
+    // set URL from the outside linked data sources 
     cD.setGeonameUrl("http://cwrc-dev-01.srv.ualberta.ca/cwrc-mtp/geonames/");
     cD.setViafUrl("http://cwrc-dev-01.srv.ualberta.ca/services/viaf/");
     cD.setGoogleGeocodeUrl("http://maps.googleapis.com/maps/api/geocode/xml");
