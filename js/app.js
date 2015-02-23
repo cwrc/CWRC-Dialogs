@@ -134,6 +134,10 @@ $(function(){
 					action : customAction
 				},
 				{
+					label : "Create",
+					action : cD.popCreatePerson
+				},
+				{
 					label : "Edit",
 					action : cD.popEditPerson
 				}
@@ -161,6 +165,10 @@ $(function(){
 			},
 			buttons : [				
 				{
+					label : "Create",
+					action : cD.popCreateOrganization
+				},
+				{
 					label : "Edit",
 					action : cD.popEditOrganization
 				},
@@ -187,6 +195,10 @@ $(function(){
 			},
 			buttons : [				
 				{
+					label : "Create",
+					action : cD.popCreatePlace
+				},
+				{
 					label : "Edit",
 					action : cD.popEditPlace
 				},
@@ -212,6 +224,10 @@ $(function(){
 				$("#resultHeader").text("Entity ");
 			},
 			buttons : [
+				{
+					label : "Create",
+					action : cD.popCreateTitle
+				},
 				{
 					label : "Edit",
 					action : cD.popEditTitle
