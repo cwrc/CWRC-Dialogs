@@ -302,7 +302,13 @@ $(function () {
                 '               <div class="label" data-bind="text:nodeMessage, attr:{class: nodeMessageClass}"></div>' +
                 '           </span>' +
                 '       </script>' +
-
+                '       <script type="text/html" id="readonlyTextField">' +
+                '           <!-- readonlyTextField-->' +
+                '           <span data-bind="style:{margin : fieldPadding()}">' +
+                '               <span data-bind="text: label"></span> ' +
+                '               <input data-bind="value: value" read-only="read-only" /> ' +
+                '           </span>' +
+                '       </script>' +
                 '       <script type="text/html" id="header">' +
                 '           <!--header-->' +
                 '           <span>' +
@@ -798,6 +804,9 @@ $(function () {
                     case "textField":
                         newInput = textInputModel();
                         break;
+                    case "readonlyTextField":
+                        newInput = readonlyTextInputModel();
+                        break;
                     case "textArea":
                         newInput = textAreaModel();
                         break;
@@ -916,6 +925,7 @@ $(function () {
         var isInterfaceIsPresent = function (item) {
             switch (item.input) {
             case 'textField':
+            case 'readonlyTextField':
             case 'textArea':
             case 'dropDown':
             case 'dynamicCheckbox':
@@ -1656,6 +1666,14 @@ $(function () {
         var textInputModel = function () {
             var that = inputModel();
             that.input = "textField";
+            that.constructor = textInputModel;
+            that.value = ko.observable();
+            return that;
+        };
+
+        var readonlyTextInputModel = function () {
+            var that = InputModel();
+            that.input = "readonlyTextField";
             that.constructor = textInputModel;
             that.value = ko.observable();
             return that;
