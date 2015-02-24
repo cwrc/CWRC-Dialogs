@@ -16,8 +16,14 @@
 
  div.interfaceFieldsContainer.entity_person_identity_preferredForm > div
 , div.interfaceFieldsContainer.entity_person_identity_variantForms > div
+, div.interfaceFieldsContainer.entity_person_description_occupations > div
+, div.interfaceFieldsContainer.entity_person_description_existDates> div
+, div.interfaceFieldsContainer.entity_person_description_genders > div
+, div.interfaceFieldsContainer.entity_person_description_activities > div
+, div.interfaceFieldsContainer.entity_person_description_researchInterests > div
 , div.interfaceFieldsContainer.entity_organization_identity_preferredForm > div
 , div.interfaceFieldsContainer.entity_organization_identity_variantForms > div
+, div.interfaceFieldsContainer.entity_organization_description_existDates> div
 , div.interfaceFieldsContainer.entity_place_identity_preferredForm > div
 , div.interfaceFieldsContainer.entity_place_identity_variantForms > div
 {
