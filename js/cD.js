@@ -11,9 +11,16 @@
 // ** popCreateXXX
 // ** popEditXXX
 // ** entity.viewModel().processCallback
+//
+// Note: "seed" appears to be a template for adding a new branch to the model
 
 // ToDo:
 // * reorganize code such that the Title specific components are grouped together
+// * bug if source RNG schema has an implied required element.  It needs to be wrapped in an interleave element otherwise the qualifier (e.g. oneOrMore, zeroOrMore, optional, or implied "required") is not represented in the model and the model in not serialized to XML properly - don't know how to quickly fix so we changed the schema - 2015-02-24
+// e.g. 
+// <element ..>
+//   <ref name="occupation-element"/>
+// </element ..>
 
 // Tree traversal
 $(function () {
