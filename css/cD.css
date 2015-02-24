@@ -10,16 +10,20 @@
 }*/
 
 .interfaceFieldsContainer {
-	padding: 10px 0px 0px 10px;
+	padding: 0px 0px 0px 10px;
+	margin: 5px 0px 5px 0px;
 }
 
-div.interfaceFieldsContainer.entity_person_identity_variantForms_variant
-, div.interfaceFieldsContainer.entity_person_identity_preferredForm > div
+ div.interfaceFieldsContainer.entity_person_identity_preferredForm > div
+, div.interfaceFieldsContainer.entity_person_identity_variantForms > div
+, div.interfaceFieldsContainer.entity_organization_identity_preferredForm > div
+, div.interfaceFieldsContainer.entity_organization_identity_variantForms > div
+, div.interfaceFieldsContainer.entity_place_identity_preferredForm > div
+, div.interfaceFieldsContainer.entity_place_identity_variantForms > div
 {
-  margin: 10px 0px 0px 10px;
+  margin: 5px 0px 0px 10px;
   background-color: #EEEEEE;
 }
-
 
 textarea{
 	resize:none
