@@ -2031,10 +2031,10 @@ $(function () {
         // Creation Pop-Up Dialogs - starting point
         ///////////////////////////////////////////////////////////////////////
         var popCreateEntity = function (opts) {
-            if (!opts.editing) {
+            //if (!opts.editing) {
                 entity.editing = false;
                 entity.editingPID = "";
-            }
+            //}
             completeDialog(opts);
             // set default value
 
@@ -2077,10 +2077,10 @@ $(function () {
 
         var popCreateTitle = function (opts, data) {
             dialogType = "title";
-            if (!opts.editing) {
+            //if (!opts.editing) {
                 entity.editing = false;
                 entity.editingPID = "";
-            }
+            //}
             entity.viewModel().dialogTitle(entity.editing ? "Edit: " + data.title : "Add Title");
             completeTitleDialog(opts, data);
             $('#cwrcTitleModal').modal('show');
