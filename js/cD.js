@@ -303,7 +303,7 @@ $(function () {
                 '       </script>' +
                 '       <script type="text/html" id="readonlyTextField">' +
                 '           <!-- readonlyTextField-->' +
-                '           <span data-bind="style:{margin : fieldPadding()}">' +
+                '           <span data-bind="css:fieldCSSClass, style:{margin : fieldPadding()}">' +
                 '               <span data-bind="text: label"></span> ' +
                 '               <input data-bind="value: value" readonly="readonly" /> ' +
                 '           </span>' +
@@ -858,6 +858,7 @@ $(function () {
                             newInput.attributeName = $(parent).attr('name') + "";
                             newInput.path += "," + newInput.attributeName;
                         }
+                        newInput.fieldCSSClass = (entity.elementPath.toString()).replace(/,/g, '_');
                         newInput.label = $(e).children('label').first().text();
                         newInput.help = $(e).children('help-text').first().text();
                         var lastContainer = last(entity[dialogType].workingContainers);
@@ -1631,6 +1632,7 @@ $(function () {
             var that = {};
             that.input = "";
             that.path = "";
+            that.fieldCSSClass = "initial";
             that.label = "";
             that.help = "";
             that.attributeName = "";
@@ -1646,6 +1648,7 @@ $(function () {
                 var result = that.constructor();
                 result.label = that.label;
                 result.path = that.path;
+                result.fieldCSSClass = that.fieldCSSClass;
                 result.help = that.help;
                 result.attributeName = that.attributeName;
                 result.options = that.options;
