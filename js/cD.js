@@ -142,6 +142,21 @@ $(function () {
         entity.startValuePath = [];
         entity.currentPadding = "0";
 
+        entity.editing = false;
+        entity.editingPID = "";
+
+        entity.init = function() {
+            entity.selfWorking = $.parseXML('<entity></entity>');
+            entity.elementPath = [];
+            entity.startValuePath = [];
+            entity.currentPadding = "0";
+            entity.editing = false;
+            entity.editingPID = "";
+        }
+
+        entity.init();
+
+
         entity.viewModel().modsFields = ko.observable({
                 modsTypes : [{
                         name : 'Audio'
@@ -202,9 +217,6 @@ $(function () {
         entity.title = {};
         entity.title.schema = "";
         entity.title.success = null;
-
-        entity.editing = false;
-        entity.editingPID = "";
 
         // XXX Add namespace
 
@@ -1344,11 +1356,11 @@ $(function () {
             // XXX Change when editing
             if (!entity.editing) {
                 creationText = todayText;
+                $(recordCreationDate).append(creationText);
+                $(xml).find(selector).append(recordCreationDate);
             }
 
-            $(recordCreationDate).append(creationText);
             $(recordChangeDate).append(todayText);
-            $(xml).find(selector).append(recordCreationDate);
             $(xml).find(selector).append(recordChangeDate);
 
         };
@@ -2031,10 +2043,10 @@ $(function () {
         // Creation Pop-Up Dialogs - starting point
         ///////////////////////////////////////////////////////////////////////
         var popCreateEntity = function (opts) {
-            //if (!opts.editing) {
+            if (!opts.editing) {
                 entity.editing = false;
                 entity.editingPID = "";
-            //}
+            }
             completeDialog(opts);
             // set default value
 
@@ -2048,39 +2060,57 @@ $(function () {
             }, 5);
         }
 
-        var popCreatePerson = function (opts) {
+        // Render Person Dialog
+        var popRenderPerson = function (opts) {
             dialogType = "person";
             entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Person");
             popCreateEntity(opts);
+        }
 
+        var popCreatePerson = function (opts) {
+            entity.init();
+            popRenderPerson(opts);
         };
 
         cD.popCreatePerson = popCreatePerson;
 
-        var popCreateOrganization = function (opts) {
+
+
+        // Render Organization Dialog
+        var popRenderOrganization = function (opts) {
             dialogType = "organization";
             entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Organization");
             popCreateEntity(opts);
+        }
 
+        var popCreateOrganization = function (opts) {
+            entity.init();
+            popRenderOrganization(opts);
         };
 
         cD.popCreateOrganization = popCreateOrganization;
 
-        var popCreatePlace = function (opts) {
+        // Render Place Dialog
+        var popRenderPlace = function (opts) {
             dialogType = "place";
             entity.viewModel().dialogTitle(entity.editing ? "Edit: " + opts.name : "Add Place");
             popCreateEntity(opts);
-
         };
+
+        var popCreatePlace = function (opts) {
+            entity.init();
+            popRenderPlace(opts);
+        }
 
         cD.popCreatePlace = popCreatePlace;
 
-        var popCreateTitle = function (opts, data) {
+        // Render Title Dialog
+        var popRenderTitle = function (opts, data) {
             dialogType = "title";
-            //if (!opts.editing) {
+            if (!opts.editing) {
                 entity.editing = false;
                 entity.editingPID = "";
-            //}
+            }
             entity.viewModel().dialogTitle(entity.editing ? "Edit: " + data.title : "Add Title");
             completeTitleDialog(opts, data);
             $('#cwrcTitleModal').modal('show');
@@ -2091,8 +2121,14 @@ $(function () {
 
         };
 
+        var popCreateTitle = function (opts) {
+            entity.init();
+            popRenderTitle(opts);
+        }
+
         cD.popCreateTitle = popCreateTitle;
 
+        //
         var popCreate = {
             person : popCreatePerson,
             organization : popCreateOrganization,
@@ -2113,7 +2149,7 @@ $(function () {
 
         var popEditPerson = function (opts) {
             prepareEditingDialog(opts);
-            cD.popCreatePerson(opts);
+            popRenderPerson(opts);
             populateDialog(opts);
         };
 
@@ -2121,7 +2157,7 @@ $(function () {
 
         var popEditOrganization = function (opts) {
             prepareEditingDialog(opts);
-            cD.popCreateOrganization(opts);
+            popRenderOrganization(opts);
             populateDialog(opts);
         };
 
@@ -2129,7 +2165,7 @@ $(function () {
 
         var popEditPlace = function (opts) {
             prepareEditingDialog(opts);
-            cD.popCreatePlace(opts);
+            popRenderPlace(opts);
             populateDialog(opts);
         }
 
@@ -2146,6 +2182,7 @@ $(function () {
             window.alert("Edit not implemented for Title entities");
             //prepareEditingDialog(opts);
             //cD.popCreateTitle(opts, extractTitleMODS(opts));
+            //cD.popRenderTitle(opts, extractTitleMODS(opts));
         }
 
         cD.popEditTitle = popEditTitle;
