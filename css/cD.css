@@ -14,6 +14,20 @@
 	margin: 5px 0px 5px 0px;
 }
 
+/*
+.interfaceFieldsContainer:empty {
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+}
+*/
+
+div.interfaceFieldsContainer.entity_person_identity_variantForms_variant div.interfaceFieldsContainer.entity_person_identity_variantForms_variant  div.seed 
+{
+  margin: 5px 0px 0px 10px;
+  padding: 2px 2px 2px 2px;
+  background-color: #f7f7f0;
+}
+
  div.interfaceFieldsContainer.entity_person_identity_preferredForm > div
 , div.interfaceFieldsContainer.entity_person_identity_variantForms > div
 , div.interfaceFieldsContainer.entity_person_description_occupations > div

@@ -279,12 +279,11 @@ $(function () {
                 '               </span>' +
                 '           </div>' +
                 '           </div>' +
-                '           <div class="interfaceFieldsContainer" data-bind="css:fieldCSSClass , template:{name: $root.displayMode, foreach: interfaceFields}"> ' +
-                '           </div>' +
+                '           <div class="interfaceFieldsContainer" data-bind="css:fieldCSSClass , template:{name: $root.displayMode, foreach: interfaceFields}"/> ' +
                 '       </script>' +
                 '       <script type="text/html" id="seed">' +
                 '           <!--seed-->' +
-                '           <div>' +
+                '           <div class="seed">' +
                 '               <span data-bind="template:{name: $root.displayMode, foreach: interfaceFields}"></span>' +
                 '               <span data-bind="if: $parent.showRemoveThisButton()">' +
                 '                   <button data-bind="click: $parent.removeThisGroup" class="btn btn-default btn-xs">' +
@@ -306,7 +305,7 @@ $(function () {
                 '           <!-- readonlyTextField-->' +
                 '           <span data-bind="style:{margin : fieldPadding()}">' +
                 '               <span data-bind="text: label"></span> ' +
-                '               <input data-bind="value: value" read-only="read-only" /> ' +
+                '               <input data-bind="value: value" readonly="readonly" /> ' +
                 '           </span>' +
                 '       </script>' +
                 '       <script type="text/html" id="header">' +
@@ -1672,9 +1671,9 @@ $(function () {
         };
 
         var readonlyTextInputModel = function () {
-            var that = InputModel();
+            var that = inputModel();
             that.input = "readonlyTextField";
-            that.constructor = textInputModel;
+            that.constructor = readonlyTextInputModel;
             that.value = ko.observable();
             return that;
         };
