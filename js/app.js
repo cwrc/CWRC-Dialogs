@@ -1,4 +1,5 @@
 // a test app using the core pieces cD.j and cwrc-api.js
+// see cwrcDialogBridge.js for a cleaner example - https://github.com/cwrc/CWRC-Writer/blob/5618be7b83ccd643d26709cf549edd0682fbfc81/src/js/dialogs/cwrcDialogBridge.js
 //
 $(function(){
     // set the BASE URL to the Entity API for loading/saving/creating/searching
@@ -22,8 +23,17 @@ $(function(){
 					alert(result.response.error);
 					$("#entityXMLContainer").text("");
 				}else{
-					$("#resultHeader").text("Person entity " + result.response.pid);
-					$("#entityXMLContainer").text(result.data);
+                    if (result.response !== undefined && result.response.pid !== undefined)
+                    {
+                      $("#resultHeader").text("Person entity " + result.response.pid);
+                      $("#entityXMLContainer").text(result.data);
+                    }
+                    else
+                    {
+                      alert(result.response.message);
+                      $("#resultHeader").text(result.response.message);
+                    }
+
 				}
 			},
 			error : function(errorThrown) {
@@ -44,8 +54,16 @@ $(function(){
 					alert(result.response.error);
 					$("#entityXMLContainer").text("");
 				}else{
-					$("#resultHeader").text("Organization entity " + result.response.pid);
-					$("#entityXMLContainer").text(result.data);
+                    if (result.response !== undefined && result.response.pid !== undefined)
+                    {
+                      $("#resultHeader").text("Organization entity " + result.response.pid);
+                      $("#entityXMLContainer").text(result.data);
+                    }
+                    else
+                    {
+                      alert(result.response.message);
+                      $("#resultHeader").text(result.response.message);
+                    }
 				}
 			},
 			error : function(errorThrown) {
@@ -66,8 +84,16 @@ $(function(){
 					alert(result.response.error);
 					$("#entityXMLContainer").text("");
 				}else{
-					$("#resultHeader").text("Place entity " + result.response.pid);
-					$("#entityXMLContainer").text(result.data);
+                    if (result.response !== undefined && result.response.pid !== undefined)
+                    {
+                      $("#resultHeader").text("Place entity " + result.response.pid);
+                      $("#entityXMLContainer").text(result.data);
+                    }
+                    else
+                    {
+                      alert(result.response.message);
+                      $("#resultHeader").text(result.response.message);
+                    }
 				}
 			},
 			error : function(errorThrown) {
@@ -88,8 +114,16 @@ $(function(){
 					alert(result.response.error);
 					$("#entityXMLContainer").text("");
 				}else{
-					$("#resultHeader").text("Title entity " + result.response.pid);
-					$("#entityXMLContainer").text(result.data);
+                    if (result.response !== undefined && result.response.pid !== undefined)
+                    {
+                      $("#resultHeader").text("Title entity " + result.response.pid);
+                      $("#entityXMLContainer").text(result.data);
+                    }
+                    else
+                    {
+                      alert(result.response.message);
+                      $("#resultHeader").text(result.response.message);
+                    }
 				}
 			},
 			error : function(errorThrown) {
