@@ -21,12 +21,10 @@
 }
 */
 
-div.interfaceFieldsContainer.entity_person_recordInfo_originInfo > div.seed > span:nth-child(1) > div:nth-child(3) button
-/* , div.interfaceFieldsContainer.entity_person_recordInfo_originInfo > div.seed > span:nth-child(1) > div:nth-child(4) button */
+div.interfaceFieldsContainer.entity_person_recordInfo_originInfo > div.seed > span:nth-child(1) > div:nth-child(3) 
+, div.interfaceFieldsContainer.entity_person_recordInfo_originInfo > div.seed > span:nth-child(1) > div:nth-child(4) 
 {
   display: none;
-  margin: 50px 0px 0px 100px;
-  padding: 50px 0px 0px 100px;
 }
 
 div.interfaceFieldsContainer.entity_person_identity_variantForms_variant div.interfaceFieldsContainer.entity_person_identity_variantForms_variant  div.seed 
