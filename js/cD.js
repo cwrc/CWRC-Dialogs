@@ -2223,7 +2223,7 @@ $(function () {
                     var page = parseInt($(event.currentTarget).attr("data"));
 
                     if (page <= that.maxPage() && page >= 0) {
-					    search.isDataSelected(false);
+                        search.isDataSelected(false);
                         specs.paginate(page, that);
                     }
                 },
@@ -2746,7 +2746,7 @@ $(function () {
 
         search.selectedLinkedDataSource = "cwrc";
         search.queryString = ko.observable("");
-		search.isDataSelected = ko.observable(false);
+        search.isDataSelected = ko.observable(false);
 
         // templates
 
@@ -3215,7 +3215,7 @@ $(function () {
             }
 
             search.selectedData = result;
-			search.isDataSelected(true);
+            search.isDataSelected(true);
         };
 
         search.selectLinkedDataSource = function (data, event) {
@@ -3225,7 +3225,7 @@ $(function () {
 
         search.performSearch = function (queryString) {
             search.selectedData = null;
-			search.isDataSelected(false);
+            search.isDataSelected(false);
 
             for (var key in search.linkedDataSources) {
                 var lds = search.linkedDataSources[key];
