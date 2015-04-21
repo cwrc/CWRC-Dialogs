@@ -2337,7 +2337,7 @@ $(function () {
                     // dataType : 'json',
                     dataType : "xml",
                     processData : false,
-                    data : "query=" + viafPrefix + quotedQueryString + "&maximumRecords=" + perPage + "&startRecord=" + bottom + "&httpAccept=text/xml",
+                    data : "query=" + viafPrefix + quotedQueryString + "&sortKeys=holdingscount&maximumRecords=" + perPage + "&startRecord=" + bottom + "&httpAccept=text/xml",
                     success : function (response) {
                         $('searchRetrieveResponse record', response).each(function (index, spec) {
                             search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
