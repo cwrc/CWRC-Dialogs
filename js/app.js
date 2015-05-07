@@ -165,14 +165,17 @@ $(function(){
 			buttons : [
 				{
 					label : "Show response",
+                    isEdit : false,
 					action : customAction
 				},
 				{
 					label : "Create",
+                    isEdit : false,
 					action : cD.popCreatePerson
 				},
 				{
 					label : "Edit",
+                    isEdit : true,
 					action : cD.popEditPerson
 				}
 					
@@ -200,10 +203,12 @@ $(function(){
 			buttons : [				
 				{
 					label : "Create",
+                    isEdit : false,
 					action : cD.popCreateOrganization
 				},
 				{
 					label : "Edit",
+                    isEdit : true,
 					action : cD.popEditOrganization
 				},
 					
@@ -230,10 +235,12 @@ $(function(){
 			buttons : [				
 				{
 					label : "Create",
+                    isEdit : false,
 					action : cD.popCreatePlace
 				},
 				{
 					label : "Edit",
+                    isEdit : true,
 					action : cD.popEditPlace
 				},
 					
@@ -260,10 +267,12 @@ $(function(){
 			buttons : [
 				{
 					label : "Create",
+                    isEdit : false,
 					action : cD.popCreateTitle
 				},
 				{
 					label : "Edit",
+                    isEdit : true,
 					action : cD.popEditTitle
 				},
 					
@@ -295,6 +304,7 @@ $(function(){
 			buttons : [
 				{
 					label : "Edit",
+                    isEdit : true,
 					action : cD.popEdit[searchType]
 				},
 					
