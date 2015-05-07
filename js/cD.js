@@ -1778,7 +1778,18 @@ $(function () {
         var populateCWRC = function (opts) {
             // cwrc
 
-            var workingXML = $.parseXML(opts.data);
+            var workingXML = null;
+            if (typeof(opts.data)=='string')
+            {
+                // if string parse into JQuery DOM
+                workingXML = $.parseXML(opts.data);
+            }
+            else 
+            {
+                // else assume AJAX load has completed parse
+                // on a 'text/xml' mime type
+                workingXML = opts.data;
+            }
             var path = [];
 
             visitChildrenPopulate(workingXML.childNodes, path);
