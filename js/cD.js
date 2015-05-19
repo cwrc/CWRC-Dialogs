@@ -3147,11 +3147,11 @@ $(function () {
 
             that.name = $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
             that.id = $(specs).find(idSelector).first().text();
-            that.object_url = 'http://www.geonames.org/'+that.id;
 
             // Extra
             var urlSelector = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:Document");
             that.url = $(specs).find(urlSelector).first().attr("about");
+            that.object_url = that.url;
 
             switch (dialogType) {
             case "person":
