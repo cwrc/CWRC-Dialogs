@@ -3059,6 +3059,7 @@ $(function () {
             var that = search.result();
             that.id = index;
             that.name = $(specs).find("name").text() + ", " + $(specs).find("countryName").text();
+            that.object_url = 'http://www.geonames.org/'+$(specs).find("geonameid").text();
 
             that.htmlify = function () {
                 return search.htmlifyGeoNamePlace($(specs).find("name").text(),
@@ -3075,10 +3076,11 @@ $(function () {
             var that = search.result();
             that.id = index;
             that.name = $(specs).find("formatted_address").text();
+            that.object_url = "https://www.google.ca/maps/place/" + encodeURI($(specs).find("formatted_address").text());
 
             that.htmlify = function () {
                 var location = $(specs).find("geometry").find("location");
-                var url = "https://www.google.ca/maps/place/" + encodeURI($(specs).find("formatted_address").text());
+                var url = that.object_url; 
 
                 return search.htmlifyGoogleGeocodePlace($(location).find("lat").text(),
                     $(location).find("lng").text(),
@@ -3145,6 +3147,7 @@ $(function () {
 
             that.name = $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
             that.id = $(specs).find(idSelector).first().text();
+            that.object_url = 'http://www.geonames.org/'+that.id;
 
             // Extra
             var urlSelector = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:Document");
@@ -3268,6 +3271,7 @@ $(function () {
                 result.name = search.selectedData.name;
                 result.repository = search.selectedLinkedDataSource;
                 result.data = search.selectedData.data;
+                result.uri = search.selectedData.object_url;
             }
             return result;
         }
