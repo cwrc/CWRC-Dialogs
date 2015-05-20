@@ -3001,6 +3001,7 @@ $(function () {
                 id : "",
                 // processed for result
                 data : "",
+                uri : "",
                 // scrape : function() {return "";}, // defined for each linked data source
                 // helper
                 selected : ko.observable(false)
@@ -3095,7 +3096,8 @@ $(function () {
             var that = search.result();
             that.name = specs["object_label"];
             that.id = specs["PID"];
-            that.object_url = specs["object_url"];
+            //that.object_url = specs["object_url"];
+            that.object_url = repositoryBaseObjectURL + that.id;
 
             switch (dialogType) {
             case "person":
