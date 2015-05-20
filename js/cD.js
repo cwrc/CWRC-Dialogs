@@ -2289,12 +2289,12 @@ $(function () {
 
         }
 
-        search.processGeoNameData = function (id) {
-            return xmlToString(search.linkedDataSources.geonames.response[id]);
+        search.processGeoNameData = function (id, index) {
+            return xmlToString(search.linkedDataSources.geonames.response[index]);
         }
 
-        search.processGoogleGeocodeData = function (id) {
-            return xmlToString(search.linkedDataSources.googlegeocode.response[id]);
+        search.processGoogleGeocodeData = function (id, index) {
+            return xmlToString(search.linkedDataSources.googlegeocode.response[index]);
         }
 
         search.processViafData = function (id) {
@@ -2438,7 +2438,7 @@ $(function () {
 
         search.scrapeResult = function () {
             if (search.selectedData) {
-                search.selectedData.data = search.processData(search.selectedData.id);
+                search.selectedData.data = search.processData(search.selectedData.id, search.selectedData.index);
             }
         }
 
@@ -2500,7 +2500,7 @@ $(function () {
             data.gender = $(workingXML).find(genderSelector).first().text();
 
             // url
-            data.url = repositoryBaseObjectURL + data.object_url;
+            data.url = data.object_url;
 
             return search.completeHtmlifyPerson(data);
 
@@ -2512,7 +2512,7 @@ $(function () {
             var workingXML = $.parseXML(data.data);
 
             // url
-            data.url = repositoryBaseObjectURL + data.object_url;
+            data.url = data.object_url;
 
             return search.completeHtmlifyOrganization(data);
         }
@@ -2563,7 +2563,7 @@ $(function () {
             data.date = $(workingXML).find(dateSelector).first().text();
 
             //URL
-            data.url = repositoryBaseObjectURL + data.object_url;
+            data.url = data.object_url;
 
             return search.completeHtmlifyTitle(data);
         }
@@ -2611,7 +2611,7 @@ $(function () {
             var longSelector = "entity > place > description > longitude";
             data.long = $(workingXML).find(longSelector).first().text();
 
-            data.url = repositoryBaseObjectURL + data.object_url;
+            data.url = data.object_url;
 
             return search.completeHtmlifyPlace(data);
         }
@@ -3058,9 +3058,10 @@ $(function () {
         search.getResultFromGeoName = function (specs, index) {
             // specs has data and source
             var that = search.result();
-            that.id = index;
+            that.index = index;
+            that.id = $(specs).find("geonameid").text();
             that.name = $(specs).find("name").text() + ", " + $(specs).find("countryName").text();
-            that.object_url = 'http://www.geonames.org/'+$(specs).find("geonameid").text();
+            that.object_url = 'http://www.geonames.org/'+that.id;
 
             that.htmlify = function () {
                 return search.htmlifyGeoNamePlace($(specs).find("name").text(),
@@ -3075,7 +3076,8 @@ $(function () {
 
         search.getResultFromGoogleGeocode = function (specs, index) {
             var that = search.result();
-            that.id = index;
+            that.index = index;
+            that.id = $(specs).find("place_id").text();;
             that.name = $(specs).find("formatted_address").text();
             that.object_url = "https://www.google.ca/maps/place/" + encodeURI($(specs).find("formatted_address").text());
 

@@ -5,7 +5,7 @@ $(function(){
     // set the BASE URL to the Entity API for loading/saving/creating/searching
     cD.setCwrcApi('http://cwrc-dev-01.srv.ualberta.ca/islandora/cwrc_entities/v1/');
     // set the BASE URL of the source object link in the search information boxes
-    cD.setRepositoryBaseObjectURL('http://cwrc-dev-01.srv.ualberta.ca/');
+    cD.setRepositoryBaseObjectURL('http://cwrc-dev-01.srv.ualberta.ca/islandora/object/');
     // set Schemas
 	cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
 	cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
