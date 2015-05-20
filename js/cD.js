@@ -3159,6 +3159,10 @@ $(function () {
             {
                 that.name = $(specs).find(nameSelectorUNIMARC).first().text(); 
             }
+            if (that.name == "")
+            {
+                that.name = "[Title not found]";
+            }
 
             // Extra
             var urlSelector = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:Document");
