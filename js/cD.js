@@ -3146,11 +3146,19 @@ $(function () {
 
             }
 
-            var nameSelector = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:mainHeadings > ns" + i + "\\:mainHeadingEl > ns" + i + "\\:datafield > ns" + i + "\\:subfield[code='" + codeSelector + "']"); //code attribute a
+            // locate VIAF ID from the result
             var idSelector = search.viafSelectorHelper("recordData ns" + i + "\\:VIAFCluster ns" + i + "\\:viafID");
+            // search MARC21 for a label to use
+            var nameSelectorMARC21 = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:mainHeadings > ns" + i + "\\:mainHeadingEl > ns" + i + "\\:datafield[dtype='MARC21'] > ns" + i + "\\:subfield[code='" + codeSelector + "']"); //code attribute a
+            // search UNIMARC for a label to use
+            var nameSelectorUNIMARC = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:mainHeadings > ns" + i + "\\:mainHeadingEl > ns" + i + "\\:datafield > ns" + i + "\\:subfield[code='" + codeSelector + "']"); //code attribute a
 
-            that.name = $(specs).find(nameSelector).first().text(); //$(specs).find(nameSelector).text();
             that.id = $(specs).find(idSelector).first().text();
+            that.name = $(specs).find(nameSelectorMARC21).first().text(); 
+            if (that.name == "")
+            {
+                that.name = $(specs).find(nameSelectorUNIMARC).first().text(); 
+            }
 
             // Extra
             var urlSelector = search.viafSelectorHelper("recordData >  ns" + i + "\\:VIAFCluster >  ns" + i + "\\:Document");
