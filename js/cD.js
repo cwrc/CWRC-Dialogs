@@ -2464,7 +2464,10 @@ $(function () {
         search.htmlifyCWRCPerson = function () {
 
             var data = search.selectedData;
-            var workingXML = $.parseXML(data.data);
+            // if string parse into JQuery DOM
+            // else assume AJAX load has completed parse
+            // on a 'text/xml' mime type
+            var workingXML = (typeof(data.data)=='string') ? $.parseXML(data.data) : data.data;
 
             // nationality
             // var nationalitySelector = "";
@@ -2528,7 +2531,10 @@ $(function () {
         search.htmlifyCWRCOrganization = function () {
 
             var data = search.selectedData;
-            var workingXML = $.parseXML(data.data);
+            // if string parse into JQuery DOM
+            // else assume AJAX load has completed parse
+            // on a 'text/xml' mime type
+            var workingXML = (typeof(data.data)=='string') ? $.parseXML(data.data) : data.data;
 
             // url
             data.url = data.object_url;
@@ -2562,9 +2568,13 @@ $(function () {
         }
 
         search.htmlifyCWRCTitle = function () {
-
             var data = search.selectedData;
-            var workingXML = $.parseXML(data.data);
+            // if string parse into JQuery DOM
+            // else assume AJAX load has completed parse
+            // on a 'text/xml' mime type
+            var workingXML = (typeof(data.data)=='string') ? $.parseXML(data.data) : data.data;
+
+
             // author,
             data.authors = []; //"Author";
             var authorSelector = "mods > name"; //
@@ -2613,7 +2623,10 @@ $(function () {
 
         search.htmlifyCWRCPlace = function () {
             var data = search.selectedData;
-            var workingXML = $.parseXML(data.data);
+            // if string parse into JQuery DOM
+            // else assume AJAX load has completed parse
+            // on a 'text/xml' mime type
+            var workingXML = (typeof(data.data)=='string') ? $.parseXML(data.data) : data.data;
 
             // First administrative division, country (displayed in line, separated by commas - if possible),
             var firstSelector = "entity > place > description > firstAdministrativeDivision";
@@ -2806,7 +2819,7 @@ $(function () {
                 // '                                    </select>' +
                 '                                   <ul class="pagination  pagination-sm nomargin" data-bind="with: $root.linkedDataSources[\'' + key + '\']">' +
                 '                                       <li data-bind="{css: {disabled: page() <= 0}}"><a href="#" data-bind="{attr: {data: page() - 1}, click: paginate}">&laquo;</a></li>' +
-                '                                       <li data-bind="{css: {active: page() == paginateNumber(0), disabled: paginateNumber(0) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(0)}, text: paginateNumber(0) + 1, click: paginate}" data="0">1</a></li>' +
+                '                                       <li data-bind="{css: {active: page() == paginateNumber(0) && maxPage()!=0, disabled: paginateNumber(0) > maxPage() || maxPage()==0}}"><a href="#" data-bind="{attr: {data: paginateNumber(0)}, text: paginateNumber(0) + 1, click: paginate}" data="0">1</a></li>' +
                 '                                       <li data-bind="{css: {active: page() == paginateNumber(1), disabled: paginateNumber(1) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(1)}, text: paginateNumber(1) + 1, click: paginate}" data="1">2</a></li>' +
                 '                                       <li data-bind="{css: {active: page() == paginateNumber(2), disabled: paginateNumber(2) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(2)}, text: paginateNumber(2) + 1, click: paginate}" data="2">3</a></li>' +
                 '                                       <li data-bind="{css: {active: page() == paginateNumber(3), disabled: paginateNumber(3) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(3)}, text: paginateNumber(3) + 1, click: paginate}" data="3">4</a></li>' +
