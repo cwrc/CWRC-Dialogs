@@ -78,7 +78,8 @@ textarea{
   padding: 0px 0px 0px 0px !important;;
 }
 
-#CWRCPaginator > ul > li.disabled {
+#VIAFPaginator > ul > li.disabled 
+, #CWRCPaginator > ul > li.disabled {
   visibility: hidden;
 }
 
