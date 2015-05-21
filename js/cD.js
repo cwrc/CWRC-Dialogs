@@ -2274,13 +2274,23 @@ $(function () {
                         //$("#CWRCDataMessage").text("Results: " + search.linkedDataSources.cwrc.results().length );
 
                         // Calculate the range displayed in the message
-                        var bottom = 1 + (perPage * page);
+                        var totalResults = result["response"]["numFound"];
+                        var bottom = (totalResults == 0) ? 0 : 1 + (perPage * page);
                         var top = (page + 1) * perPage;
-                        top = result["response"]["numFound"] < top ? result["response"]["numFound"] : top;
+                        top = totalResults < top ? totalResults : top;
 
-                        $("#CWRCDataMessage").text("Results: " + bottom + " - " + top);
 
-                        search.linkedDataSources.cwrc.maxPage(Math.floor(result["response"]["numFound"] / perPage))
+                        if ( top==0 && bottom==0 )
+                        {
+                          $("#CWRCDataMessage").text("Results: " + totalResults );
+                        }
+                        else
+                        {
+                          $("#CWRCDataMessage").text("Results: " + bottom + " - " + top + " of " + totalResults);
+                        }
+
+
+                        search.linkedDataSources.cwrc.maxPage(Math.floor(totalResults / perPage))
                     },
                     error : function (result) {
                         console.log(result);
@@ -2317,7 +2327,8 @@ $(function () {
 
         search.processVIAFSearch = function (queryString, page) {
             // Calculate Page Information
-            var perPage = 100;
+            // 2015-05-21 - VIAF only returns max 10 results
+            var perPage = 10;
             var bottom = 1 + (page * perPage);
             search.linkedDataSources.viaf.page(page);
 
@@ -2354,14 +2365,22 @@ $(function () {
                             search.linkedDataSources.viaf.results.push(search.getResultFromVIAF(spec, index));
                         });
                         $(".linkedDataMessage").removeClass("fa fa-spin fa-refresh");
-                        $("#VIAFDataMessage").text("Results: " + search.linkedDataSources.viaf.results().length);
+                        //$("#VIAFDataMessage").text("Results: " + search.linkedDataSources.viaf.results().length);
 
                         // Calculate the range displayed in the message
                         var totalResults = parseInt($('searchRetrieveResponse numberOfRecords', response).text());
                         var top = (page + 1) * perPage;
                         top = totalResults < top ? totalResults : top;
+                        bottom = ( top == 0 ) ? 0 : bottom;
 
-                        $("#VIAFDataMessage").text("Results: " + bottom + " - " + top);
+                        if ( top==0 && bottom==0 )
+                        {
+                          $("#VIAFDataMessage").text("Results: " + totalResults );
+                        }
+                        else
+                        {
+                          $("#VIAFDataMessage").text("Results: " + bottom + " - " + top + " of " + totalResults);
+                        }
 
                         search.linkedDataSources.viaf.maxPage(Math.floor(totalResults / perPage));
                     },
@@ -2384,7 +2403,7 @@ $(function () {
                     // dataType : 'json',
                     dataType : "xml",
                     processData : false,
-                    data : "query=" + quotedQueryString,
+                    data : "query=" + quotedQueryString + "&max_results=100",
                     success : function (response) {
                         search.linkedDataSources.geonames.response = [];
                         $('geonames geoname', response).each(function (index, spec) {
