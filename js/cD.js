@@ -2243,7 +2243,7 @@ $(function () {
                 paginateNumber : function (index) {
                     if (that.page() < 3) {
                         return index;
-                    } else if (that.page() >= (that.maxPage() - 3)) {
+                    } else if (that.page() > (that.maxPage() - 3)) {
                         return index + that.maxPage() - 5;
                     }
 
