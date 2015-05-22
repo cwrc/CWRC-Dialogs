@@ -2241,7 +2241,12 @@ $(function () {
                 maxPage : ko.observable(0),
                 showPaginate : ko.observable(specs.paginate != null),
                 paginateNumber : function (index) {
+                    // pagination window 
+                    // 5 pages in the window before sliding to 6,7...
                     if (that.page() < 3) {
+                        return index;
+                    } else if (that.page() >= 3 && that.page() <= 4) {
+                        // prevent negative page numbers
                         return index;
                     } else if (that.page() >= (that.maxPage() - 3)) {
                         return index + that.maxPage() - 5;
