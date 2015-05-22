@@ -2817,7 +2817,7 @@ $(function () {
                 // '                                        <option>4</option>' +
                 // '                                        <option>5</option>' +
                 // '                                    </select>' +
-                '                                   <ul class="pagination  pagination-sm nomargin" data-bind="with: $root.linkedDataSources[\'' + key + '\']">' +
+                '                                   <ul class="pagination  pagination-sm nomargin" data-bind="with: $root.linkedDataSources[\'' + key + '\'], css: {hidden: $root.linkedDataSources[\'' + key + '\'].maxPage()==0}">' +
                 '                                       <li data-bind="{css: {disabled: page() <= 0}}"><a href="#" data-bind="{attr: {data: page() - 1}, click: paginate}">&laquo;</a></li>' +
                 '                                       <li data-bind="{css: {active: page() == paginateNumber(0) && maxPage()!=0, disabled: paginateNumber(0) > maxPage() || maxPage()==0}}"><a href="#" data-bind="{attr: {data: paginateNumber(0)}, text: paginateNumber(0) + 1, click: paginate}" data="0">1</a></li>' +
                 '                                       <li data-bind="{css: {active: page() == paginateNumber(1), disabled: paginateNumber(1) > maxPage()}}"><a href="#" data-bind="{attr: {data: paginateNumber(1)}, text: paginateNumber(1) + 1, click: paginate}" data="1">2</a></li>' +
