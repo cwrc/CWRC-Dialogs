@@ -3408,7 +3408,9 @@ $(function () {
              : opts.error;
 
             if (opts.query) {
-                $("#searchEntityInput").val(opts.query);
+                //update: $("#searchEntityInput").val(opts.query);
+                search.queryString(opts.query);
+                // do search 
                 search.performSearch(opts.query);
             }
         }
