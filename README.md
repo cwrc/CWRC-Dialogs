@@ -150,3 +150,17 @@ repository : cwrc
 data : <?xml version="1.0" encoding="UTF-8"?> <?xml-model href="http://cwrc.ca/schema/person.rng" type="application/xml" schematypens="http://relaxng.org/ns/structure/1.0"?> <entity> <person> <recordInfo> <originInfo> <projectId>eccji</projectId> </originInfo> <accessCondition type="use and reproduction">Use of this public-domain resource is governed by the <a href="http://creativecommons.org/licenses/by-nc/3.0/" rel="license">Creative Commons Attribution-NonCommercial 3.0 Unported License</a>.</accessCondition> <personTypes> <personType>creator</personType> </personTypes> </recordInfo> <identity> <preferredForm> <namePart partType="surname">Austin</namePart> <namePart partType="forename">Prof.</namePart> </preferredForm> </identity> </person> </entity> 
 
 ```
+
+Search
+------
+
+Search dialogs can use a endpoints the CWRC entities, VIAF, Geonames, or the Google GeoCode endpoints.
+
+The CWRC entities endpoint assumes a Solr based JSON response.  As of 2015-05-22, the Solr fields required:
+
+```
+object_label
+object_url
+PID
+numFound
+```
