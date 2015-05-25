@@ -146,7 +146,7 @@ function CwrcEntity(type, url, jq) {
                                   // assume XML wrapped in JSON
                                   // and the following version of the API
                                   // https://github.com/cwrc/cwrc_entities/commit/b49473832adad70a2e848c86fb5bc312e8616cea 
-                                  result = $.parseXML(data);
+                                  result = jq.parseXML(data);
                                 }
                                 else
                                 {
