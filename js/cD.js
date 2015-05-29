@@ -1415,6 +1415,7 @@ $(function () {
                         } else {
                             response = cwrcApi[dialogType].newEntity(xml);
                         }
+                        // response includes: pid{from API} and URI
                         response.uri = repositoryBaseObjectURL + response.pid;
                         var result = {
                             response : response,
