@@ -2941,10 +2941,10 @@ $(function () {
                         viewMode : 2,
                         autoclose : true
                     }
+					
+					var datepicker = $(element).siblings(':button').first().bsDatepicker(options);
 
-                    $(element).siblings(':button').first().bsDatepicker(options);
-
-                    ko.utils.registerEventHandler($(element).siblings(':button').first(), "changeDate", function (event) {
+                    datepicker.on("changeDate", function (event) {
                         var value = valueAccessor();
                         if (ko.isObservable(value)) {
                             var dateVal = ko.toJSON(event.date).substr(1, 10);
