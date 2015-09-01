@@ -2955,7 +2955,7 @@ $(function () {
                 '                   <!--  End of content-->' +
                 '               </div>' +
                 '               <div class="modal-footer">' +
-                '                   <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>' +
+                '                   <button type="button" class="btn btn-danger" data-dismiss="modal" data-bind="click: cancel">Cancel</button>' +
                 '                   <!-- ko foreach: buttons -->' +
                 '                   <button type="button" class="btn btn-default" data-dismiss="modal" data-bind="enable: (isEdit && $root.isDataSelected) || !isEdit, text:label, click: $root.runCustomAction"></button>' +
                 '                   <!-- /ko -->' +
@@ -3379,6 +3379,10 @@ $(function () {
             search.clear();
         };
 
+		search.cancel = function () {
+            search.cancelled();
+        }
+		
         search.initiateInfo = function () {
             $("#search-modal").popover({
                 title : function () {
@@ -3443,12 +3447,9 @@ $(function () {
             }
 
             // alert(search.buttons[0].label)
-            search.success = typeof opts.success === undefined ? function () {}
-
-             : opts.success;
-            search.error = typeof opts.error === undefined ? function () {}
-
-             : opts.error;
+            search.success = typeof opts.success === undefined ? function () {} : opts.success;
+            search.error = typeof opts.error === undefined ? function () {} : opts.error;
+            search.cancelled = typeof opts.cancelled === undefined ? function () {} : opts.cancelled;
 
             if (opts.query) {
                 //update: $("#searchEntityInput").val(opts.query);
