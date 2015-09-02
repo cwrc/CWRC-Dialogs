@@ -3034,6 +3034,9 @@ $(function () {
                 $('.modal-body-area').css('max-height', $(window).height() * 0.7);
             });
 
+			$('button.close','#cwrcSearchDialog').on('click', function(e) {
+                search.cancel();
+            });
         }
 
         // search functionality
@@ -3380,7 +3383,9 @@ $(function () {
         };
 
 		search.cancel = function () {
-            search.cancelled();
+			if (search.cancelled) {
+				search.cancelled();
+			}
         }
 		
         search.initiateInfo = function () {
