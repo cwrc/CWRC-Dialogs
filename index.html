@@ -1,20 +1,364 @@
 <!DOCTYPE html>
 <html>
 	<head>		
-
-		<script src="js/lib/jquery-1.11.0.js"></script>
-		<script src="js/lib/jquery-ui-1.10.4.custom.js"></script>		
-		<script src="js/lib/knockout-2.3.0.js"></script>
-		<script src="js/lib/bootstrap.js"></script>
-		<script src="js/lib/bootstrap-datepicker.js"></script>
-		<script src="js/cwrc-api.js"></script>
-		<script src="js/cD.js"></script>
-		<script src="js/app.js"></script>
-
 		<link rel="stylesheet" type="text/css" href="css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="css/datepicker.css">
 		<link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
 		<link rel="stylesheet" type="text/css" href="css/cD.css">
+		
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.22/require.min.js"></script>
+		<script type="text/javascript">
+			require.config({
+				baseUrl: 'js',
+				paths: {
+					'jquery': ['http://code.jquery.com/jquery-1.9.1.min'],
+					'jquery-ui': ['lib/jquery-ui-1.10.4.min'],
+					'knockout': ['http://cdnjs.cloudflare.com/ajax/libs/knockout/3.3.0/knockout-min'],
+					'bootstrap': ['https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min'],
+					'bootstrap-datepicker': 'lib/bootstrap-datepicker',
+					'cwrc-api': 'cwrc-api',
+					'cwrcDialogs': 'cD'
+				},
+				shim: {
+					'jquery-ui': ['jquery'],
+					'bootstrap': ['jquery', 'jquery-ui'],
+					'bootstrap-datepicker': ['bootstrap'],
+					'cwrcDialogs': {
+						deps: ['jquery', 'jquery-ui', 'knockout', 'bootstrap', 'bootstrap-datepicker', 'cwrc-api']
+					}
+				}
+			});
+			
+			require(['cwrcDialogs'], function(cD) {
+				// set the BASE URL to the Entity API for loading/saving/creating/searching
+				cD.setCwrcApi('http://cwrc-dev-01.srv.ualberta.ca/islandora/cwrc_entities/v1/');
+				// set the BASE URL of the source object link in the search information boxes
+				cD.setRepositoryBaseObjectURL('http://cwrc-dev-01.srv.ualberta.ca/islandora/object/');
+				// set Schemas
+				cD.setPersonSchema("http://cwrc.ca/schemas/entities.rng");
+				cD.setOrganizationSchema("http://cwrc.ca/schemas/entities.rng");
+				cD.setPlaceSchema("http://cwrc.ca/schemas/entities.rng");
+				// set URL from the outside linked data sources 
+				cD.setGeonameUrl("http://cwrc-dev-01.srv.ualberta.ca/cwrc-mtp/geonames/");
+				cD.setViafUrl("http://cwrc-dev-01.srv.ualberta.ca/services/viaf/");
+				cD.setGoogleGeocodeUrl("http://maps.googleapis.com/maps/api/geocode/xml");
+
+				$("#addPerson").click(function(){
+					$("#entityXMLContainer").text("");
+					var opts = {
+						success: function(result) {
+							if(result.response.error){
+								alert(result.response.error);
+								$("#entityXMLContainer").text("");
+							}else{
+								if (result.response !== undefined && result.response.pid !== undefined)
+								{
+								  $("#resultHeader").text("Person entity " + result.response.pid);
+								  $("#entityXMLContainer").text(result.data);
+								}
+								else
+								{
+								  alert(result.response.message);
+								  $("#resultHeader").text(result.response.message);
+								}
+
+							}
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						startValue : $("#startValuePerson").val()
+					};
+					cD.popCreatePerson(opts);
+				});
+
+				$("#addOrganization").click(function(){
+					$("#resultHeader").text("Entity ");
+					$("#entityXMLContainer").text("");
+					var opts = {
+						success: function(result) {
+							if(result.response.error){
+								alert(result.response.error);
+								$("#entityXMLContainer").text("");
+							}else{
+								if (result.response !== undefined && result.response.pid !== undefined)
+								{
+								  $("#resultHeader").text("Organization entity " + result.response.pid);
+								  $("#entityXMLContainer").text(result.data);
+								}
+								else
+								{
+								  alert(result.response.message);
+								  $("#resultHeader").text(result.response.message);
+								}
+							}
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						startValue : $("#startValueOrganization").val()
+					};
+					cD.popCreateOrganization(opts);
+				});
+
+				$("#addPlace").click(function(){
+					$("#resultHeader").text("Entity ");
+					$("#entityXMLContainer").text("");
+					var opts = {
+						success: function(result) {
+							if(result.response.error){
+								alert(result.response.error);
+								$("#entityXMLContainer").text("");
+							}else{
+								if (result.response !== undefined && result.response.pid !== undefined)
+								{
+								  $("#resultHeader").text("Place entity " + result.response.pid);
+								  $("#entityXMLContainer").text(result.data);
+								}
+								else
+								{
+								  alert(result.response.message);
+								  $("#resultHeader").text(result.response.message);
+								}
+							}
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						startValue : $("#startValuePlace").val()
+					};
+					cD.popCreatePlace(opts);
+				});
+
+				$("#addTitle").click(function(){
+					$("#resultHeader").text("Entity ");
+					$("#entityXMLContainer").text("");
+					var opts = {
+						success: function(result) {
+							if(result.response.error){
+								alert(result.response.error);
+								$("#entityXMLContainer").text("");
+							}else{
+								if (result.response !== undefined && result.response.pid !== undefined)
+								{
+								  $("#resultHeader").text("Title entity " + result.response.pid);
+								  $("#entityXMLContainer").text(result.data);
+								}
+								else
+								{
+								  alert(result.response.message);
+								  $("#resultHeader").text(result.response.message);
+								}
+							}
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						startValue : $("#startValueTitle").val()
+					};
+					cD.popCreateTitle(opts);
+				});
+
+
+				$("#searchPerson").click(function(){
+					$("#resultHeader").text("Entity ");
+					$("#entityXMLContainer").text("");
+
+					var customAction = function(data) {
+
+						var result = "";
+						for (var i in data) {
+							if (data.hasOwnProperty(i)) {
+								result += i + " : " + data[i] + "	";
+							}
+						}
+
+						$("#resultHeader").text("Result");
+						$("#entityXMLContainer").text(result);
+					};
+
+					var opts = {
+						success: function(result) {
+							$("#resultHeader").text("Added");
+							$("#entityXMLContainer").text(JSON.stringify(result));
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						buttons : [
+							{
+								label : "Show response",
+								isEdit : false,
+								action : customAction
+							},
+							{
+								label : "Create",
+								isEdit : false,
+								action : cD.popCreatePerson
+							},
+							{
+								label : "Edit",
+								isEdit : true,
+								action : cD.popEditPerson
+							}
+								
+						],
+						query : $("#startValuePerson").val()
+					}
+
+					cD.popSearchPerson(opts);
+				});
+
+
+				$("#searchOrganization").click(function(){
+					$("#resultHeader").text("Organization ");
+					$("#entityXMLContainer").text("");
+
+					var opts = {
+						success: function(result) {
+							$("#resultHeader").text("Added");
+							$("#entityXMLContainer").text(JSON.stringify(result));
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						buttons : [				
+							{
+								label : "Create",
+								isEdit : false,
+								action : cD.popCreateOrganization
+							},
+							{
+								label : "Edit",
+								isEdit : true,
+								action : cD.popEditOrganization
+							},
+								
+						],
+						query : $("#startValueOrganization").val()
+					}
+
+					cD.popSearchOrganization(opts);
+				});
+
+				$("#searchPlace").click(function(){
+					$("#resultHeader").text("Place ");
+					$("#entityXMLContainer").text("");
+
+					var opts = {
+						success: function(result) {
+							$("#resultHeader").text("Added");
+							$("#entityXMLContainer").text(JSON.stringify(result));
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						buttons : [				
+							{
+								label : "Create",
+								isEdit : false,
+								action : cD.popCreatePlace
+							},
+							{
+								label : "Edit",
+								isEdit : true,
+								action : cD.popEditPlace
+							},
+								
+						],
+						query : $("#startValuePlace").val()
+					}
+
+					cD.popSearchPlace(opts);
+				});
+
+				$("#searchTitle").click(function(){
+					$("#resultHeader").text("Title ");
+					$("#entityXMLContainer").text("");
+
+					var opts = {
+						success: function(result) {
+							$("#resultHeader").text("Added");
+							$("#entityXMLContainer").text(JSON.stringify(result));
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						buttons : [
+							{
+								label : "Create",
+								isEdit : false,
+								action : cD.popCreateTitle
+							},
+							{
+								label : "Edit",
+								isEdit : true,
+								action : cD.popEditTitle
+							},
+								
+						],
+						query : $("#startValueTitle").val()
+					}
+
+					cD.popSearchTitle(opts);
+				});
+
+				$("#searchCustomButton").click(function(){
+
+					var searchName = $("#customSearchSelectionButton").text();
+					var searchType = searchName.toLowerCase().trim();
+					var searchQuery = $("#searchPersonInput").val();
+
+					$("#resultHeader").text(searchName + " ");
+					$("#entityXMLContainer").text("");
+
+					var opts = {
+						success: function(result) {
+							$("#resultHeader").text("Added");
+							$("#entityXMLContainer").text(JSON.stringify(result));
+						},
+						error : function(errorThrown) {
+							$("#entityXMLContainer").text("");
+							$("#resultHeader").text("Entity ");
+						},
+						buttons : [
+							{
+								label : "Edit",
+								isEdit : true,
+								action : cD.popEdit[searchType]
+							},
+								
+						],
+						query : searchQuery
+					}
+
+					cD.popSearch[searchType](opts)
+
+				});
+
+
+				$('#customSearchSelection li > a').click(function(e){
+					$("#customSearchSelectionButton").html(this.innerHTML + ' <span class="caret"></span>');
+				});
+
+
+
+				$("#clear-button").click(function(){
+					$("#entityXMLContainer").text("");
+					$("#resultHeader").text("Entity ");
+				});
+
+			
+			});
+		</script>
 		
 	</head>
 	<body class="bootstrap-scope">

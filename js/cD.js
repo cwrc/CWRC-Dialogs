@@ -23,7 +23,7 @@
 // </element ..>
 
 // Tree traversal
-define(['jquery', 'jquery-ui', 'bootstrap', 'bootstrap-datepicker', 'knockout'], function ($) {
+define(['jquery', 'knockout', 'jquery-ui', 'bootstrap', 'bootstrap-datepicker'], function ($, ko) {
     cD = {};
     (function () {
         // Cwrc Api
