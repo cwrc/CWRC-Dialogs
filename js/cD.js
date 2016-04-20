@@ -63,7 +63,7 @@ $(function () {
         params.modalOptions = {
             show : false,
             keyboard : true,
-            backdrop : false,
+            backdrop : false
             // maxHeight: 500,
         }
         var dialogType = "";
