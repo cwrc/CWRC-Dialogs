@@ -1,0 +1,41 @@
+{
+  "name": "cwrc-dialogs",
+  "version": "1.0.0",
+  "description": "",
+  "directories": {
+    "doc": "doc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cwrc/CWRC-Dialogs.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cwrc/CWRC-Dialogs/issues"
+  },
+  "homepage": "https://github.com/cwrc/CWRC-Dialogs#readme",
+  "scripts": {
+    "browserify": "browserify js/cD.js --exclude jquery --standalone cD > dist/cD.js",
+	"datepicker": "rename dist\\cD.js temp.js && copy /b js\\lib\\bootstrap-datepicker.js + dist\\temp.js dist\\cD.js",
+	"build": "npm run browserify && npm run datepicker"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+	]
+  },
+  "browserify-shim": {
+    "jquery": "global:$",
+	"jquery-ui": "global:$"
+  },
+  "devDependencies": {
+    "browserify": "^13.0.1",
+	"browserify-shim": "^3.2.0",
+	
+	"jquery": "^3.1.0",
+    "jquery-ui": "^1.12.0",
+	"bootstrap": "^3.2.0",
+	"knockout": "^2.3.0"
+  }
+}

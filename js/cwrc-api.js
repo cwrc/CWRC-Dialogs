@@ -3,100 +3,9 @@
  *
  * Requires jQuery
  */
-// NOT USED - CWRC annotiation JavaScript API calls
-function CwrcAnnotion(url, jq){
-        if (!jq) {
-                jq = $;
-        }
+'use strict';
 
-        // Public Functions
-        this.searchAnnotion = function(searchObject){
-                // TODO: Should we search on annotations?       
-        }
-        
-        this.getAnnotaion = function(pid){
-                var result = result;
-
-                jq.ajax({
-                        url : url + '/annotation/' + pid,
-                        type : 'GET',
-                        async : false,
-                        success : function(data) {
-                                result = data;
-                        },
-                        error : function(error) {
-                                result = error;
-                        }
-                });
-
-                return result;
-        }
-        
-        this.newAnnotation = function(data) {
-                var result = result;
-
-                jq.ajax({
-                        url : url + '/annotation',
-                        type : 'POST',
-                        data : {
-                                method : 'post',
-                                data: data
-                        },
-                        async : false,
-                        success : function(data) {
-                                result = data;
-                        },
-                        error : function(error) {
-                                result = error;
-                        }
-                });
-
-                return jq.parseJSON(result);
-        }
-        
-        this.modifyAnnotation = function(pid, data) {
-                var result = result;
-
-                jq.ajax({
-                        url : url + '/annotation/' + pid,
-                        type : 'POST',
-                        data : {
-                                method : 'put',
-                                data: data
-                        },
-                        async : false,
-                        success : function(data) {
-                                result = data;
-                        },
-                        error : function(error) {
-                                result = error;
-                        }
-                });
-
-                return jq.parseJSON(result);
-        }
-
-        this.deleteAnnotation = function(pid) {
-                var result = result;
-
-                jq.ajax({
-                        url : url + '/annotation/' + pid,
-                        type : 'POST',
-                        async : false,
-                        data: {
-                                method: 'delete'
-                        },
-                        success : function(data) {
-                                result = data;
-                        },
-                        error : function(error) {
-                                result = error;
-                        }
-                });
-
-                return jq.parseJSON(result);
-        }
-}
+var $ = require('jquery');
 
 // CWRC Entity JavaScript API calls
 function CwrcEntity(type, url, jq) {
@@ -355,3 +264,5 @@ function CwrcApi(url, jq) {
 
         return this;
 }
+
+module.exports = CwrcApi;
