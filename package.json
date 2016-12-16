@@ -16,9 +16,12 @@
   },
   "homepage": "https://github.com/cwrc/CWRC-Dialogs#readme",
   "scripts": {
+	"build": "npm run clean && npm run browserify && npm run css && npm run fonts",
+	"clean": "rmdir dist /s /q & mkdir dist",
     "browserify": "browserify js/cD.js --exclude jquery --standalone cD > dist/cD.js",
-	"datepicker": "rename dist\\cD.js temp.js && copy /b js\\lib\\bootstrap-datepicker.js + dist\\temp.js dist\\cD.js",
-	"build": "npm run browserify && npm run datepicker"
+	"datepicker": "rename dist\\cD.js temp.js && copy /b js\\lib\\bootstrap-datepicker.js + dist\\temp.js dist\\cD.js && del dist\\temp.js",
+	"css": "mkdir dist\\css & minify --output dist/css/cD.css css/bootstrap.css css/datepicker.css font-awesome/css/font-awesome.css css/cD.css",
+	"fonts": "mkdir dist\\fonts & copy fonts\\ dist\\fonts & mkdir dist\\font-awesome\\fonts & copy font-awesome\\fonts dist\\font-awesome\\fonts"
   },
   "browserify": {
     "transform": [
@@ -27,11 +30,18 @@
   },
   "browserify-shim": {
     "jquery": "global:$",
-	"jquery-ui": "global:$"
+	"jquery-ui": {"depends": ["jquery:jQuery"]},
+	"bootstrap": {"depends": ["jquery:jQuery"]},
+	"bootstrap-datepicker": {"exports": "$.fn.datepicker", "depends": ["jquery:jQuery"]}
+  },
+  "browser": {
+	  "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.js",
+	  "bootstrap-datepicker": "./js/lib/bootstrap-datepicker.js"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
 	"browserify-shim": "^3.2.0",
+	"minifier": "^0.8.0",
 	
 	"jquery": "^3.1.0",
     "jquery-ui": "^1.12.0",

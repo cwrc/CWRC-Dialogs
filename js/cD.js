@@ -27,6 +27,7 @@
 
 var $ = require('jquery');
 var bootstrap = require('bootstrap');
+require('bootstrap-datepicker');
 var jqueryUi = require('jquery-ui');
 var ko = require('knockout');
 var CwrcApi = require('./cwrc-api.js');
