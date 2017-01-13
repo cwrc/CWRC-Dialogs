@@ -92,7 +92,7 @@ var cD = {};
 		return array[array.length - 1];
 	};
 
-	var initialize = function () {
+	cD.initialize = function () {
 		entity.initialize();
 		search.initialize();
 	};
@@ -3523,8 +3523,6 @@ var cD = {};
 	cD.popSearch = popSearch;
 
 	///////////////////////////////////////////////////////////////////////
-
-	initialize();
 
 })();
 
