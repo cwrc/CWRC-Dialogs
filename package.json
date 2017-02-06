@@ -35,7 +35,6 @@
 	"bootstrap-datepicker": {"exports": "$.fn.datepicker", "depends": ["jquery:jQuery"]}
   },
   "browser": {
-	  "bootstrap": "./node_modules/bootstrap/dist/js/bootstrap.js",
 	  "bootstrap-datepicker": "./js/lib/bootstrap-datepicker.js"
   },
   "devDependencies": {
