@@ -2,6 +2,7 @@
   "name": "cwrc-dialogs",
   "version": "1.0.0",
   "description": "",
+  "main": "js/cD.js",
   "directories": {
     "doc": "doc"
   },
