@@ -18,7 +18,7 @@ function CwrcAnnotion(url, jq){
         }
         
         this.getAnnotaion = function(pid){
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + '/annotation/' + pid,
@@ -36,7 +36,7 @@ function CwrcAnnotion(url, jq){
         }
         
         this.newAnnotation = function(data) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + '/annotation',
@@ -58,7 +58,7 @@ function CwrcAnnotion(url, jq){
         }
         
         this.modifyAnnotation = function(pid, data) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + '/annotation/' + pid,
@@ -80,7 +80,7 @@ function CwrcAnnotion(url, jq){
         }
 
         this.deleteAnnotation = function(pid) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + '/annotation/' + pid,
@@ -125,7 +125,7 @@ function CwrcEntity(type, url, jq) {
                                 restrictions: restrictions
                         },
                         success : function(data) {
-                                result = data === "" ? {} : data;
+                                var result = data === "" ? {} : data;
                                 
                                 searchObject.success(result);
                         },
@@ -136,7 +136,7 @@ function CwrcEntity(type, url, jq) {
         }
         
         this.getEntity = function(pid) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + type + "/" + pid,
@@ -165,7 +165,7 @@ function CwrcEntity(type, url, jq) {
         }
 
         this.newEntity = function(data) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + type,
@@ -187,7 +187,7 @@ function CwrcEntity(type, url, jq) {
         }
 
         this.modifyEntity = function(pid, data) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + type + '/' + pid,
@@ -210,7 +210,7 @@ function CwrcEntity(type, url, jq) {
         }
 
         this.deleteEntity = function(pid) {
-                var result = result;
+                var result = null;
 
                 jq.ajax({
                         url : url + type + "/" + pid,
@@ -283,7 +283,7 @@ function CwrcApi(url, jq) {
          */
         // NOT USED - 2015-02-18
         this.initializeWithCookieData = function(data) {
-                var result = result;
+                var result = null;
 
                         
                 jq.ajax({
@@ -308,7 +308,7 @@ function CwrcApi(url, jq) {
 
         // NOT USED - 2015-02-18
         this.initializeWithLogin = function(username, password) {
-                var result = result;
+                var result = null;
 
                         
                 jq.ajax({
@@ -334,7 +334,7 @@ function CwrcApi(url, jq) {
 
         // NOT USED - 2015-02-18
         this.logout = function() {
-                var result = result;
+                var result = null;
 
                 if (!_this.isInitialized()) {
                         jq.ajax({
