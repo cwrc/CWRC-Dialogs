@@ -24,29 +24,16 @@
 	"css": "mkdir dist\\css & minify --output dist/css/cD.css css/bootstrap.css css/datepicker.css font-awesome/css/font-awesome.css css/cD.css",
 	"fonts": "mkdir dist\\fonts & copy fonts\\ dist\\fonts & mkdir dist\\font-awesome\\fonts & copy font-awesome\\fonts dist\\font-awesome\\fonts"
   },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-	]
-  },
-  "browserify-shim": {
-    "jquery": "global:$",
-	"jquery-ui": {"depends": ["jquery:jQuery"]},
-	"bootstrap": {"depends": ["jquery:jQuery"]},
-	"bootstrap-datepicker": {"exports": "$.fn.datepicker", "depends": ["jquery:jQuery"]}
-  },
   "browser": {
 	  "bootstrap-datepicker": "./js/lib/bootstrap-datepicker.js"
   },
   "dependencies": {
     "jquery": "^3.1.0",
-    "jquery-ui": "^1.12.0",
 	"bootstrap": "^3.2.0",
 	"knockout": "^2.3.0"
   },
   "devDependencies": {
     "browserify": "^13.0.1",
-	"browserify-shim": "^3.2.0",
 	"minifier": "^0.8.0"
   }
 }
