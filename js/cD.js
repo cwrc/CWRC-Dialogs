@@ -26,12 +26,20 @@
 'use strict';
 
 var $ = require('jquery');
-var jqueryUi = require('jquery-ui');
-require('jquery-ui/ui/widgets/datepicker');
+
 var bootstrap = require('bootstrap');
 require('bootstrap-datepicker');
+
 var ko = require('knockout');
 var CwrcApi = require('./cwrc-api.js');
+
+//fix conflicts with jquery ui
+var datepicker = $.fn.datepicker.noConflict();
+$.fn.bsDatepicker = datepicker;
+var button = $.fn.button.noConflict();
+$.fn.bsButton = button;
+var tooltip = $.fn.tooltip.noConflict();
+$.fn.bsTooltip = tooltip;
 
 var cD = {};
 (function () {
@@ -76,14 +84,6 @@ var cD = {};
 		// maxHeight: 500,
 	}
 	var dialogType = "";
-
-	// fix conflicts with jquery ui
-	var datepicker = $.fn.datepicker.noConflict();
-	$.fn.bsDatepicker = datepicker;
-	var button = $.fn.button.noConflict();
-	$.fn.bsButton = button;
-	var tooltip = $.fn.tooltip.noConflict();
-	$.fn.bsTooltip = tooltip;
 
 	///////////////////////////////////////////////////////////////////////
 	// Helpers
