@@ -25,7 +25,9 @@
 // Tree traversal
 'use strict';
 
+var prevJQuery = window.jQuery;
 var $ = require('jquery');
+window.jQuery = $; // workaround for bootstrap
 
 var bootstrap = require('bootstrap');
 require('bootstrap-datepicker');
@@ -40,6 +42,8 @@ var button = $.fn.button.noConflict();
 $.fn.bsButton = button;
 var tooltip = $.fn.tooltip.noConflict();
 $.fn.bsTooltip = tooltip;
+
+window.jQuery = prevJQuery; // restore previous jquery
 
 var cD = {};
 (function () {
