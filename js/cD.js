@@ -43,6 +43,8 @@ $.fn.bsButton = button;
 var tooltip = $.fn.tooltip.noConflict();
 $.fn.bsTooltip = tooltip;
 
+$(document.head).append('<link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />');
+
 window.jQuery = prevJQuery; // restore previous jquery
 
 var cD = {};
