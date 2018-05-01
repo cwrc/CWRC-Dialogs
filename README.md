@@ -1,3 +1,5 @@
+# !!! Deprecated repository (go to https://github.com/cwrc/CWRC-PublicEntityDialogs for the most recent code
+
 CWRC Dialogs
 ============
 
